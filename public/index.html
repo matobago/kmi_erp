@@ -24,23 +24,89 @@
     --row-h: 40px;
     --col-w: 62px;
     --label-w: 240px;
-    --total-w: 96px;
     --col-w-p: 76px;
     --label-w-p: 165px;
   }
   * { box-sizing: border-box; }
+  html, body { height: 100%; }
   body {
     font-family: -apple-system, "Segoe UI", Arial, sans-serif;
     color: var(--text);
     margin: 0;
     padding: 24px;
     background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  h1, .subtitle, .legend, .print-btn, .api-status, .title-bar {
+    flex-shrink: 0;
+  }
+  .title-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0 0 4px;
   }
   h1 {
     font-size: 18px;
     font-weight: 600;
     color: var(--navy);
-    margin: 0 0 4px;
+    margin: 0;
+  }
+  .period-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .period-toggle {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .period-toggle button {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 12px;
+    cursor: pointer;
+  }
+  .period-toggle button + button {
+    border-left: 1px solid var(--border);
+  }
+  .period-toggle button.is-active {
+    background: var(--navy);
+    color: #fff;
+  }
+  .crew-toggle {
+    appearance: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 12px;
+    cursor: pointer;
+  }
+  .crew-toggle.is-active {
+    background: var(--navy);
+    color: #fff;
+    border-color: var(--navy);
+  }
+  .crew-toggle[hidden] {
+    display: none;
   }
   .subtitle {
     font-size: 13px;
@@ -67,7 +133,11 @@
     display: inline-block;
   }
   .chart-wrap {
-    overflow-x: auto;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
     border: 1px solid var(--border);
     border-radius: 8px;
     background: #fff;
@@ -75,12 +145,16 @@
   .chart {
     position: relative;
     min-width: max-content;
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
   }
   .header-row {
     display: flex;
     position: sticky;
     top: 0;
-    z-index: 3;
+    z-index: 6;
+    flex-shrink: 0;
     background: var(--navy);
   }
   .header-label {
@@ -96,7 +170,7 @@
     padding: 0 12px;
     position: sticky;
     left: 0;
-    z-index: 4;
+    z-index: 7;
     border-right: 2px solid var(--gold);
   }
   .header-col {
@@ -111,23 +185,6 @@
     border-right: 1px solid rgba(255,255,255,0.12);
     line-height: 1.25;
     white-space: nowrap;
-  }
-  .header-total {
-    width: var(--total-w);
-    min-width: var(--total-w);
-    flex-shrink: 0;
-    color: #f0e2bd;
-    font-size: 11px;
-    font-weight: 600;
-    text-align: right;
-    padding: 6px 12px;
-    position: sticky;
-    right: 0;
-    background: var(--navy);
-    border-left: 2px solid var(--gold);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
   }
   .body-row {
     display: flex;
@@ -178,24 +235,29 @@
     flex-shrink: 0;
     border-right: 1px solid #eee;
   }
-  .row-total {
-    width: var(--total-w);
-    min-width: var(--total-w);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0 12px;
-    font-size: 12px;
-    font-weight: 600;
-    background: #fff;
-    position: sticky;
-    right: 0;
-    border-left: 2px solid var(--gold);
+  .task-row .row-grid {
+    user-select: none;
+    touch-action: none;
+    cursor: cell;
   }
-  .job-row .row-total {
-    background: var(--job-row-bg);
-    color: #1a1a1a;
+  .grid-col.is-selected {
+    background: rgba(53, 80, 127, 0.2);
+    box-shadow: inset 0 0 0 2px var(--navy-seg);
+  }
+  .grid-col.is-overlap {
+    background: rgba(193, 87, 63, 0.28);
+    box-shadow: inset 0 0 0 2px var(--coral);
+  }
+  body.is-range-selecting {
+    cursor: cell;
+    user-select: none;
+  }
+  body.is-bar-moving {
+    cursor: grabbing;
+    user-select: none;
+  }
+  body.is-bar-moving .segment {
+    cursor: grabbing;
   }
   .segment {
     position: absolute;
@@ -211,6 +273,93 @@
     white-space: nowrap;
     overflow: hidden;
     border-right: 1px solid rgba(255,255,255,0.35);
+    cursor: grab;
+  }
+  .segment.is-moving {
+    z-index: 5;
+    box-shadow: 0 2px 8px rgba(27, 42, 74, 0.22);
+  }
+  #task-dialog {
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    width: min(400px, calc(100vw - 32px));
+    color: var(--text);
+    font-family: inherit;
+    box-shadow: 0 16px 48px rgba(27, 42, 74, 0.28);
+  }
+  #task-dialog::backdrop {
+    background: rgba(27, 42, 74, 0.4);
+  }
+  #task-dialog .dialog-inner {
+    padding: 20px 22px 16px;
+  }
+  #task-dialog h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 8px;
+  }
+  #task-dialog p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+    line-height: 1.4;
+  }
+  #task-dialog label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  #task-dialog input {
+    font: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+  }
+  #task-dialog input:focus {
+    outline: 2px solid var(--navy-seg);
+    border-color: var(--navy-seg);
+  }
+  #task-dialog-split {
+    min-height: 1.4em;
+    margin-bottom: 0;
+    font-size: 12px;
+  }
+  #task-dialog menu {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 16px 0 0;
+    padding: 0;
+  }
+  #task-dialog menu button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+  }
+  #task-dialog .btn-cancel {
+    background: #eee;
+    color: var(--text);
+  }
+  #task-dialog .btn-confirm {
+    background: var(--navy);
+    color: #fff;
+  }
+  #task-dialog.mode-warn .dialog-field,
+  #task-dialog.mode-warn #task-dialog-split,
+  #task-dialog.mode-warn .btn-cancel {
+    display: none;
   }
   .segment.gold {
     background: var(--gold-seg);
@@ -251,6 +400,15 @@
     border-bottom-right-radius: 5px;
     border-right: none;
   }
+  .footer-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    margin-top: auto;
+    flex-shrink: 0;
+    background: #fff;
+    box-shadow: 0 -6px 16px rgba(27, 42, 74, 0.12);
+  }
   .footer-row {
     display: flex;
     background: #e0cb93;
@@ -262,12 +420,10 @@
   .footer-col.month-start {
     border-left: 2px solid var(--gold);
   }
-  .footer-col.month-box {
+  .footer-col.month-box,
+  .footer-month-col.month-box {
     border-left: 2px solid var(--gold);
     border-right: 2px solid var(--gold);
-  }
-  .footer-month-col.month-start {
-    border-left: 2px solid var(--gold);
   }
   .footer-label {
     width: var(--label-w);
@@ -282,6 +438,7 @@
     background: #e0cb93;
     position: sticky;
     left: 0;
+    z-index: 2;
     border-right: 2px solid var(--gold);
   }
   .footer-col {
@@ -311,10 +468,6 @@
   .footer-row.row-teal .footer-col {
     color: #fff;
   }
-  .footer-total.total-teal {
-    background: var(--steel);
-    color: #fff;
-  }
   .footer-col.col-teal-alt {
     background: #9db8af;
   }
@@ -330,10 +483,6 @@
     border-right: 2px solid var(--gold);
   }
   .footer-row.row-green .footer-col {
-    color: #fff;
-  }
-  .footer-total.total-green {
-    background: #009fe9;
     color: #fff;
   }
   .footer-col.col-green-alt {
@@ -357,6 +506,7 @@
     padding: 0 12px;
     position: sticky;
     left: 0;
+    z-index: 2;
     border-right: 2px solid var(--gold);
   }
   .footer-month-col {
@@ -375,39 +525,6 @@
     align-items: center;
     justify-content: center;
   }
-  .footer-month-total {
-    width: var(--total-w);
-    min-width: var(--total-w);
-    flex-shrink: 0;
-    color: #f0e2bd;
-    font-size: 11px;
-    font-weight: 600;
-    text-align: right;
-    padding: 6px 12px;
-    background: var(--navy);
-    border-left: 2px solid var(--gold);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    position: sticky;
-    right: 0;
-  }
-  .footer-total {
-    width: var(--total-w);
-    min-width: var(--total-w);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0 12px;
-    font-size: 13px;
-    font-weight: 700;
-    color: #1e2939;
-    background: #e0cb93;
-    position: sticky;
-    right: 0;
-  }
-
   /* ---- Print layout: chunks the timeline into landscape pages you tape side by side ---- */
   .print-only { display: none; }
   .print-btn {
@@ -425,7 +542,8 @@
   .print-btn:hover { background: var(--navy-light); }
   @media print {
     @page { size: landscape; margin: 6mm; }
-    body { padding: 0; background: #fff; }
+    html, body { height: auto; }
+    body { padding: 0; background: #fff; overflow: visible; display: block; }
     .screen-only { display: none !important; }
     .print-only { display: block; }
     .print-page {
@@ -491,12 +609,6 @@
       display: flex; align-items: center; justify-content: center; font-size: 10px; color: #2c1f05;
       border-right: 1px solid rgba(0,0,0,0.08);
     }
-    .p-footer-grand-total {
-      flex: 1;
-      display: flex; align-items: center; justify-content: flex-end;
-      padding: 0 14px; font-size: 14px; font-weight: 700; color: var(--navy);
-      white-space: nowrap;
-    }
     .p-actual-row {
       display: flex; background: #fbe3c8; border-top: 1px solid #e8b784;
       height: 20px; font-weight: 700; margin-top: 3px;
@@ -511,12 +623,6 @@
       display: flex; align-items: center; justify-content: center; font-size: 9px; color: #8a4b12;
       border-right: 1px solid rgba(0,0,0,0.06);
     }
-    .p-actual-grand-total {
-      flex: 1;
-      display: flex; align-items: center; justify-content: flex-end;
-      padding: 0 14px; font-size: 12px; font-weight: 700; color: #8a4b12;
-      white-space: nowrap;
-    }
     .p-kmicost-row {
       display: flex; background: #dbe9f5; border-top: 1px solid #a8c9e0;
       height: 20px; font-weight: 700; margin-top: 3px;
@@ -530,12 +636,6 @@
       width: var(--col-w-p); min-width: var(--col-w-p); flex-shrink: 0;
       display: flex; align-items: center; justify-content: center; font-size: 9px; color: #1b4f72;
       border-right: 1px solid rgba(0,0,0,0.06);
-    }
-    .p-kmicost-grand-total {
-      flex: 1;
-      display: flex; align-items: center; justify-content: flex-end;
-      padding: 0 14px; font-size: 12px; font-weight: 700; color: #1b4f72;
-      white-space: nowrap;
     }
   }
 
@@ -554,13 +654,22 @@
 </head>
 <body>
 
-<h1 class="screen-only">Construction timeline</h1>
-<p class="subtitle screen-only">Two-week increments · <span id="range-label">…</span> · billing shown per two-week period, split evenly across each task's active periods</p>
+<div class="title-bar screen-only">
+  <h1>Construction timeline</h1>
+  <div class="period-controls">
+    <div class="period-toggle" role="group" aria-label="Period view">
+      <button type="button" id="period-biweekly" class="is-active" data-period="biweekly">Biweekly</button>
+      <button type="button" id="period-monthly" data-period="monthly">Monthly</button>
+    </div>
+    <button type="button" id="crew-toggle" class="crew-toggle" aria-pressed="false">Crew</button>
+  </div>
+</div>
+<p class="subtitle screen-only" id="period-subtitle">Two-week increments · <span id="range-label">…</span> · billing shown per two-week period, split evenly across each task's active periods</p>
 <p class="api-status screen-only" id="api-status">Loading from API…</p>
 <div class="legend screen-only" id="legend"></div>
 
 <button class="print-btn screen-only" onclick="window.print()">Print for tiling across pages</button>
-<p class="subtitle screen-only" style="margin-top:-8px;">Each printed sheet covers about 6 months of timeline — lay them out left to right and tape edges together.</p>
+<p class="subtitle screen-only" id="print-hint" style="margin-top:-8px;">Each printed sheet covers about 6 months of timeline — lay them out left to right and tape edges together.</p>
 
 <div class="chart-wrap screen-only">
   <div class="chart" id="chart"><p class="chart-message">Loading forecast…</p></div>
@@ -568,10 +677,383 @@
 
 <div class="print-only" id="print-root"></div>
 
+<dialog id="task-dialog" class="screen-only">
+  <form method="dialog" id="task-dialog-form" class="dialog-inner">
+    <h2 id="task-dialog-title">Task amount</h2>
+    <p id="task-dialog-message"></p>
+    <label class="dialog-field" id="task-dialog-field">
+      Total amount
+      <input id="task-dialog-input" type="text" inputmode="decimal" autocomplete="off">
+    </label>
+    <p id="task-dialog-split"></p>
+    <menu>
+      <button type="button" class="btn-cancel" id="task-dialog-cancel">Cancel</button>
+      <button type="submit" class="btn-confirm" id="task-dialog-confirm" value="confirm">Save</button>
+    </menu>
+  </form>
+</dialog>
+
 <script>
 const API = "";
+const COL_W = 62;
+const PERIOD_MODE_KEY = "kmi-period-mode";
+
+let appConfig = null;
+let appJobs = [];
+let appColors = [];
+let rangeDrag = null;
+let barMove = null;
+let periodMode = localStorage.getItem(PERIOD_MODE_KEY) === "monthly" ? "monthly" : "biweekly";
+let crewMode = false;
+
+function crewCount(d) {
+  return Math.ceil(d / 1200 / 10);
+}
+
+function syncPeriodToggle() {
+  document.querySelectorAll(".period-toggle button").forEach((btn) => {
+    btn.classList.toggle("is-active", btn.dataset.period === periodMode);
+  });
+  syncCrewToggle();
+}
+
+function syncCrewToggle() {
+  const btn = document.getElementById("crew-toggle");
+  if (!btn) return;
+  const show = periodMode === "biweekly";
+  btn.hidden = !show;
+  if (!show) crewMode = false;
+  btn.classList.toggle("is-active", crewMode);
+  btn.setAttribute("aria-pressed", crewMode ? "true" : "false");
+}
+
+function setCrewMode(on) {
+  if (periodMode !== "biweekly") return;
+  crewMode = !!on;
+  syncCrewToggle();
+  if (appConfig) renderChart(appConfig, appJobs, appColors);
+}
+
+function setPeriodMode(mode) {
+  if (mode !== "biweekly" && mode !== "monthly") return;
+  if (mode === periodMode) return;
+  if (barMove) endBarMove(true);
+  if (rangeDrag) {
+    clearRangeHighlight(rangeDrag.grid);
+    rangeDrag = null;
+    document.body.classList.remove("is-range-selecting");
+  }
+  periodMode = mode;
+  if (mode === "monthly" || mode === "biweekly") crewMode = false;
+  localStorage.setItem(PERIOD_MODE_KEY, periodMode);
+  syncPeriodToggle();
+  if (appConfig) renderChart(appConfig, appJobs, appColors);
+}
+
+function startOfMonth(d) {
+  return new Date(d.getFullYear(), d.getMonth(), 1);
+}
+
+function addMonths(d, n) {
+  return new Date(d.getFullYear(), d.getMonth() + n, 1);
+}
+
+function buildPeriodColumns(start, end, mode) {
+  const columns = [];
+  if (mode === "monthly") {
+    let cursor = startOfMonth(start);
+    while (cursor < end) {
+      columns.push(new Date(cursor));
+      cursor = addMonths(cursor, 1);
+    }
+    return columns;
+  }
+  let cursor = new Date(start);
+  const MS_DAY = 86400000;
+  while (cursor < end) {
+    columns.push(new Date(cursor));
+    cursor = new Date(cursor.getTime() + 14 * MS_DAY);
+  }
+  return columns;
+}
+
+function formatColumnHeader(colDate, mode) {
+  if (mode === "monthly") {
+    return colDate.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  }
+  return colDate.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+function updatePeriodCopy(start, end) {
+  const rangeLabel = document.getElementById("range-label");
+  const subtitle = document.getElementById("period-subtitle");
+  const printHint = document.getElementById("print-hint");
+  const rangeText =
+    start.toLocaleDateString("en-US", { month: "short", year: "numeric" }) + " – " +
+    end.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  if (rangeLabel) rangeLabel.textContent = rangeText;
+  if (periodMode === "monthly") {
+    if (subtitle) {
+      subtitle.innerHTML =
+        "Monthly increments · <span id=\"range-label\">" + rangeText + "</span> · billing shown per month, split evenly across each task's active months";
+    }
+    if (printHint) {
+      printHint.textContent =
+        "Each printed sheet covers about 18 months of timeline — lay them out left to right and tape edges together.";
+    }
+  } else if (crewMode) {
+    if (subtitle) {
+      subtitle.innerHTML =
+        "Two-week increments · <span id=\"range-label\">" + rangeText + "</span> · crew headcount per period (ceil of billing ÷ 1200 ÷ 10)";
+    }
+    if (printHint) {
+      printHint.textContent =
+        "Each printed sheet covers about 6 months of timeline — lay them out left to right and tape edges together.";
+    }
+  } else {
+    if (subtitle) {
+      subtitle.innerHTML =
+        "Two-week increments · <span id=\"range-label\">" + rangeText + "</span> · billing shown per two-week period, split evenly across each task's active periods";
+    }
+    if (printHint) {
+      printHint.textContent =
+        "Each printed sheet covers about 6 months of timeline — lay them out left to right and tape edges together.";
+    }
+  }
+}
+
+document.querySelectorAll(".period-toggle button").forEach((btn) => {
+  btn.addEventListener("click", () => setPeriodMode(btn.dataset.period));
+});
+document.getElementById("crew-toggle").addEventListener("click", () => {
+  setCrewMode(!crewMode);
+});
+syncPeriodToggle();
+
+function fmtMoney(n) {
+  return "$" + Math.round(n).toLocaleString();
+}
+
+function parseAmount(raw) {
+  const cleaned = String(raw).replace(/[$,\s]/g, "");
+  if (cleaned === "") return null;
+  const n = Number(cleaned);
+  if (!Number.isFinite(n) || n < 0) return null;
+  return n;
+}
+
+function toIsoDate(d) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
+function columnIndexFromPoint(grid, clientX, colCount) {
+  const colsEl = grid.querySelector(".row-grid-cols");
+  const rect = colsEl.getBoundingClientRect();
+  const x = clientX - rect.left;
+  const i = Math.floor(x / COL_W);
+  return Math.max(0, Math.min(colCount - 1, i));
+}
+
+function paintRangeHighlight(grid, from, to, occupied) {
+  const lo = Math.min(from, to);
+  const hi = Math.max(from, to);
+  grid.querySelectorAll(".grid-col").forEach((el, i) => {
+    const inRange = i >= lo && i <= hi;
+    const overlap = inRange && occupied.has(i);
+    el.classList.toggle("is-selected", inRange && !overlap);
+    el.classList.toggle("is-overlap", !!overlap);
+  });
+}
+
+function clearRangeHighlight(grid) {
+  grid.querySelectorAll(".grid-col").forEach((el) => {
+    el.classList.remove("is-selected", "is-overlap");
+  });
+}
+
+function clampBarDelta(lo, hi, delta, colCount) {
+  return Math.max(-lo, Math.min((colCount - 1) - hi, delta));
+}
+
+function applyBarPreview(move, delta) {
+  move.segments.forEach((seg, i) => {
+    seg.style.left = ((move.idxList[i] + delta) * COL_W) + "px";
+  });
+}
+
+function endBarMove(resetPreview) {
+  if (!barMove) return null;
+  const move = barMove;
+  barMove = null;
+  document.body.classList.remove("is-bar-moving");
+  move.segments.forEach((seg) => seg.classList.remove("is-moving"));
+  if (resetPreview) applyBarPreview(move, 0);
+  return move;
+}
+
+function openTaskDialog(opts) {
+  const dialog = document.getElementById("task-dialog");
+  const form = document.getElementById("task-dialog-form");
+  const title = document.getElementById("task-dialog-title");
+  const message = document.getElementById("task-dialog-message");
+  const input = document.getElementById("task-dialog-input");
+  const split = document.getElementById("task-dialog-split");
+  const confirmBtn = document.getElementById("task-dialog-confirm");
+  const cancelBtn = document.getElementById("task-dialog-cancel");
+
+  title.textContent = opts.title;
+  message.textContent = opts.message || "";
+  dialog.classList.toggle("mode-warn", opts.mode === "warn");
+  confirmBtn.textContent = opts.mode === "warn" ? "OK" : "Save";
+  confirmBtn.value = "confirm";
+
+  function updateSplit() {
+    const n = opts.periods || 1;
+    const amount = parseAmount(input.value);
+    const unit = periodMode === "monthly" ? "month" : "period";
+    if (amount == null) {
+      split.textContent = n + " " + unit + (n === 1 ? "" : "s");
+      return;
+    }
+    split.textContent = "Split across " + n + ": " + fmtMoney(amount / n) + " each";
+  }
+
+  if (opts.mode === "amount") {
+    input.value = opts.value != null ? String(opts.value) : "";
+    input.oninput = updateSplit;
+    updateSplit();
+  } else {
+    input.value = "";
+    input.oninput = null;
+    split.textContent = "";
+  }
+
+  return new Promise((resolve) => {
+    let savedAmount = null;
+    function onCancelClick() {
+      dialog.close("cancel");
+    }
+    function onSubmit(e) {
+      if (opts.mode === "amount") {
+        const amount = parseAmount(input.value);
+        if (amount == null) {
+          e.preventDefault();
+          return;
+        }
+        savedAmount = amount;
+      }
+      dialog.returnValue = "confirm";
+    }
+    function onClose() {
+      form.removeEventListener("submit", onSubmit);
+      dialog.removeEventListener("close", onClose);
+      cancelBtn.removeEventListener("click", onCancelClick);
+      if (dialog.returnValue === "confirm" && opts.mode === "amount") {
+        resolve(savedAmount != null ? savedAmount : parseAmount(input.value));
+      } else {
+        resolve(null);
+      }
+    }
+    cancelBtn.addEventListener("click", onCancelClick);
+    form.addEventListener("submit", onSubmit);
+    dialog.addEventListener("close", onClose);
+    dialog.showModal();
+    if (opts.mode === "amount") {
+      input.focus();
+      input.select();
+    } else {
+      confirmBtn.focus();
+    }
+  });
+}
+
+async function persistJob(job) {
+  const status = document.getElementById("api-status");
+  const i = appJobs.findIndex(j => Number(j.id) === Number(job.id));
+  if (i >= 0) appJobs[i] = job;
+  renderChart(appConfig, appJobs, appColors);
+  try {
+    const res = await fetch(API + "/jobs/" + job.id, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(job)
+    });
+    if (!res.ok) throw new Error("Save failed (" + res.status + ")");
+    if (status) status.textContent = "Saved · " + appJobs.length + " jobs";
+  } catch (err) {
+    if (status) status.textContent = "Save failed";
+    openTaskDialog({
+      mode: "warn",
+      title: "Could not save",
+      message: String(err.message || err)
+    });
+  }
+}
+
+document.addEventListener("pointermove", (e) => {
+  if (barMove) {
+    const dx = e.clientX - barMove.x;
+    const dy = e.clientY - barMove.y;
+    if (!barMove.moving && dx * dx + dy * dy >= 25) {
+      barMove.moving = true;
+      document.body.classList.add("is-bar-moving");
+      barMove.segments.forEach((seg) => seg.classList.add("is-moving"));
+    }
+    if (!barMove.moving) return;
+    const col = columnIndexFromPoint(barMove.grid, e.clientX, barMove.colCount);
+    const delta = clampBarDelta(barMove.lo, barMove.hi, col - barMove.grabCol, barMove.colCount);
+    if (delta === barMove.delta) return;
+    barMove.delta = delta;
+    applyBarPreview(barMove, delta);
+    return;
+  }
+  if (!rangeDrag) return;
+  const col = columnIndexFromPoint(rangeDrag.grid, e.clientX, rangeDrag.colCount);
+  if (col === rangeDrag.endCol) return;
+  rangeDrag.endCol = col;
+  paintRangeHighlight(rangeDrag.grid, rangeDrag.startCol, col, rangeDrag.occupied);
+});
+
+document.addEventListener("pointerup", (e) => {
+  if (barMove) {
+    const move = endBarMove(barMove.moving && barMove.delta === 0);
+    if (!move.moving) {
+      move.onClick();
+      return;
+    }
+    if (move.delta) move.onFinish(move.delta);
+    return;
+  }
+  if (!rangeDrag) return;
+  const drag = rangeDrag;
+  rangeDrag = null;
+  document.body.classList.remove("is-range-selecting");
+  clearRangeHighlight(drag.grid);
+  drag.onFinish(drag.startCol, drag.endCol);
+});
+
+document.addEventListener("pointercancel", () => {
+  if (barMove) endBarMove(true);
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  if (barMove) {
+    endBarMove(true);
+    return;
+  }
+  if (!rangeDrag) return;
+  const grid = rangeDrag.grid;
+  rangeDrag = null;
+  document.body.classList.remove("is-range-selecting");
+  clearRangeHighlight(grid);
+});
 
 function renderChart(config, JOBS, colors) {
+  const wrap = document.querySelector(".chart-wrap");
+  const scrollLeft = wrap ? wrap.scrollLeft : 0;
+  const scrollTop = wrap ? wrap.scrollTop : 0;
+  const pageY = window.scrollY;
   const TIMELINE_START = config.timelineStart;
   const TIMELINE_END = config.timelineEnd;
   const actualCostRate = config.actualCostRate != null ? config.actualCostRate : 0.75;
@@ -604,17 +1086,9 @@ function renderChart(config, JOBS, colors) {
   const end = new Date(TIMELINE_END + "T00:00:00");
   const today = new Date();
 
-  document.getElementById("range-label").textContent =
-    start.toLocaleDateString("en-US", { month: "short", year: "numeric" }) + " – " +
-    end.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  updatePeriodCopy(start, end);
 
-  // Build two-week columns
-  const columns = [];
-  let cursor = new Date(start);
-  while (cursor < end) {
-    columns.push(new Date(cursor));
-    cursor = new Date(cursor.getTime() + 14 * MS_DAY);
-  }
+  const columns = buildPeriodColumns(start, end, periodMode);
 
   function daysBetween(a, b) {
     return (b.getTime() - a.getTime()) / MS_DAY;
@@ -635,11 +1109,18 @@ function renderChart(config, JOBS, colors) {
     if (n >= 1000) return "$" + Math.round(n / 1000) + "k";
     return "$" + Math.round(n);
   }
+  function fmtDisplay(n, round) {
+    if (crewMode) return String(crewCount(n));
+    return round ? fmtCompactRound(n) : fmtCompact(n);
+  }
+  function fmtTitle(n) {
+    if (crewMode) return crewCount(n) + " crew";
+    return fmtMoney(n);
+  }
 
   const chart = document.getElementById("chart");
   chart.innerHTML = "";
 
-  // Header
   const headerRow = document.createElement("div");
   headerRow.className = "header-row";
   const headerLabel = document.createElement("div");
@@ -649,13 +1130,9 @@ function renderChart(config, JOBS, colors) {
   columns.forEach((colDate, i) => {
     const col = document.createElement("div");
     col.className = "header-col" + (isYearStart(colDate, i) ? " year-start" : "");
-    col.textContent = colDate.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    col.textContent = formatColumnHeader(colDate, periodMode);
     headerRow.appendChild(col);
   });
-  const headerTotal = document.createElement("div");
-  headerTotal.className = "header-total";
-  headerTotal.textContent = "Total";
-  headerRow.appendChild(headerTotal);
   chart.appendChild(headerRow);
 
   const totalDays = daysBetween(start, end);
@@ -663,7 +1140,6 @@ function renderChart(config, JOBS, colors) {
 
   // period totals across all tasks, indexed by column
   const periodTotals = new Array(columns.length).fill(0);
-  let grandTotal = 0;
 
   function addGridCols(container) {
     const gridCols = document.createElement("div");
@@ -671,12 +1147,12 @@ function renderChart(config, JOBS, colors) {
     columns.forEach((colDate, i) => {
       const c = document.createElement("div");
       c.className = "grid-col" + (isYearStart(colDate, i) ? " year-start" : "");
+      c.dataset.col = String(i);
       gridCols.appendChild(c);
     });
     container.appendChild(gridCols);
   }
 
-// returns indices of columns whose 2-week period overlaps [tStart, tEnd)
   function overlappingColumnIndices(tStart, tEnd) {
     const indices = [];
     columns.forEach((colDate, i) => {
@@ -685,6 +1161,126 @@ function renderChart(config, JOBS, colors) {
       if (tStart < periodEnd && tEnd > periodStart) indices.push(i);
     });
     return indices;
+  }
+
+  function taskColumnIndices(task) {
+    if (!task.start || !task.end) return [];
+    const tStart = new Date(task.start + "T00:00:00");
+    const tEnd = new Date(task.end + "T00:00:00");
+    if (isNaN(tStart.getTime()) || isNaN(tEnd.getTime())) return [];
+    return overlappingColumnIndices(tStart, tEnd);
+  }
+
+  function rangeWouldOverlap(occupied, from, to) {
+    const lo = Math.min(from, to);
+    const hi = Math.max(from, to);
+    for (let i = lo; i <= hi; i++) {
+      if (occupied.has(i)) return true;
+    }
+    return false;
+  }
+
+  async function finishAssign(job, task, idxList, from, to) {
+    const occupied = new Set(idxList);
+    if (rangeWouldOverlap(occupied, from, to)) {
+      await openTaskDialog({
+        mode: "warn",
+        title: "Those columns already have timing",
+        message: "You can only drag empty columns. Click a colored block to update the amount."
+      });
+      return;
+    }
+    const lo = Math.min(from, to);
+    const hi = Math.max(from, to);
+    const n = hi - lo + 1;
+    const unit = periodMode === "monthly" ? "month" : "period";
+    const amount = await openTaskDialog({
+      mode: "amount",
+      title: "Assign timing",
+      message: task.name + " · " + n + " " + unit + (n === 1 ? "" : "s") + ". Enter the full task amount to split evenly.",
+      value: task.value != null && task.value !== "" ? String(task.value) : "",
+      periods: n
+    });
+    if (amount == null) return;
+    task.start = toIsoDate(columns[lo]);
+    task.end = toIsoDate(hi + 1 < columns.length ? columns[hi + 1] : end);
+    task.value = amount;
+    await persistJob(job);
+  }
+
+  async function updateAmount(job, task, periods) {
+    const unit = periodMode === "monthly" ? "month" : "period";
+    const amount = await openTaskDialog({
+      mode: "amount",
+      title: "Update amount",
+      message: task.name + " · " + periods + " " + unit + (periods === 1 ? "" : "s") + ". Enter the full task amount.",
+      value: task.value != null ? String(task.value) : "",
+      periods: periods || 1
+    });
+    if (amount == null) return;
+    task.value = amount;
+    await persistJob(job);
+  }
+
+  async function finishMove(job, task, idxList, delta) {
+    if (!delta || !idxList.length) return;
+    const lo = idxList[0] + delta;
+    const hi = idxList[idxList.length - 1] + delta;
+    task.start = toIsoDate(columns[lo]);
+    task.end = toIsoDate(hi + 1 < columns.length ? columns[hi + 1] : end);
+    await persistJob(job);
+  }
+
+  function bindTaskGrid(grid, job, task, idxList) {
+    const occupied = new Set(idxList);
+    grid.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0) return;
+      if (barMove) return;
+      if (e.target.closest(".segment")) return;
+      if (document.getElementById("task-dialog").open) return;
+      const col = columnIndexFromPoint(grid, e.clientX, columns.length);
+      rangeDrag = {
+        grid,
+        colCount: columns.length,
+        occupied,
+        startCol: col,
+        endCol: col,
+        onFinish: (from, to) => finishAssign(job, task, idxList, from, to)
+      };
+      document.body.classList.add("is-range-selecting");
+      paintRangeHighlight(grid, col, col, occupied);
+      e.preventDefault();
+    });
+    grid.querySelectorAll(".segment").forEach((seg) => {
+      seg.addEventListener("pointerdown", (e) => {
+        if (e.button !== 0) return;
+        if (document.getElementById("task-dialog").open) return;
+        e.stopPropagation();
+        e.preventDefault();
+        try { seg.setPointerCapture(e.pointerId); } catch (err) {}
+        barMove = {
+          grid,
+          colCount: columns.length,
+          idxList: idxList.slice(),
+          lo: idxList[0],
+          hi: idxList[idxList.length - 1],
+          grabCol: columnIndexFromPoint(grid, e.clientX, columns.length),
+          delta: 0,
+          moving: false,
+          x: e.clientX,
+          y: e.clientY,
+          segments: Array.from(grid.querySelectorAll(".segment")),
+          onClick: () => updateAmount(job, task, idxList.length),
+          onFinish: (delta) => finishMove(job, task, idxList, delta)
+        };
+      });
+      seg.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          updateAmount(job, task, idxList.length);
+        }
+      });
+    });
   }
 
   JOBS.forEach(job => {
@@ -698,11 +1294,6 @@ function renderChart(config, JOBS, colors) {
     jobGrid.className = "row-grid";
     addGridCols(jobGrid);
     jobRow.appendChild(jobGrid);
-    const jobTotalVal = job.tasks.reduce((s, t) => s + (t.value || 0), 0);
-    const jobTotalCell = document.createElement("div");
-    jobTotalCell.className = "row-total";
-    jobTotalCell.textContent = fmtMoney(jobTotalVal);
-    jobRow.appendChild(jobTotalCell);
     chart.appendChild(jobRow);
 
     job.tasks.forEach(task => {
@@ -717,34 +1308,28 @@ function renderChart(config, JOBS, colors) {
       grid.className = "row-grid";
       addGridCols(grid);
 
-      const tStart = new Date(task.start + "T00:00:00");
-      const tEnd = new Date(task.end + "T00:00:00");
-
-      const idxList = overlappingColumnIndices(tStart, tEnd);
+      const idxList = taskColumnIndices(task);
       const perPeriod = idxList.length ? (task.value || 0) / idxList.length : 0;
 
       idxList.forEach((colIdx, pos) => {
         const seg = document.createElement("div");
         seg.className = "segment";
+        seg.setAttribute("role", "button");
+        seg.setAttribute("tabindex", "0");
         paint(seg, task.color);
         if (pos === 0) seg.classList.add("first");
         if (pos === idxList.length - 1) seg.classList.add("last");
         seg.style.left = (colIdx * 62) + "px";
         seg.style.width = "62px";
-        seg.textContent = fmtCompact(perPeriod);
-        seg.title = task.name + " — " + columns[colIdx].toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + ": " + fmtMoney(perPeriod);
+        seg.textContent = fmtDisplay(perPeriod, false);
+        seg.title = task.name + " — " + formatColumnHeader(columns[colIdx], periodMode) + ": " + fmtTitle(perPeriod);
         grid.appendChild(seg);
 
         periodTotals[colIdx] += perPeriod;
       });
-      grandTotal += (task.value || 0);
 
       row.appendChild(grid);
-
-      const rowTotalCell = document.createElement("div");
-      rowTotalCell.className = "row-total";
-      rowTotalCell.textContent = fmtMoney(task.value || 0);
-      row.appendChild(rowTotalCell);
+      bindTaskGrid(grid, job, task, idxList);
 
       chart.appendChild(row);
     });
@@ -757,42 +1342,53 @@ function renderChart(config, JOBS, colors) {
     return colDate.getMonth() !== prev.getMonth() || colDate.getFullYear() !== prev.getFullYear();
   });
 
-  // Footer: month label row (identifies the month for each column above the totals)
+  const monthGroups = [];
+  columns.forEach((colDate, idx) => {
+    const key = colDate.getFullYear() + "-" + colDate.getMonth();
+    let group = monthGroups[monthGroups.length - 1];
+    if (!group || group.key !== key) {
+      group = { key, count: 0, sum: 0, date: colDate };
+      monthGroups.push(group);
+    }
+    group.count += 1;
+    group.sum += periodTotals[idx] || 0;
+  });
+  const COL_W_PX = 62;
+
+  // Footer: month label row (one merged cell per month, matching Monthly total)
   const footerMonthRow = document.createElement("div");
   footerMonthRow.className = "footer-month-row";
   const footerMonthLabel = document.createElement("div");
   footerMonthLabel.className = "footer-month-label";
   footerMonthLabel.textContent = "Month";
   footerMonthRow.appendChild(footerMonthLabel);
-  columns.forEach((colDate, idx) => {
+  monthGroups.forEach((group) => {
     const cell = document.createElement("div");
-    cell.className = "footer-month-col" + (isMonthStart[idx] ? " month-start" : "");
-    cell.textContent = colDate.toLocaleDateString("en-US", { month: "short" });
+    cell.className = "footer-month-col month-box";
+    cell.style.width = (group.count * COL_W_PX) + "px";
+    cell.style.minWidth = (group.count * COL_W_PX) + "px";
+    cell.style.flexShrink = "0";
+    cell.textContent = group.date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
     footerMonthRow.appendChild(cell);
   });
-  const footerMonthTotal = document.createElement("div");
-  footerMonthTotal.className = "footer-month-total";
-  footerMonthRow.appendChild(footerMonthTotal);
-  chart.appendChild(footerMonthRow);
+  const footerBar = document.createElement("div");
+  footerBar.className = "footer-bar";
+  footerBar.appendChild(footerMonthRow);
 
   // Footer: period totals
   const footerRow = document.createElement("div");
   footerRow.className = "footer-row";
   const footerLabel = document.createElement("div");
   footerLabel.className = "footer-label";
-  footerLabel.textContent = "Period billing total";
+  footerLabel.textContent = crewMode ? "Period crew total" : "Period billing total";
   footerRow.appendChild(footerLabel);
   periodTotals.forEach((v, idx) => {
     const cell = document.createElement("div");
     cell.className = "footer-col" + (isMonthStart[idx] ? " month-start" : "");
-    cell.textContent = v > 0 ? fmtCompactRound(v) : "";
+    cell.textContent = v > 0 ? fmtDisplay(v, true) : "";
     footerRow.appendChild(cell);
   });
-  const footerTotal = document.createElement("div");
-  footerTotal.className = "footer-total";
-  footerTotal.textContent = fmtMoney(grandTotal);
-  footerRow.appendChild(footerTotal);
-  chart.appendChild(footerRow);
+  footerBar.appendChild(footerRow);
 
   // Footer: KMI Cost (70% of period billing total)
   const kmiCostRow = document.createElement("div");
@@ -804,50 +1400,30 @@ function renderChart(config, JOBS, colors) {
   periodTotals.forEach((v, idx) => {
     const cell = document.createElement("div");
     cell.className = "footer-col" + (isMonthStart[idx] ? " month-start" : "");
-    cell.textContent = v > 0 ? fmtCompactRound(v * kmiCostRate) : "";
+    cell.textContent = v > 0 ? fmtDisplay(v * kmiCostRate, true) : "";
     kmiCostRow.appendChild(cell);
   });
-  const kmiCostTotal = document.createElement("div");
-  kmiCostTotal.className = "footer-total total-teal";
-  kmiCostTotal.textContent = fmtMoney(grandTotal * kmiCostRate);
-  kmiCostRow.appendChild(kmiCostTotal);
-  chart.appendChild(kmiCostRow);
+  footerBar.appendChild(kmiCostRow);
 
   // Footer: monthly total (groups the two-week period columns by month)
   const monthlyTotalRow = document.createElement("div");
   monthlyTotalRow.className = "footer-row row-green";
   const monthlyTotalLabel = document.createElement("div");
   monthlyTotalLabel.className = "footer-label label-green";
-  monthlyTotalLabel.textContent = "Monthly total";
+  monthlyTotalLabel.textContent = crewMode ? "Monthly crew total" : "Monthly total";
   monthlyTotalRow.appendChild(monthlyTotalLabel);
 
-  const monthGroups = [];
-  columns.forEach((colDate, idx) => {
-    const key = colDate.getFullYear() + "-" + colDate.getMonth();
-    let group = monthGroups[monthGroups.length - 1];
-    if (!group || group.key !== key) {
-      group = { key, count: 0, sum: 0 };
-      monthGroups.push(group);
-    }
-    group.count += 1;
-    group.sum += periodTotals[idx] || 0;
-  });
-  const COL_W_PX = 62; // matches --col-w
-  monthGroups.forEach((group, gi) => {
+  monthGroups.forEach((group) => {
     const cell = document.createElement("div");
     cell.className = "footer-col month-box";
     cell.style.width = (group.count * COL_W_PX) + "px";
     cell.style.minWidth = (group.count * COL_W_PX) + "px";
     cell.style.flexShrink = "0";
-    cell.textContent = group.sum > 0 ? fmtCompactRound(group.sum) : "";
+    cell.textContent = group.sum > 0 ? fmtDisplay(group.sum, true) : "";
     monthlyTotalRow.appendChild(cell);
   });
-
-  const monthlyTotalTotal = document.createElement("div");
-  monthlyTotalTotal.className = "footer-total total-green";
-  monthlyTotalTotal.textContent = fmtMoney(grandTotal);
-  monthlyTotalRow.appendChild(monthlyTotalTotal);
-  chart.appendChild(monthlyTotalRow);
+  footerBar.appendChild(monthlyTotalRow);
+  chart.appendChild(footerBar);
 
   // ---- Build print pages: chunk the timeline into landscape-page-sized slices.
   // Every job appears, in the same order, on every date-range page. If the full job
@@ -856,7 +1432,7 @@ function renderChart(config, JOBS, colors) {
   function buildPrintPages() {
     const printRoot = document.getElementById("print-root");
     printRoot.innerHTML = "";
-    const PAGE_COLS = 18; // ~9 months per printed page
+    const PAGE_COLS = 18;
     const totalColPages = Math.ceil(columns.length / PAGE_COLS);
     const JOB_ROW_H = 17;
     const TASK_ROW_H = 20;
@@ -897,7 +1473,7 @@ function renderChart(config, JOBS, colors) {
       const totals = new Array(pageColIdx.length).fill(0);
       JOBS.forEach(job => {
         job.tasks.forEach(task => {
-          const fullIdxList = overlappingColumnIndices(new Date(task.start + "T00:00:00"), new Date(task.end + "T00:00:00"));
+          const fullIdxList = taskColumnIndices(task);
           if (!fullIdxList.length) return;
           const perPeriod = (task.value || 0) / fullIdxList.length;
           fullIdxList.forEach(colIdx => {
@@ -951,7 +1527,7 @@ function renderChart(config, JOBS, colors) {
         pageColIdx.forEach(ci => {
           const c = document.createElement("div");
           c.className = "p-header-col";
-          c.textContent = columns[ci].toLocaleDateString("en-US", { month: "short", day: "numeric" });
+          c.textContent = formatColumnHeader(columns[ci], periodMode);
           pHeader.appendChild(c);
         });
         page.appendChild(pHeader);
@@ -972,7 +1548,7 @@ function renderChart(config, JOBS, colors) {
           page.appendChild(jobRow);
 
           job.tasks.forEach(task => {
-            const fullIdxList = overlappingColumnIndices(new Date(task.start + "T00:00:00"), new Date(task.end + "T00:00:00"));
+            const fullIdxList = taskColumnIndices(task);
             const pageIdxList = fullIdxList.filter(i => pageColIdx.includes(i));
             const perPeriod = fullIdxList.length ? (task.value || 0) / fullIdxList.length : 0;
 
@@ -998,7 +1574,7 @@ function renderChart(config, JOBS, colors) {
               if (colIdx === fullIdxList[fullIdxList.length - 1]) seg.classList.add("last");
               seg.style.left = (posInPage * 76) + "px";
               seg.style.width = "76px";
-              seg.textContent = fmtCompact(perPeriod);
+              seg.textContent = fmtDisplay(perPeriod, false);
               grid.appendChild(seg);
             });
 
@@ -1013,22 +1589,15 @@ function renderChart(config, JOBS, colors) {
         if (p === 0) {
           const pFooterLabel = document.createElement("div");
           pFooterLabel.className = "p-footer-label";
-          pFooterLabel.textContent = "Period billing total";
+          pFooterLabel.textContent = crewMode ? "Period crew total" : "Period billing total";
           pFooter.appendChild(pFooterLabel);
         }
         computePeriodTotals(pageColIdx).forEach(v => {
           const cell = document.createElement("div");
           cell.className = "p-footer-col";
-          cell.textContent = v > 0 ? fmtCompactRound(v) : "";
+          cell.textContent = v > 0 ? fmtDisplay(v, true) : "";
           pFooter.appendChild(cell);
         });
-        if (p === totalColPages - 1) {
-          const grandTotal = JOBS.reduce((s, j) => s + j.tasks.reduce((s2, t) => s2 + (t.value || 0), 0), 0);
-          const grandCell = document.createElement("div");
-          grandCell.className = "p-footer-grand-total";
-          grandCell.textContent = "Grand total: " + fmtMoney(grandTotal);
-          pFooter.appendChild(grandCell);
-        }
         page.appendChild(pFooter);
 
         // Actual Cost row — period billing total less 25%
@@ -1043,16 +1612,9 @@ function renderChart(config, JOBS, colors) {
         computePeriodTotals(pageColIdx).forEach(v => {
           const cell = document.createElement("div");
           cell.className = "p-actual-col";
-          cell.textContent = v > 0 ? fmtCompact(v * actualCostRate) : "";
+          cell.textContent = v > 0 ? fmtDisplay(v * actualCostRate, false) : "";
           pActual.appendChild(cell);
         });
-        if (p === totalColPages - 1) {
-          const grandTotal = JOBS.reduce((s, j) => s + j.tasks.reduce((s2, t) => s2 + (t.value || 0), 0), 0);
-          const actualGrandCell = document.createElement("div");
-          actualGrandCell.className = "p-actual-grand-total";
-          actualGrandCell.textContent = "Grand total: " + fmtMoney(grandTotal * actualCostRate);
-          pActual.appendChild(actualGrandCell);
-        }
         page.appendChild(pActual);
 
         // KMI Cost row — 70% of period billing total
@@ -1067,16 +1629,9 @@ function renderChart(config, JOBS, colors) {
         computePeriodTotals(pageColIdx).forEach(v => {
           const cell = document.createElement("div");
           cell.className = "p-kmicost-col";
-          cell.textContent = v > 0 ? fmtCompactRound(v * kmiCostRate) : "";
+          cell.textContent = v > 0 ? fmtDisplay(v * kmiCostRate, true) : "";
           pKmiCost.appendChild(cell);
         });
-        if (p === totalColPages - 1) {
-          const kmiGrandTotal = JOBS.reduce((s, j) => s + j.tasks.reduce((s2, t) => s2 + (t.value || 0), 0), 0);
-          const kmiGrandCell = document.createElement("div");
-          kmiGrandCell.className = "p-kmicost-grand-total";
-          kmiGrandCell.textContent = "Grand total: " + fmtMoney(kmiGrandTotal * kmiCostRate);
-          pKmiCost.appendChild(kmiGrandCell);
-        }
         page.appendChild(pKmiCost);
 
         printRoot.appendChild(page);
@@ -1084,7 +1639,11 @@ function renderChart(config, JOBS, colors) {
     }
   }
   buildPrintPages();
-
+  if (wrap) {
+    wrap.scrollLeft = scrollLeft;
+    wrap.scrollTop = scrollTop;
+  }
+  window.scrollTo(window.scrollX, pageY);
 }
 
 async function loadForecast() {
@@ -1098,11 +1657,11 @@ async function loadForecast() {
     if (!configRes.ok || !jobsRes.ok || !colorsRes.ok) {
       throw new Error("API " + configRes.status + "/" + jobsRes.status + "/" + colorsRes.status);
     }
-    const config = await configRes.json();
-    const jobs = await jobsRes.json();
-    const colors = await colorsRes.json();
-    renderChart(config, jobs, colors);
-    status.textContent = "Live from API · " + jobs.length + " jobs";
+    appConfig = await configRes.json();
+    appJobs = await jobsRes.json();
+    appColors = await colorsRes.json();
+    renderChart(appConfig, appJobs, appColors);
+    status.textContent = "Live from API · " + appJobs.length + " jobs";
   } catch (err) {
     document.getElementById("chart").innerHTML =
       '<p class="chart-message error">Could not load forecast data. Start the API with npm start.</p>';
