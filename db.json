@@ -1,0 +1,478 @@
+{
+  "config": {
+    "title": "Construction timeline",
+    "timelineStart": "2026-07-16",
+    "timelineEnd": "2028-07-31",
+    "placeholderValue": 10000,
+    "actualCostRate": 0.75,
+    "kmiCostRate": 0.7
+  },
+  "colors": [
+    {
+      "id": "navy",
+      "name": "Drywall - Hang",
+      "hex": "#35507f",
+      "textHex": "#ffffff"
+    },
+    {
+      "id": "steel",
+      "name": "Drywall - Tape",
+      "hex": "#3f8f9c",
+      "textHex": "#ffffff"
+    },
+    {
+      "id": "coral",
+      "name": "Lathing",
+      "hex": "#c1573f",
+      "textHex": "#ffffff"
+    },
+    {
+      "id": "gold",
+      "name": "Plaster / finishes",
+      "hex": "#d4b565",
+      "textHex": "#3a2f10"
+    },
+    {
+      "id": "purple",
+      "name": "Baswa",
+      "hex": "#6b4f9e",
+      "textHex": "#ffffff"
+    },
+    {
+      "id": "gray",
+      "name": "Ceiling Framing",
+      "hex": "#7a7a76",
+      "textHex": "#ffffff"
+    },
+    {
+      "id": "green",
+      "name": "Punchlist",
+      "hex": "#7cb885",
+      "textHex": "#ffffff"
+    }
+  ],
+  "jobs": [
+    {
+      "id": 1,
+      "name": "445 Manzanita",
+      "tasks": [
+        {
+          "id": 1,
+          "name": "Drywall - Hang",
+          "start": "2028-01-01",
+          "end": "2028-03-07",
+          "color": "navy",
+          "value": 180000
+        },
+        {
+          "id": 2,
+          "name": "Drywall - Tape",
+          "start": "2028-02-15",
+          "end": "2028-05-17",
+          "color": "steel",
+          "value": 420000
+        },
+        {
+          "id": 3,
+          "name": "Interior Plaster",
+          "start": "2028-04-22",
+          "end": "2028-07-31",
+          "color": "gold",
+          "value": 650000
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "171 New Place",
+      "tasks": [
+        {
+          "id": 4,
+          "name": "Lath",
+          "start": "2026-08-15",
+          "end": "2026-12-31",
+          "color": "coral",
+          "value": 1000000
+        },
+        {
+          "id": 5,
+          "name": "Plaster",
+          "start": "2026-10-15",
+          "end": "2027-07-31",
+          "color": "gold",
+          "value": 2000000
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "500 Laurent",
+      "tasks": [
+        {
+          "id": 6,
+          "name": "Drywall - Hang",
+          "start": "2026-09-18",
+          "end": "2026-10-07",
+          "color": "navy",
+          "value": 81000
+        },
+        {
+          "id": 7,
+          "name": "Drywall - Tape",
+          "start": "2026-10-01",
+          "end": "2026-11-10",
+          "color": "steel",
+          "value": 190000
+        },
+        {
+          "id": 8,
+          "name": "Stucco Mockup",
+          "start": "2026-08-24",
+          "end": "2026-08-28",
+          "color": "gold",
+          "value": 10000
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "2606 Jackson Street",
+      "tasks": [
+        {
+          "id": 9,
+          "name": "Drywall - Hang",
+          "start": "2026-08-03",
+          "end": "2026-08-28",
+          "color": "navy",
+          "value": 98400
+        },
+        {
+          "id": 10,
+          "name": "Drywall - Tape",
+          "start": "2026-08-24",
+          "end": "2026-10-02",
+          "color": "steel",
+          "value": 198835
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "3355 Pacific",
+      "tasks": [
+        {
+          "id": 11,
+          "name": "Ceiling Framing",
+          "start": "2027-02-25",
+          "end": "2027-03-30",
+          "color": "gray",
+          "value": 1000000
+        },
+        {
+          "id": 12,
+          "name": "Drywall - Hang",
+          "start": "2027-03-25",
+          "end": "2027-05-25",
+          "color": "navy",
+          "value": 200000
+        },
+        {
+          "id": 13,
+          "name": "Drywall - Tape",
+          "start": "2027-04-15",
+          "end": "2027-06-30",
+          "color": "steel",
+          "value": 468000
+        },
+        {
+          "id": 14,
+          "name": "Interior Plaster",
+          "start": "2027-06-15",
+          "end": "2027-09-30",
+          "color": "gold",
+          "value": 729000
+        },
+        {
+          "id": 15,
+          "name": "Baswa",
+          "start": "2027-08-01",
+          "end": "2027-09-30",
+          "color": "purple",
+          "value": 982890
+        },
+        {
+          "id": 16,
+          "name": "Stucco",
+          "start": "2027-06-15",
+          "end": "2027-08-15",
+          "color": "gold",
+          "value": 300000
+        },
+        {
+          "id": 17,
+          "name": "Baswa Mockup",
+          "start": "2026-08-24",
+          "end": "2026-09-04",
+          "color": "purple",
+          "value": 20000
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "445 Manzanita ADU & Wellness",
+      "tasks": [
+        {
+          "id": 18,
+          "name": "Drywall",
+          "start": "2026-09-21",
+          "end": "2026-10-23",
+          "color": "navy",
+          "value": 122286
+        },
+        {
+          "id": 19,
+          "name": "Interior Plaster",
+          "start": "2026-07-20",
+          "end": "2026-11-20",
+          "color": "gold",
+          "value": 115409
+        },
+        {
+          "id": 20,
+          "name": "Stucco",
+          "start": "2026-11-20",
+          "end": "2027-03-12",
+          "color": "gold",
+          "value": 96798
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "2 Laurel",
+      "tasks": [
+        {
+          "id": 21,
+          "name": "Drywall - Hanging",
+          "start": "2026-07-01",
+          "end": "2026-07-20",
+          "color": "navy",
+          "value": 41195
+        },
+        {
+          "id": 22,
+          "name": "Drywall - Taping",
+          "start": "2026-07-20",
+          "end": "2026-08-21",
+          "color": "steel",
+          "value": 72243
+        },
+        {
+          "id": 23,
+          "name": "Interior Plaster",
+          "start": "2026-08-24",
+          "end": "2026-08-28",
+          "color": "gold",
+          "value": 23758
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "BVE",
+      "tasks": [
+        {
+          "id": 24,
+          "name": "Stucco",
+          "start": "2026-09-01",
+          "end": "2026-09-30",
+          "color": "gold",
+          "value": 29830
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "30 Meadow",
+      "tasks": [
+        {
+          "id": 25,
+          "name": "Framing",
+          "start": "2026-07-01",
+          "end": "2026-07-10",
+          "color": "gray",
+          "value": 18756
+        },
+        {
+          "id": 26,
+          "name": "Drywall",
+          "start": "2026-08-10",
+          "end": "2026-09-18",
+          "color": "navy",
+          "value": 150743
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "50 Saint Germain",
+      "tasks": [
+        {
+          "id": 27,
+          "name": "Drywall - Hang",
+          "start": "2026-07-20",
+          "end": "2026-08-14",
+          "color": "navy",
+          "value": 63433
+        },
+        {
+          "id": 28,
+          "name": "Drywall - Tape",
+          "start": "2026-08-07",
+          "end": "2026-09-11",
+          "color": "steel",
+          "value": 117805
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "2175 Bryant",
+      "tasks": [
+        {
+          "id": 29,
+          "name": "BASWA",
+          "start": "2026-08-31",
+          "end": "2026-10-03",
+          "color": "purple",
+          "value": 38332
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "37 Raycliff",
+      "tasks": [
+        {
+          "id": 30,
+          "name": "Drywall - Taping",
+          "start": "2026-06-23",
+          "end": "2026-08-24",
+          "color": "steel",
+          "value": 84199
+        },
+        {
+          "id": 31,
+          "name": "Interior Plaster",
+          "start": "2026-06-23",
+          "end": "2026-08-24",
+          "color": "gold",
+          "value": 82019
+        },
+        {
+          "id": 32,
+          "name": "Stucco",
+          "start": "2026-06-23",
+          "end": "2026-09-23",
+          "color": "gold",
+          "value": 304259
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "2790 Broadway",
+      "tasks": [
+        {
+          "id": 33,
+          "name": "Drywall",
+          "start": "2026-10-01",
+          "end": "2027-04-26",
+          "color": "navy",
+          "value": 685567
+        },
+        {
+          "id": 34,
+          "name": "Interior Plaster",
+          "start": "2026-11-02",
+          "end": "2027-04-20",
+          "color": "gold",
+          "value": 271140
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "203 San Benito Road",
+      "tasks": [
+        {
+          "id": 35,
+          "name": "Stucco",
+          "start": "2026-08-21",
+          "end": "2026-10-27",
+          "color": "gold",
+          "value": 105000
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "2920 Broadway",
+      "tasks": [
+        {
+          "id": 36,
+          "name": "Punchlist",
+          "start": "2026-09-01",
+          "end": "2026-09-30",
+          "color": "green",
+          "value": 40000
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "2828 Vallejo",
+      "tasks": [
+        {
+          "id": 37,
+          "name": "Drywall",
+          "start": "2026-09-01",
+          "end": "2026-11-01",
+          "color": "navy",
+          "value": 822088
+        },
+        {
+          "id": 38,
+          "name": "Interior Plaster",
+          "start": "2027-01-25",
+          "end": "2027-02-01",
+          "color": "gold",
+          "value": 36584
+        },
+        {
+          "id": 39,
+          "name": "Stucco",
+          "start": "2026-12-17",
+          "end": "2027-02-15",
+          "color": "gold",
+          "value": 83458
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "name": "333 Hampton",
+      "tasks": [
+        {
+          "id": 40,
+          "name": "Interior Plaster",
+          "start": "2026-08-03",
+          "end": "2026-08-07",
+          "color": "gold",
+          "value": 7867
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KMI Billing Forecast</title>
+<style>
+  :root {
+    --navy: #1b2a4a;
+    --navy-light: #2c4270;
+    --navy-seg: #35507f;
+    --steel: #3f8f9c;
+    --steel-light: #327884;
+    --coral: #c1573f;
+    --purple: #6b4f9e;
+    --gray: #7a7a76;
+    --green: #7cb885;
+    --job-row-bg: #e4e4e1;
+    --gold: #c9a44c;
+    --gold-seg: #d4b565;
+    --gold-light: #f0e2bd;
+    --border: #d9d9d9;
+    --text: #222;
+    --text-muted: #6b6b6b;
+    --row-h: 40px;
+    --col-w: 62px;
+    --label-w: 240px;
+    --total-w: 96px;
+    --col-w-p: 76px;
+    --label-w-p: 165px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+    margin: 0;
+    padding: 24px;
+    background: #fafafa;
+  }
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 4px;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 16px;
+  }
+  .legend {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+  }
+  .legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+  .chart-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+  }
+  .chart {
+    position: relative;
+    min-width: max-content;
+  }
+  .header-row {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: var(--navy);
+  }
+  .header-label {
+    width: var(--label-w);
+    min-width: var(--label-w);
+    flex-shrink: 0;
+    background: var(--navy);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    position: sticky;
+    left: 0;
+    z-index: 4;
+    border-right: 2px solid var(--gold);
+  }
+  .header-col {
+    width: var(--col-w);
+    min-width: var(--col-w);
+    flex-shrink: 0;
+    color: #f0e2bd;
+    font-size: 9.5px;
+    font-weight: 500;
+    text-align: center;
+    padding: 6px 2px;
+    border-right: 1px solid rgba(255,255,255,0.12);
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+  .header-total {
+    width: var(--total-w);
+    min-width: var(--total-w);
+    flex-shrink: 0;
+    color: #f0e2bd;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: right;
+    padding: 6px 12px;
+    position: sticky;
+    right: 0;
+    background: var(--navy);
+    border-left: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .body-row {
+    display: flex;
+    height: var(--row-h);
+    border-bottom: 1px solid var(--border);
+  }
+  .body-row.job-row {
+    background: var(--job-row-bg);
+    height: 30px;
+    border-bottom: 1px solid var(--border);
+  }
+  .row-label {
+    width: var(--label-w);
+    min-width: var(--label-w);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 12.5px;
+    background: #fff;
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    border-right: 2px solid var(--gold);
+    white-space: nowrap;
+  }
+  .job-row .row-label {
+    background: var(--job-row-bg);
+    color: #1a1a1a;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .task-row .row-label {
+    color: var(--text);
+    padding-left: 26px;
+  }
+  .row-grid {
+    position: relative;
+    flex: 1;
+  }
+  .row-grid-cols {
+    display: flex;
+    height: 100%;
+  }
+  .grid-col {
+    width: var(--col-w);
+    min-width: var(--col-w);
+    flex-shrink: 0;
+    border-right: 1px solid #eee;
+  }
+  .row-total {
+    width: var(--total-w);
+    min-width: var(--total-w);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #fff;
+    position: sticky;
+    right: 0;
+    border-left: 2px solid var(--gold);
+  }
+  .job-row .row-total {
+    background: var(--job-row-bg);
+    color: #1a1a1a;
+  }
+  .segment {
+    position: absolute;
+    top: 6px;
+    height: calc(var(--row-h) - 12px);
+    background: var(--navy-seg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 500;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 1px solid rgba(255,255,255,0.35);
+  }
+  .segment.gold {
+    background: var(--gold-seg);
+    color: #3a2f10;
+    border-right: 1px solid rgba(58,47,16,0.25);
+  }
+  .segment.steel {
+    background: var(--steel);
+    color: #fff;
+    border-right: 1px solid rgba(255,255,255,0.35);
+  }
+  .segment.coral {
+    background: var(--coral);
+    color: #fff;
+    border-right: 1px solid rgba(255,255,255,0.35);
+  }
+  .segment.purple {
+    background: var(--purple);
+    color: #fff;
+    border-right: 1px solid rgba(255,255,255,0.35);
+  }
+  .segment.gray {
+    background: var(--gray);
+    color: #fff;
+    border-right: 1px solid rgba(255,255,255,0.35);
+  }
+  .segment.green {
+    background: var(--steel);
+    color: #fff;
+    border-right: 1px solid rgba(255,255,255,0.35);
+  }
+  .segment.first {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+  .segment.last {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-right: none;
+  }
+  .footer-row {
+    display: flex;
+    background: #e0cb93;
+    font-weight: 700;
+    min-height: 36px;
+    margin-top: 8px;
+    border-top: 2px solid var(--gold);
+  }
+  .footer-col.month-start {
+    border-left: 2px solid var(--gold);
+  }
+  .footer-col.month-box {
+    border-left: 2px solid var(--gold);
+    border-right: 2px solid var(--gold);
+  }
+  .footer-month-col.month-start {
+    border-left: 2px solid var(--gold);
+  }
+  .footer-label {
+    width: var(--label-w);
+    min-width: var(--label-w);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e2939;
+    background: #e0cb93;
+    position: sticky;
+    left: 0;
+    border-right: 2px solid var(--gold);
+  }
+  .footer-col {
+    width: var(--col-w);
+    min-width: var(--col-w);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e2939;
+  }
+  .footer-col.col-alt {
+    background: #c9b684;
+  }
+  .footer-row.row-teal {
+    background: var(--steel);
+    min-height: 36px;
+    margin-top: 8px;
+  }
+  .footer-label.label-teal {
+    background: var(--steel);
+    color: #fff;
+    border-right: 2px solid var(--gold);
+  }
+  .footer-row.row-teal .footer-col {
+    color: #fff;
+  }
+  .footer-total.total-teal {
+    background: var(--steel);
+    color: #fff;
+  }
+  .footer-col.col-teal-alt {
+    background: #9db8af;
+  }
+  .footer-row.row-green {
+    background: #009fe9;
+    min-height: 36px;
+    margin-top: 8px;
+    border-bottom: 2px solid var(--gold);
+  }
+  .footer-label.label-green {
+    background: #009fe9;
+    color: #fff;
+    border-right: 2px solid var(--gold);
+  }
+  .footer-row.row-green .footer-col {
+    color: #fff;
+  }
+  .footer-total.total-green {
+    background: #009fe9;
+    color: #fff;
+  }
+  .footer-col.col-green-alt {
+    background: #76aed8;
+  }
+  .footer-month-row {
+    display: flex;
+    background: var(--navy);
+    border-top: 2px solid var(--gold);
+  }
+  .footer-month-label {
+    width: var(--label-w);
+    min-width: var(--label-w);
+    flex-shrink: 0;
+    background: var(--navy);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    position: sticky;
+    left: 0;
+    border-right: 2px solid var(--gold);
+  }
+  .footer-month-col {
+    width: var(--col-w);
+    min-width: var(--col-w);
+    flex-shrink: 0;
+    color: #f0e2bd;
+    font-size: 9.5px;
+    font-weight: 500;
+    text-align: center;
+    padding: 6px 2px;
+    border-right: 1px solid rgba(255,255,255,0.12);
+    line-height: 1.25;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .footer-month-total {
+    width: var(--total-w);
+    min-width: var(--total-w);
+    flex-shrink: 0;
+    color: #f0e2bd;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: right;
+    padding: 6px 12px;
+    background: var(--navy);
+    border-left: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: sticky;
+    right: 0;
+  }
+  .footer-total {
+    width: var(--total-w);
+    min-width: var(--total-w);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e2939;
+    background: #e0cb93;
+    position: sticky;
+    right: 0;
+  }
+
+  /* ---- Print layout: chunks the timeline into landscape pages you tape side by side ---- */
+  .print-only { display: none; }
+  .print-btn {
+    display: inline-block;
+    margin: 4px 0 16px;
+    padding: 8px 16px;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .print-btn:hover { background: var(--navy-light); }
+  @media print {
+    @page { size: landscape; margin: 6mm; }
+    body { padding: 0; background: #fff; }
+    .screen-only { display: none !important; }
+    .print-only { display: block; }
+    .print-page {
+      page-break-after: always;
+      break-after: page;
+    }
+    .print-page:last-child { page-break-after: auto; }
+    .print-page-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      margin: 0 0 4px;
+    }
+    .print-page-sub {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      margin: 0 0 8px;
+    }
+    .p-header-row { display: flex; background: var(--navy); height: 26px; }
+    .p-header-label {
+      width: var(--label-w-p); min-width: var(--label-w-p); flex-shrink: 0;
+      background: var(--navy); color: #fff; font-size: 10.5px; font-weight: 700;
+      display: flex; align-items: center; padding: 0 8px; border-right: 2px solid var(--gold);
+    }
+    .p-header-col {
+      width: var(--col-w-p); min-width: var(--col-w-p); flex-shrink: 0;
+      color: #f0e2bd; font-size: 8.5px; font-weight: 600; text-align: center;
+      padding: 4px 1px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2;
+    }
+    .p-body-row { display: flex; height: 20px; border-bottom: 1px solid var(--border); }
+    .p-body-row.p-job-row { background: var(--job-row-bg); height: 17px; }
+    .p-row-label {
+      width: var(--label-w-p); min-width: var(--label-w-p); flex-shrink: 0;
+      display: flex; align-items: center; padding: 0 8px; font-size: 9px;
+      background: #fff; border-right: 2px solid var(--gold); white-space: nowrap; overflow: hidden;
+    }
+    .p-job-row .p-row-label { background: var(--job-row-bg); color: #1a1a1a; font-weight: 700; font-size: 9.5px; }
+    .p-task-row .p-row-label { padding-left: 18px; }
+    .p-row-grid { position: relative; flex: 1; }
+    .p-grid-cols { display: flex; height: 100%; }
+    .p-grid-col {
+      width: var(--col-w-p); min-width: var(--col-w-p); flex-shrink: 0; border-right: 1px solid #eee;
+    }
+    .p-segment {
+      position: absolute; top: 1.5px; height: 14px; display: flex; align-items: center;
+      justify-content: center; font-size: 8.5px; font-weight: 600; color: #fff; overflow: hidden;
+      border-right: 1px solid rgba(255,255,255,0.35);
+    }
+    .p-segment.gold { color: #3a2f10; border-right: 1px solid rgba(58,47,16,0.25); }
+    .p-segment.first { border-top-left-radius: 3px; border-bottom-left-radius: 3px; }
+    .p-segment.last { border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-right: none; }
+    .p-footer-row {
+      display: flex; background: var(--gold-light); border-top: 2px solid var(--gold);
+      height: 23px; font-weight: 700;
+    }
+    .p-footer-label {
+      width: var(--label-w-p); min-width: var(--label-w-p); flex-shrink: 0;
+      display: flex; align-items: center; padding: 0 8px; font-size: 11px; color: var(--navy);
+      border-right: 2px solid var(--gold);
+    }
+    .p-footer-col {
+      width: var(--col-w-p); min-width: var(--col-w-p); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 10px; color: #2c1f05;
+      border-right: 1px solid rgba(0,0,0,0.08);
+    }
+    .p-footer-grand-total {
+      flex: 1;
+      display: flex; align-items: center; justify-content: flex-end;
+      padding: 0 14px; font-size: 14px; font-weight: 700; color: var(--navy);
+      white-space: nowrap;
+    }
+    .p-actual-row {
+      display: flex; background: #fbe3c8; border-top: 1px solid #e8b784;
+      height: 20px; font-weight: 700; margin-top: 3px;
+    }
+    .p-actual-label {
+      width: var(--label-w-p); min-width: var(--label-w-p); flex-shrink: 0;
+      display: flex; align-items: center; padding: 0 8px; font-size: 9.5px; color: #8a4b12;
+      border-right: 2px solid #e8b784;
+    }
+    .p-actual-col {
+      width: var(--col-w-p); min-width: var(--col-w-p); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 9px; color: #8a4b12;
+      border-right: 1px solid rgba(0,0,0,0.06);
+    }
+    .p-actual-grand-total {
+      flex: 1;
+      display: flex; align-items: center; justify-content: flex-end;
+      padding: 0 14px; font-size: 12px; font-weight: 700; color: #8a4b12;
+      white-space: nowrap;
+    }
+    .p-kmicost-row {
+      display: flex; background: #dbe9f5; border-top: 1px solid #a8c9e0;
+      height: 20px; font-weight: 700; margin-top: 3px;
+    }
+    .p-kmicost-label {
+      width: var(--label-w-p); min-width: var(--label-w-p); flex-shrink: 0;
+      display: flex; align-items: center; padding: 0 8px; font-size: 9.5px; color: #1b4f72;
+      border-right: 2px solid #a8c9e0;
+    }
+    .p-kmicost-col {
+      width: var(--col-w-p); min-width: var(--col-w-p); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 9px; color: #1b4f72;
+      border-right: 1px solid rgba(0,0,0,0.06);
+    }
+    .p-kmicost-grand-total {
+      flex: 1;
+      display: flex; align-items: center; justify-content: flex-end;
+      padding: 0 14px; font-size: 12px; font-weight: 700; color: #1b4f72;
+      white-space: nowrap;
+    }
+  }
+
+  .api-status {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 0 0 12px;
+  }
+  .chart-message {
+    padding: 28px 16px;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  .chart-message.error { color: #9b2c2c; }
+</style>
+</head>
+<body>
+
+<h1 class="screen-only">Construction timeline</h1>
+<p class="subtitle screen-only">Two-week increments · <span id="range-label">…</span> · billing shown per two-week period, split evenly across each task's active periods</p>
+<p class="api-status screen-only" id="api-status">Loading from API…</p>
+<div class="legend screen-only" id="legend"></div>
+
+<button class="print-btn screen-only" onclick="window.print()">Print for tiling across pages</button>
+<p class="subtitle screen-only" style="margin-top:-8px;">Each printed sheet covers about 6 months of timeline — lay them out left to right and tape edges together.</p>
+
+<div class="chart-wrap screen-only">
+  <div class="chart" id="chart"><p class="chart-message">Loading forecast…</p></div>
+</div>
+
+<div class="print-only" id="print-root"></div>
+
+<script>
+const API = "";
+
+function renderChart(config, JOBS, colors) {
+  const TIMELINE_START = config.timelineStart;
+  const TIMELINE_END = config.timelineEnd;
+  const actualCostRate = config.actualCostRate != null ? config.actualCostRate : 0.75;
+  const kmiCostRate = config.kmiCostRate != null ? config.kmiCostRate : 0.7;
+  const colorMap = {};
+  (colors || []).forEach(c => { colorMap[c.id] = c; });
+
+  function paint(el, colorId) {
+    const c = colorMap[colorId] || { hex: "#35507f", textHex: "#ffffff" };
+    el.style.background = c.hex;
+    el.style.color = c.textHex || "#ffffff";
+  }
+
+  const legend = document.getElementById("legend");
+  legend.innerHTML = "";
+  (colors || []).forEach(c => {
+    const item = document.createElement("span");
+    const swatch = document.createElement("span");
+    swatch.className = "swatch";
+    swatch.style.background = c.hex;
+    item.appendChild(swatch);
+    item.appendChild(document.createTextNode(c.name));
+    legend.appendChild(item);
+  });
+
+  document.getElementById("print-root").innerHTML = "";
+
+  const MS_DAY = 86400000;
+  const start = new Date(TIMELINE_START + "T00:00:00");
+  const end = new Date(TIMELINE_END + "T00:00:00");
+  const today = new Date();
+
+  document.getElementById("range-label").textContent =
+    start.toLocaleDateString("en-US", { month: "short", year: "numeric" }) + " – " +
+    end.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+
+  // Build two-week columns
+  const columns = [];
+  let cursor = new Date(start);
+  while (cursor < end) {
+    columns.push(new Date(cursor));
+    cursor = new Date(cursor.getTime() + 14 * MS_DAY);
+  }
+
+  function daysBetween(a, b) {
+    return (b.getTime() - a.getTime()) / MS_DAY;
+  }
+  function isYearStart(colDate, index) {
+    if (index === 0) return false;
+    const prev = columns[index - 1];
+    return colDate.getFullYear() !== prev.getFullYear();
+  }
+  function fmtMoney(n) {
+    return "$" + Math.round(n).toLocaleString();
+  }
+  function fmtCompact(n) {
+    if (n >= 1000) return "$" + (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1) + "k";
+    return "$" + Math.round(n);
+  }
+  function fmtCompactRound(n) {
+    if (n >= 1000) return "$" + Math.round(n / 1000) + "k";
+    return "$" + Math.round(n);
+  }
+
+  const chart = document.getElementById("chart");
+  chart.innerHTML = "";
+
+  // Header
+  const headerRow = document.createElement("div");
+  headerRow.className = "header-row";
+  const headerLabel = document.createElement("div");
+  headerLabel.className = "header-label";
+  headerLabel.textContent = "Job / task";
+  headerRow.appendChild(headerLabel);
+  columns.forEach((colDate, i) => {
+    const col = document.createElement("div");
+    col.className = "header-col" + (isYearStart(colDate, i) ? " year-start" : "");
+    col.textContent = colDate.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    headerRow.appendChild(col);
+  });
+  const headerTotal = document.createElement("div");
+  headerTotal.className = "header-total";
+  headerTotal.textContent = "Total";
+  headerRow.appendChild(headerTotal);
+  chart.appendChild(headerRow);
+
+  const totalDays = daysBetween(start, end);
+  const totalWidth = columns.length * 62; // matches --col-w
+
+  // period totals across all tasks, indexed by column
+  const periodTotals = new Array(columns.length).fill(0);
+  let grandTotal = 0;
+
+  function addGridCols(container) {
+    const gridCols = document.createElement("div");
+    gridCols.className = "row-grid-cols";
+    columns.forEach((colDate, i) => {
+      const c = document.createElement("div");
+      c.className = "grid-col" + (isYearStart(colDate, i) ? " year-start" : "");
+      gridCols.appendChild(c);
+    });
+    container.appendChild(gridCols);
+  }
+
+// returns indices of columns whose 2-week period overlaps [tStart, tEnd)
+  function overlappingColumnIndices(tStart, tEnd) {
+    const indices = [];
+    columns.forEach((colDate, i) => {
+      const periodStart = colDate;
+      const periodEnd = i + 1 < columns.length ? columns[i + 1] : end;
+      if (tStart < periodEnd && tEnd > periodStart) indices.push(i);
+    });
+    return indices;
+  }
+
+  JOBS.forEach(job => {
+    const jobRow = document.createElement("div");
+    jobRow.className = "body-row job-row";
+    const jobLabel = document.createElement("div");
+    jobLabel.className = "row-label";
+    jobLabel.textContent = job.name;
+    jobRow.appendChild(jobLabel);
+    const jobGrid = document.createElement("div");
+    jobGrid.className = "row-grid";
+    addGridCols(jobGrid);
+    jobRow.appendChild(jobGrid);
+    const jobTotalVal = job.tasks.reduce((s, t) => s + (t.value || 0), 0);
+    const jobTotalCell = document.createElement("div");
+    jobTotalCell.className = "row-total";
+    jobTotalCell.textContent = fmtMoney(jobTotalVal);
+    jobRow.appendChild(jobTotalCell);
+    chart.appendChild(jobRow);
+
+    job.tasks.forEach(task => {
+      const row = document.createElement("div");
+      row.className = "body-row task-row";
+      const label = document.createElement("div");
+      label.className = "row-label";
+      label.textContent = task.name;
+      row.appendChild(label);
+
+      const grid = document.createElement("div");
+      grid.className = "row-grid";
+      addGridCols(grid);
+
+      const tStart = new Date(task.start + "T00:00:00");
+      const tEnd = new Date(task.end + "T00:00:00");
+
+      const idxList = overlappingColumnIndices(tStart, tEnd);
+      const perPeriod = idxList.length ? (task.value || 0) / idxList.length : 0;
+
+      idxList.forEach((colIdx, pos) => {
+        const seg = document.createElement("div");
+        seg.className = "segment";
+        paint(seg, task.color);
+        if (pos === 0) seg.classList.add("first");
+        if (pos === idxList.length - 1) seg.classList.add("last");
+        seg.style.left = (colIdx * 62) + "px";
+        seg.style.width = "62px";
+        seg.textContent = fmtCompact(perPeriod);
+        seg.title = task.name + " — " + columns[colIdx].toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + ": " + fmtMoney(perPeriod);
+        grid.appendChild(seg);
+
+        periodTotals[colIdx] += perPeriod;
+      });
+      grandTotal += (task.value || 0);
+
+      row.appendChild(grid);
+
+      const rowTotalCell = document.createElement("div");
+      rowTotalCell.className = "row-total";
+      rowTotalCell.textContent = fmtMoney(task.value || 0);
+      row.appendChild(rowTotalCell);
+
+      chart.appendChild(row);
+    });
+  });
+
+  // Precompute which column indices start a new month (used to "square off" the bottom rows by month)
+  const isMonthStart = columns.map((colDate, idx) => {
+    if (idx === 0) return false;
+    const prev = columns[idx - 1];
+    return colDate.getMonth() !== prev.getMonth() || colDate.getFullYear() !== prev.getFullYear();
+  });
+
+  // Footer: month label row (identifies the month for each column above the totals)
+  const footerMonthRow = document.createElement("div");
+  footerMonthRow.className = "footer-month-row";
+  const footerMonthLabel = document.createElement("div");
+  footerMonthLabel.className = "footer-month-label";
+  footerMonthLabel.textContent = "Month";
+  footerMonthRow.appendChild(footerMonthLabel);
+  columns.forEach((colDate, idx) => {
+    const cell = document.createElement("div");
+    cell.className = "footer-month-col" + (isMonthStart[idx] ? " month-start" : "");
+    cell.textContent = colDate.toLocaleDateString("en-US", { month: "short" });
+    footerMonthRow.appendChild(cell);
+  });
+  const footerMonthTotal = document.createElement("div");
+  footerMonthTotal.className = "footer-month-total";
+  footerMonthRow.appendChild(footerMonthTotal);
+  chart.appendChild(footerMonthRow);
+
+  // Footer: period totals
+  const footerRow = document.createElement("div");
+  footerRow.className = "footer-row";
+  const footerLabel = document.createElement("div");
+  footerLabel.className = "footer-label";
+  footerLabel.textContent = "Period billing total";
+  footerRow.appendChild(footerLabel);
+  periodTotals.forEach((v, idx) => {
+    const cell = document.createElement("div");
+    cell.className = "footer-col" + (isMonthStart[idx] ? " month-start" : "");
+    cell.textContent = v > 0 ? fmtCompactRound(v) : "";
+    footerRow.appendChild(cell);
+  });
+  const footerTotal = document.createElement("div");
+  footerTotal.className = "footer-total";
+  footerTotal.textContent = fmtMoney(grandTotal);
+  footerRow.appendChild(footerTotal);
+  chart.appendChild(footerRow);
+
+  // Footer: KMI Cost (70% of period billing total)
+  const kmiCostRow = document.createElement("div");
+  kmiCostRow.className = "footer-row row-teal";
+  const kmiCostLabel = document.createElement("div");
+  kmiCostLabel.className = "footer-label label-teal";
+  kmiCostLabel.textContent = "KMI Cost";
+  kmiCostRow.appendChild(kmiCostLabel);
+  periodTotals.forEach((v, idx) => {
+    const cell = document.createElement("div");
+    cell.className = "footer-col" + (isMonthStart[idx] ? " month-start" : "");
+    cell.textContent = v > 0 ? fmtCompactRound(v * kmiCostRate) : "";
+    kmiCostRow.appendChild(cell);
+  });
+  const kmiCostTotal = document.createElement("div");
+  kmiCostTotal.className = "footer-total total-teal";
+  kmiCostTotal.textContent = fmtMoney(grandTotal * kmiCostRate);
+  kmiCostRow.appendChild(kmiCostTotal);
+  chart.appendChild(kmiCostRow);
+
+  // Footer: monthly total (groups the two-week period columns by month)
+  const monthlyTotalRow = document.createElement("div");
+  monthlyTotalRow.className = "footer-row row-green";
+  const monthlyTotalLabel = document.createElement("div");
+  monthlyTotalLabel.className = "footer-label label-green";
+  monthlyTotalLabel.textContent = "Monthly total";
+  monthlyTotalRow.appendChild(monthlyTotalLabel);
+
+  const monthGroups = [];
+  columns.forEach((colDate, idx) => {
+    const key = colDate.getFullYear() + "-" + colDate.getMonth();
+    let group = monthGroups[monthGroups.length - 1];
+    if (!group || group.key !== key) {
+      group = { key, count: 0, sum: 0 };
+      monthGroups.push(group);
+    }
+    group.count += 1;
+    group.sum += periodTotals[idx] || 0;
+  });
+  const COL_W_PX = 62; // matches --col-w
+  monthGroups.forEach((group, gi) => {
+    const cell = document.createElement("div");
+    cell.className = "footer-col month-box";
+    cell.style.width = (group.count * COL_W_PX) + "px";
+    cell.style.minWidth = (group.count * COL_W_PX) + "px";
+    cell.style.flexShrink = "0";
+    cell.textContent = group.sum > 0 ? fmtCompactRound(group.sum) : "";
+    monthlyTotalRow.appendChild(cell);
+  });
+
+  const monthlyTotalTotal = document.createElement("div");
+  monthlyTotalTotal.className = "footer-total total-green";
+  monthlyTotalTotal.textContent = fmtMoney(grandTotal);
+  monthlyTotalRow.appendChild(monthlyTotalTotal);
+  chart.appendChild(monthlyTotalRow);
+
+  // ---- Build print pages: chunk the timeline into landscape-page-sized slices.
+  // Every job appears, in the same order, on every date-range page. If the full job
+  // list doesn't fit one sheet's height, it's split into row-groups (stacked strips)
+  // instead of silently overflowing, so all rows still line up sheet to sheet. ----
+  function buildPrintPages() {
+    const printRoot = document.getElementById("print-root");
+    printRoot.innerHTML = "";
+    const PAGE_COLS = 18; // ~9 months per printed page
+    const totalColPages = Math.ceil(columns.length / PAGE_COLS);
+    const JOB_ROW_H = 17;
+    const TASK_ROW_H = 20;
+    const ROWS_HEIGHT_BUDGET = 905; // usable row space per sheet at this font/row size
+
+    // Precompute each job's row-block height, then pack jobs into row-groups (never splitting a job)
+    const jobHeights = JOBS.map(job => JOB_ROW_H + job.tasks.length * TASK_ROW_H);
+    const rowGroups = [];
+    let current = [];
+    let currentHeight = 0;
+    JOBS.forEach((job, i) => {
+      const h = jobHeights[i];
+      if (current.length && currentHeight + h > ROWS_HEIGHT_BUDGET) {
+        rowGroups.push(current);
+        current = [];
+        currentHeight = 0;
+      }
+      current.push(job);
+      currentHeight += h;
+    });
+    if (current.length) rowGroups.push(current);
+    const totalRowGroups = rowGroups.length;
+
+    function pAddGridCols(container, pageColIdx) {
+      const gridCols = document.createElement("div");
+      gridCols.className = "p-grid-cols";
+      pageColIdx.forEach(() => {
+        const c = document.createElement("div");
+        c.className = "p-grid-col";
+        gridCols.appendChild(c);
+      });
+      container.appendChild(gridCols);
+    }
+
+    // Period totals are computed across ALL jobs (not just one row-group) so the same
+    // footer values repeat identically under every row-group for a given date range.
+    function computePeriodTotals(pageColIdx) {
+      const totals = new Array(pageColIdx.length).fill(0);
+      JOBS.forEach(job => {
+        job.tasks.forEach(task => {
+          const fullIdxList = overlappingColumnIndices(new Date(task.start + "T00:00:00"), new Date(task.end + "T00:00:00"));
+          if (!fullIdxList.length) return;
+          const perPeriod = (task.value || 0) / fullIdxList.length;
+          fullIdxList.forEach(colIdx => {
+            const posInPage = pageColIdx.indexOf(colIdx);
+            if (posInPage !== -1) totals[posInPage] += perPeriod;
+          });
+        });
+      });
+      return totals;
+    }
+
+    for (let rg = 0; rg < totalRowGroups; rg++) {
+      const groupJobs = rowGroups[rg];
+
+      for (let p = 0; p < totalColPages; p++) {
+        const pageStart = p * PAGE_COLS;
+        const pageColIdx = [];
+        for (let i = pageStart; i < Math.min(pageStart + PAGE_COLS, columns.length); i++) pageColIdx.push(i);
+
+        const page = document.createElement("div");
+        page.className = "print-page";
+
+        const rangeStart = columns[pageColIdx[0]];
+        const rangeEndIdx = pageColIdx[pageColIdx.length - 1];
+        const rangeEnd = rangeEndIdx + 1 < columns.length ? columns[rangeEndIdx + 1] : end;
+        const title = document.createElement("div");
+        title.className = "print-page-title";
+        let titleText = "KMI Billing Forecast — Sheet " + (p + 1) + " of " + totalColPages;
+        if (totalRowGroups > 1) titleText += " (row block " + (rg + 1) + " of " + totalRowGroups + ")";
+        title.textContent = titleText;
+        const sub = document.createElement("div");
+        sub.className = "print-page-sub";
+        let subText = rangeStart.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) +
+          " – " + rangeEnd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) +
+          "  ·  tile sheets left to right in order";
+        if (totalRowGroups > 1) subText += "; stack row blocks top to bottom";
+        if (p > 0) subText += "  ·  job/task column omitted — continues from sheet 1";
+        sub.textContent = subText;
+        page.appendChild(title);
+        page.appendChild(sub);
+
+        // header
+        const pHeader = document.createElement("div");
+        pHeader.className = "p-header-row";
+        if (p === 0) {
+          const pHeaderLabel = document.createElement("div");
+          pHeaderLabel.className = "p-header-label";
+          pHeaderLabel.textContent = "Job / task";
+          pHeader.appendChild(pHeaderLabel);
+        }
+        pageColIdx.forEach(ci => {
+          const c = document.createElement("div");
+          c.className = "p-header-col";
+          c.textContent = columns[ci].toLocaleDateString("en-US", { month: "short", day: "numeric" });
+          pHeader.appendChild(c);
+        });
+        page.appendChild(pHeader);
+
+        groupJobs.forEach(job => {
+          const jobRow = document.createElement("div");
+          jobRow.className = "p-body-row p-job-row";
+          if (p === 0) {
+            const jobLabel = document.createElement("div");
+            jobLabel.className = "p-row-label";
+            jobLabel.textContent = job.name;
+            jobRow.appendChild(jobLabel);
+          }
+          const jobGrid = document.createElement("div");
+          jobGrid.className = "p-row-grid";
+          pAddGridCols(jobGrid, pageColIdx);
+          jobRow.appendChild(jobGrid);
+          page.appendChild(jobRow);
+
+          job.tasks.forEach(task => {
+            const fullIdxList = overlappingColumnIndices(new Date(task.start + "T00:00:00"), new Date(task.end + "T00:00:00"));
+            const pageIdxList = fullIdxList.filter(i => pageColIdx.includes(i));
+            const perPeriod = fullIdxList.length ? (task.value || 0) / fullIdxList.length : 0;
+
+            const row = document.createElement("div");
+            row.className = "p-body-row p-task-row";
+            if (p === 0) {
+              const label = document.createElement("div");
+              label.className = "p-row-label";
+              label.textContent = task.name;
+              row.appendChild(label);
+            }
+
+            const grid = document.createElement("div");
+            grid.className = "p-row-grid";
+            pAddGridCols(grid, pageColIdx);
+
+            pageIdxList.forEach((colIdx) => {
+              const posInPage = pageColIdx.indexOf(colIdx);
+              const seg = document.createElement("div");
+              seg.className = "p-segment";
+              paint(seg, task.color);
+              if (colIdx === fullIdxList[0]) seg.classList.add("first");
+              if (colIdx === fullIdxList[fullIdxList.length - 1]) seg.classList.add("last");
+              seg.style.left = (posInPage * 76) + "px";
+              seg.style.width = "76px";
+              seg.textContent = fmtCompact(perPeriod);
+              grid.appendChild(seg);
+            });
+
+            row.appendChild(grid);
+            page.appendChild(row);
+          });
+        });
+
+        // footer for this page — same totals repeat under every row-group for this date range
+        const pFooter = document.createElement("div");
+        pFooter.className = "p-footer-row";
+        if (p === 0) {
+          const pFooterLabel = document.createElement("div");
+          pFooterLabel.className = "p-footer-label";
+          pFooterLabel.textContent = "Period billing total";
+          pFooter.appendChild(pFooterLabel);
+        }
+        computePeriodTotals(pageColIdx).forEach(v => {
+          const cell = document.createElement("div");
+          cell.className = "p-footer-col";
+          cell.textContent = v > 0 ? fmtCompactRound(v) : "";
+          pFooter.appendChild(cell);
+        });
+        if (p === totalColPages - 1) {
+          const grandTotal = JOBS.reduce((s, j) => s + j.tasks.reduce((s2, t) => s2 + (t.value || 0), 0), 0);
+          const grandCell = document.createElement("div");
+          grandCell.className = "p-footer-grand-total";
+          grandCell.textContent = "Grand total: " + fmtMoney(grandTotal);
+          pFooter.appendChild(grandCell);
+        }
+        page.appendChild(pFooter);
+
+        // Actual Cost row — period billing total less 25%
+        const pActual = document.createElement("div");
+        pActual.className = "p-actual-row";
+        if (p === 0) {
+          const pActualLabel = document.createElement("div");
+          pActualLabel.className = "p-actual-label";
+          pActualLabel.textContent = "Actual Cost";
+          pActual.appendChild(pActualLabel);
+        }
+        computePeriodTotals(pageColIdx).forEach(v => {
+          const cell = document.createElement("div");
+          cell.className = "p-actual-col";
+          cell.textContent = v > 0 ? fmtCompact(v * actualCostRate) : "";
+          pActual.appendChild(cell);
+        });
+        if (p === totalColPages - 1) {
+          const grandTotal = JOBS.reduce((s, j) => s + j.tasks.reduce((s2, t) => s2 + (t.value || 0), 0), 0);
+          const actualGrandCell = document.createElement("div");
+          actualGrandCell.className = "p-actual-grand-total";
+          actualGrandCell.textContent = "Grand total: " + fmtMoney(grandTotal * actualCostRate);
+          pActual.appendChild(actualGrandCell);
+        }
+        page.appendChild(pActual);
+
+        // KMI Cost row — 70% of period billing total
+        const pKmiCost = document.createElement("div");
+        pKmiCost.className = "p-kmicost-row";
+        if (p === 0) {
+          const pKmiCostLabel = document.createElement("div");
+          pKmiCostLabel.className = "p-kmicost-label";
+          pKmiCostLabel.textContent = "KMI Cost";
+          pKmiCost.appendChild(pKmiCostLabel);
+        }
+        computePeriodTotals(pageColIdx).forEach(v => {
+          const cell = document.createElement("div");
+          cell.className = "p-kmicost-col";
+          cell.textContent = v > 0 ? fmtCompactRound(v * kmiCostRate) : "";
+          pKmiCost.appendChild(cell);
+        });
+        if (p === totalColPages - 1) {
+          const kmiGrandTotal = JOBS.reduce((s, j) => s + j.tasks.reduce((s2, t) => s2 + (t.value || 0), 0), 0);
+          const kmiGrandCell = document.createElement("div");
+          kmiGrandCell.className = "p-kmicost-grand-total";
+          kmiGrandCell.textContent = "Grand total: " + fmtMoney(kmiGrandTotal * kmiCostRate);
+          pKmiCost.appendChild(kmiGrandCell);
+        }
+        page.appendChild(pKmiCost);
+
+        printRoot.appendChild(page);
+      }
+    }
+  }
+  buildPrintPages();
+
+}
+
+async function loadForecast() {
+  const status = document.getElementById("api-status");
+  try {
+    const [configRes, jobsRes, colorsRes] = await Promise.all([
+      fetch(API + "/config"),
+      fetch(API + "/jobs"),
+      fetch(API + "/colors")
+    ]);
+    if (!configRes.ok || !jobsRes.ok || !colorsRes.ok) {
+      throw new Error("API " + configRes.status + "/" + jobsRes.status + "/" + colorsRes.status);
+    }
+    const config = await configRes.json();
+    const jobs = await jobsRes.json();
+    const colors = await colorsRes.json();
+    renderChart(config, jobs, colors);
+    status.textContent = "Live from API · " + jobs.length + " jobs";
+  } catch (err) {
+    document.getElementById("chart").innerHTML =
+      '<p class="chart-message error">Could not load forecast data. Start the API with npm start.</p>';
+    status.textContent = "API offline";
+  }
+}
+
+loadForecast();
+</script>
+</body>
+</html>
