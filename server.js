@@ -1,20 +1,67 @@
 const path = require("path");
 const jsonServer = require("json-server");
+const {
+  useRedis,
+  dbFile,
+  loadSeed,
+  loadState,
+  saveState,
+} = require("./store");
 
-const dbFile = path.join(__dirname, "db.json");
 const server = jsonServer.create();
-const router = jsonServer.router(dbFile);
+const router = useRedis
+  ? jsonServer.router(loadSeed())
+  : jsonServer.router(dbFile);
 const middlewares = jsonServer.defaults({
   static: path.join(__dirname, "public"),
 });
 
+const mutating = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+
 server.use(middlewares);
 server.use(jsonServer.bodyParser);
+
+if (useRedis) {
+  server.use(async (req, res, next) => {
+    try {
+      const state = await loadState();
+      router.db.setState(state);
+    } catch (err) {
+      return res.status(503).json({
+        error: "Database unavailable",
+        detail: err.message,
+      });
+    }
+
+    if (!mutating.has(req.method)) return next();
+
+    const sendJson = res.json.bind(res);
+    const sendJsonp = res.jsonp.bind(res);
+
+    async function persistThen(send, body) {
+      if (res.statusCode < 400) {
+        try {
+          await saveState(router.db.getState());
+        } catch (err) {
+          return sendJson({
+            error: "Failed to persist database",
+            detail: err.message,
+          });
+        }
+      }
+      return send(body);
+    }
+
+    res.json = (body) => persistThen(sendJson, body);
+    res.jsonp = (body) => persistThen(sendJsonp, body);
+    next();
+  });
+}
 
 server.get("/api", (_req, res) => {
   res.json({
     name: "KMI Billing Forecast API",
-    database: "db.json",
+    database: useRedis ? "upstash-redis" : "db.json",
     resources: {
       "GET /config": "Timeline window and cost rates",
       "PUT /config": "Replace config",
@@ -171,12 +218,17 @@ server.post("/jobs/:id/tasks", (req, res) => {
 
 server.use(router);
 
-const port = process.env.PORT || 3000;
-server.listen(port, "0.0.0.0", () => {
-  console.log("KMI Billing Forecast");
-  console.log("  chart  http://localhost:" + port + "/");
-  console.log("  api    http://localhost:" + port + "/api");
-  console.log("  jobs   http://localhost:" + port + "/jobs");
-  console.log("  colors http://localhost:" + port + "/colors");
-  console.log("  config http://localhost:" + port + "/config");
-});
+module.exports = server;
+
+if (require.main === module) {
+  const port = process.env.PORT || 3000;
+  server.listen(port, "0.0.0.0", () => {
+    console.log("KMI Billing Forecast");
+    console.log("  database " + (useRedis ? "upstash-redis" : dbFile));
+    console.log("  chart  http://localhost:" + port + "/");
+    console.log("  api    http://localhost:" + port + "/api");
+    console.log("  jobs   http://localhost:" + port + "/jobs");
+    console.log("  colors http://localhost:" + port + "/colors");
+    console.log("  config http://localhost:" + port + "/config");
+  });
+}
