@@ -43,12 +43,6 @@
       "name": "Ceiling Framing",
       "hex": "#7a7a76",
       "textHex": "#ffffff"
-    },
-    {
-      "id": "green",
-      "name": "Punchlist",
-      "hex": "#7cb885",
-      "textHex": "#ffffff"
     }
   ],
   "jobs": [
@@ -59,8 +53,8 @@
         {
           "id": 1,
           "name": "Drywall - Hang",
-          "start": "2026-10-08",
-          "end": "2027-02-24",
+          "start": "2026-09-24",
+          "end": "2027-02-10",
           "color": "navy",
           "value": 180000
         },
@@ -68,7 +62,7 @@
           "id": 2,
           "name": "Drywall - Tape",
           "start": "2026-08-13",
-          "end": "2026-11-04",
+          "end": "2026-10-08",
           "color": "steel",
           "value": 600000
         },
@@ -79,6 +73,14 @@
           "end": "2026-11-04",
           "color": "gold",
           "value": 60000
+        },
+        {
+          "id": 4,
+          "name": "Lathing",
+          "color": "coral",
+          "value": 300000,
+          "start": "2026-07-30",
+          "end": "2026-10-22"
         }
       ]
     },
@@ -413,20 +415,6 @@
           "end": "2026-10-27",
           "color": "gold",
           "value": 105000
-        }
-      ]
-    },
-    {
-      "id": 15,
-      "name": "2920 Broadway",
-      "tasks": [
-        {
-          "id": 36,
-          "name": "Punchlist",
-          "start": "2026-09-01",
-          "end": "2026-09-30",
-          "color": "green",
-          "value": 40000
         }
       ]
     },

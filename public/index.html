@@ -115,22 +115,90 @@
   }
   .legend {
     display: flex;
-    gap: 18px;
+    gap: 6px;
     margin-bottom: 12px;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-muted);
     flex-wrap: wrap;
   }
-  .legend span {
+  .legend-btn {
+    appearance: none;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
+    margin: 0;
+    padding: 3px 8px 3px 6px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+  .legend-btn.is-active {
+    color: var(--text);
+    border-color: transparent;
+    background: #f3f3f1;
+  }
+  .legend-btn:not(.is-active) .swatch {
+    background: transparent !important;
+  }
+  .legend-btn-all {
+    padding-left: 8px;
+  }
+  .legend-btn-all[hidden] {
+    display: none;
   }
   .swatch {
-    width: 12px;
-    height: 12px;
-    border-radius: 3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
     display: inline-block;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    border: 1.5px solid currentColor;
+    transition: background 0.2s ease;
+  }
+  .job-block {
+    display: flex;
+    flex-direction: column;
+  }
+  body:not(.cat-navy) .task-row[data-color="navy"],
+  body:not(.cat-steel) .task-row[data-color="steel"],
+  body:not(.cat-coral) .task-row[data-color="coral"],
+  body:not(.cat-gold) .task-row[data-color="gold"],
+  body:not(.cat-purple) .task-row[data-color="purple"],
+  body:not(.cat-gray) .task-row[data-color="gray"],
+  body:not(.cat-green) .task-row[data-color="green"] {
+    height: 0;
+    min-height: 0;
+    opacity: 0;
+    border-bottom-width: 0;
+    pointer-events: none;
+  }
+  .job-block > .body-row.job-row {
+    height: 0;
+    min-height: 0;
+    opacity: 0;
+    border-bottom-width: 0;
+    pointer-events: none;
+  }
+  body.cat-navy .job-block:has(.task-row[data-color="navy"]) > .job-row,
+  body.cat-steel .job-block:has(.task-row[data-color="steel"]) > .job-row,
+  body.cat-coral .job-block:has(.task-row[data-color="coral"]) > .job-row,
+  body.cat-gold .job-block:has(.task-row[data-color="gold"]) > .job-row,
+  body.cat-purple .job-block:has(.task-row[data-color="purple"]) > .job-row,
+  body.cat-gray .job-block:has(.task-row[data-color="gray"]) > .job-row,
+  body.cat-green .job-block:has(.task-row[data-color="green"]) > .job-row {
+    height: 30px;
+    min-height: 30px;
+    opacity: 1;
+    border-bottom-width: 1px;
+    pointer-events: auto;
   }
   .chart-wrap {
     flex: 1;
@@ -167,11 +235,36 @@
     font-weight: 600;
     display: flex;
     align-items: center;
-    padding: 0 12px;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 8px 0 12px;
     position: sticky;
     left: 0;
     z-index: 7;
     border-right: 2px solid var(--gold);
+  }
+  .header-add-btn {
+    flex-shrink: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: #f0e2bd;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    white-space: nowrap;
+  }
+  .header-add-btn:hover {
+    color: #fff;
+  }
+  .header-add-btn:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
   }
   .header-col {
     width: var(--col-w);
@@ -186,15 +279,23 @@
     line-height: 1.25;
     white-space: nowrap;
   }
+  .header-col.is-current {
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font-weight: 700;
+  }
   .body-row {
     display: flex;
     height: var(--row-h);
     border-bottom: 1px solid var(--border);
+    transition:
+      height 0.28s ease,
+      min-height 0.28s ease,
+      opacity 0.22s ease,
+      border-bottom-width 0.22s ease;
   }
   .body-row.job-row {
     background: var(--job-row-bg);
-    height: 30px;
-    border-bottom: 1px solid var(--border);
   }
   .row-label {
     width: var(--label-w);
@@ -207,7 +308,7 @@
     background: #fff;
     position: sticky;
     left: 0;
-    z-index: 2;
+    z-index: 3;
     border-right: 2px solid var(--gold);
     white-space: nowrap;
   }
@@ -216,6 +317,40 @@
     color: #1a1a1a;
     font-weight: 600;
     font-size: 13px;
+    justify-content: space-between;
+    gap: 8px;
+    padding-right: 8px;
+  }
+  .job-row-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .job-add-task-btn,
+  .job-remove-btn {
+    flex-shrink: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: var(--navy);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .job-add-task-btn:hover,
+  .job-remove-btn:hover {
+    color: #000;
+  }
+  .job-add-task-btn:focus-visible,
+  .job-remove-btn:focus-visible {
+    outline: 2px solid var(--navy-seg);
+    outline-offset: 2px;
   }
   .task-row .row-label {
     color: var(--text);
@@ -224,6 +359,7 @@
   .row-grid {
     position: relative;
     flex: 1;
+    overflow: hidden;
   }
   .row-grid-cols {
     display: flex;
@@ -234,6 +370,12 @@
     min-width: var(--col-w);
     flex-shrink: 0;
     border-right: 1px solid #eee;
+  }
+  .grid-col.is-current {
+    background: rgba(53, 80, 127, 0.07);
+  }
+  .job-row .grid-col.is-current {
+    background: rgba(53, 80, 127, 0.1);
   }
   .task-row .row-grid {
     user-select: none;
@@ -258,6 +400,13 @@
   }
   body.is-bar-moving .segment {
     cursor: grabbing;
+  }
+  body.is-bar-resizing {
+    cursor: ew-resize;
+    user-select: none;
+  }
+  body.is-bar-resizing .segment {
+    cursor: ew-resize;
   }
   .segment {
     position: absolute;
@@ -361,6 +510,298 @@
   #task-dialog.mode-warn .btn-cancel {
     display: none;
   }
+  #job-dialog {
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    width: min(420px, calc(100vw - 32px));
+    color: var(--text);
+    font-family: inherit;
+    box-shadow: 0 16px 48px rgba(27, 42, 74, 0.28);
+  }
+  #job-dialog::backdrop {
+    background: rgba(27, 42, 74, 0.4);
+  }
+  #job-dialog .dialog-inner {
+    padding: 20px 22px 16px;
+  }
+  #job-dialog h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 8px;
+  }
+  #job-dialog .dialog-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+    line-height: 1.4;
+  }
+  #job-dialog label.dialog-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 14px;
+  }
+  #job-dialog input[type="text"] {
+    font: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+  }
+  #job-dialog input[type="text"]:focus {
+    outline: 2px solid var(--navy-seg);
+    border-color: var(--navy-seg);
+  }
+  #job-dialog .task-check-legend {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 8px;
+  }
+  #job-dialog .task-check-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 240px;
+    overflow-y: auto;
+    margin: 0 0 8px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  #job-dialog .task-check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+  }
+  #job-dialog .task-check-item:hover {
+    background: #f5f5f3;
+  }
+  #job-dialog .task-check-item .swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  #job-dialog .task-check-item input {
+    margin: 0;
+    flex-shrink: 0;
+  }
+  #job-dialog .dialog-error {
+    min-height: 1.2em;
+    margin: 0 0 4px;
+    font-size: 12px;
+    color: #a33;
+  }
+  #job-dialog menu {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 12px 0 0;
+    padding: 0;
+  }
+  #job-dialog menu button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+  }
+  #job-dialog .btn-cancel {
+    background: #eee;
+    color: var(--text);
+  }
+  #job-dialog .btn-confirm {
+    background: var(--navy);
+    color: #fff;
+  }
+  #add-task-dialog {
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    width: min(420px, calc(100vw - 32px));
+    color: var(--text);
+    font-family: inherit;
+    box-shadow: 0 16px 48px rgba(27, 42, 74, 0.28);
+  }
+  #add-task-dialog::backdrop {
+    background: rgba(27, 42, 74, 0.4);
+  }
+  #add-task-dialog .dialog-inner {
+    padding: 20px 22px 16px;
+  }
+  #add-task-dialog h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 8px;
+  }
+  #add-task-dialog .dialog-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+    line-height: 1.4;
+  }
+  #add-task-dialog label.dialog-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 14px;
+  }
+  #add-task-dialog input[type="text"] {
+    font: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+  }
+  #add-task-dialog input[type="text"]:focus {
+    outline: 2px solid var(--navy-seg);
+    border-color: var(--navy-seg);
+  }
+  #add-task-dialog input[readonly] {
+    background: #f5f5f3;
+    color: var(--text);
+  }
+  #add-task-dialog .task-check-legend {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 8px;
+  }
+  #add-task-dialog .task-check-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 0 0 8px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  #add-task-dialog .task-check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+  }
+  #add-task-dialog .task-check-item:hover {
+    background: #f5f5f3;
+  }
+  #add-task-dialog .task-check-item .swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  #add-task-dialog .task-check-item input {
+    margin: 0;
+    flex-shrink: 0;
+  }
+  #add-task-dialog .dialog-error {
+    min-height: 1.2em;
+    margin: 0 0 4px;
+    font-size: 12px;
+    color: #a33;
+  }
+  #add-task-dialog menu {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 12px 0 0;
+    padding: 0;
+  }
+  #add-task-dialog menu button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+  }
+  #add-task-dialog .btn-cancel {
+    background: #eee;
+    color: var(--text);
+  }
+  #add-task-dialog .btn-confirm {
+    background: var(--navy);
+    color: #fff;
+  }
+  #remove-job-dialog {
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    width: min(380px, calc(100vw - 32px));
+    color: var(--text);
+    font-family: inherit;
+    box-shadow: 0 16px 48px rgba(27, 42, 74, 0.28);
+  }
+  #remove-job-dialog::backdrop {
+    background: rgba(27, 42, 74, 0.4);
+  }
+  #remove-job-dialog .dialog-inner {
+    padding: 20px 22px 16px;
+  }
+  #remove-job-dialog h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 8px;
+  }
+  #remove-job-dialog .dialog-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.4;
+  }
+  #remove-job-dialog menu {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 16px 0 0;
+    padding: 0;
+  }
+  #remove-job-dialog menu button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+  }
+  #remove-job-dialog .btn-cancel {
+    background: #eee;
+    color: var(--text);
+  }
+  #remove-job-dialog .btn-confirm {
+    background: #a33;
+    color: #fff;
+  }
   .segment.gold {
     background: var(--gold-seg);
     color: #3a2f10;
@@ -416,6 +857,9 @@
     min-height: 36px;
     margin-top: 8px;
     border-top: 2px solid var(--gold);
+  }
+  .footer-col.is-current {
+    background: rgba(53, 80, 127, 0.1);
   }
   .footer-col.month-start {
     border-left: 2px solid var(--gold);
@@ -530,12 +974,12 @@
   .print-btn {
     display: inline-block;
     margin: 4px 0 16px;
-    padding: 8px 16px;
+    padding: 5px 10px;
     background: var(--navy);
     color: #fff;
     border: none;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
   }
@@ -573,8 +1017,42 @@
       color: #f0e2bd; font-size: 8.5px; font-weight: 600; text-align: center;
       padding: 4px 1px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2;
     }
-    .p-body-row { display: flex; height: 20px; border-bottom: 1px solid var(--border); }
+    .p-body-row {
+      display: flex;
+      height: 20px;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
     .p-body-row.p-job-row { background: var(--job-row-bg); height: 17px; }
+    body:not(.cat-navy) .p-task-row[data-color="navy"],
+    body:not(.cat-steel) .p-task-row[data-color="steel"],
+    body:not(.cat-coral) .p-task-row[data-color="coral"],
+    body:not(.cat-gold) .p-task-row[data-color="gold"],
+    body:not(.cat-purple) .p-task-row[data-color="purple"],
+    body:not(.cat-gray) .p-task-row[data-color="gray"],
+    body:not(.cat-green) .p-task-row[data-color="green"] {
+      height: 0 !important;
+      min-height: 0;
+      opacity: 0;
+      border-bottom-width: 0;
+    }
+    .p-job-block > .p-job-row {
+      height: 0 !important;
+      min-height: 0;
+      opacity: 0;
+      border-bottom-width: 0;
+    }
+    body.cat-navy .p-job-block:has(.p-task-row[data-color="navy"]) > .p-job-row,
+    body.cat-steel .p-job-block:has(.p-task-row[data-color="steel"]) > .p-job-row,
+    body.cat-coral .p-job-block:has(.p-task-row[data-color="coral"]) > .p-job-row,
+    body.cat-gold .p-job-block:has(.p-task-row[data-color="gold"]) > .p-job-row,
+    body.cat-purple .p-job-block:has(.p-task-row[data-color="purple"]) > .p-job-row,
+    body.cat-gray .p-job-block:has(.p-task-row[data-color="gray"]) > .p-job-row,
+    body.cat-green .p-job-block:has(.p-task-row[data-color="green"]) > .p-job-row {
+      height: 17px !important;
+      opacity: 1;
+      border-bottom-width: 1px;
+    }
     .p-row-label {
       width: var(--label-w-p); min-width: var(--label-w-p); flex-shrink: 0;
       display: flex; align-items: center; padding: 0 8px; font-size: 9px;
@@ -693,18 +1171,149 @@
   </form>
 </dialog>
 
+<dialog id="job-dialog" class="screen-only">
+  <form method="dialog" id="job-dialog-form" class="dialog-inner">
+    <h2>Add job</h2>
+    <p class="dialog-hint">Name the job and choose which task types to include. Assign timing by dragging on the chart.</p>
+    <label class="dialog-field">
+      Job name
+      <input id="job-dialog-name" type="text" autocomplete="off" required>
+    </label>
+    <p class="task-check-legend">Tasks</p>
+    <div class="task-check-list" id="job-dialog-tasks" role="group" aria-label="Task types"></div>
+    <p class="dialog-error" id="job-dialog-error" aria-live="polite"></p>
+    <menu>
+      <button type="button" class="btn-cancel" id="job-dialog-cancel">Cancel</button>
+      <button type="submit" class="btn-confirm" id="job-dialog-confirm" value="confirm">Add</button>
+    </menu>
+  </form>
+</dialog>
+
+<dialog id="add-task-dialog" class="screen-only">
+  <form method="dialog" id="add-task-dialog-form" class="dialog-inner">
+    <h2>Add task</h2>
+    <p class="dialog-hint">Choose task types to add. Assign timing and amount by dragging on the chart.</p>
+    <label class="dialog-field">
+      Job
+      <input id="add-task-dialog-job" type="text" readonly tabindex="-1">
+    </label>
+    <p class="task-check-legend">Tasks</p>
+    <div class="task-check-list" id="add-task-dialog-tasks" role="group" aria-label="Task types"></div>
+    <p class="dialog-error" id="add-task-dialog-error" aria-live="polite"></p>
+    <menu>
+      <button type="button" class="btn-cancel" id="add-task-dialog-cancel">Cancel</button>
+      <button type="submit" class="btn-confirm" id="add-task-dialog-confirm" value="confirm">Add</button>
+    </menu>
+  </form>
+</dialog>
+
+<dialog id="remove-job-dialog" class="screen-only">
+  <form method="dialog" id="remove-job-dialog-form" class="dialog-inner">
+    <h2>Remove job</h2>
+    <p class="dialog-hint" id="remove-job-dialog-message"></p>
+    <menu>
+      <button type="button" class="btn-cancel" id="remove-job-dialog-cancel">Cancel</button>
+      <button type="submit" class="btn-confirm" id="remove-job-dialog-confirm" value="confirm">Remove</button>
+    </menu>
+  </form>
+</dialog>
+
 <script>
 const API = "";
 const COL_W = 62;
+const EDGE_HIT = 8;
 const PERIOD_MODE_KEY = "kmi-period-mode";
+const CATEGORY_OFF_KEY = "kmi-category-off";
+const KNOWN_COLOR_IDS = ["navy", "steel", "coral", "gold", "purple", "gray"];
 
 let appConfig = null;
 let appJobs = [];
 let appColors = [];
 let rangeDrag = null;
 let barMove = null;
+let barResize = null;
 let periodMode = localStorage.getItem(PERIOD_MODE_KEY) === "monthly" ? "monthly" : "biweekly";
 let crewMode = false;
+let categoryOff = loadCategoryOff();
+let filterRefreshTimer = null;
+
+function loadCategoryOff() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(CATEGORY_OFF_KEY) || "[]");
+    return new Set(Array.isArray(raw) ? raw.filter((id) => KNOWN_COLOR_IDS.includes(id)) : []);
+  } catch (err) {
+    return new Set();
+  }
+}
+
+function saveCategoryOff() {
+  localStorage.setItem(CATEGORY_OFF_KEY, JSON.stringify([...categoryOff]));
+}
+
+function isCategoryOn(colorId) {
+  return !categoryOff.has(colorId);
+}
+
+function colorIds() {
+  return (appColors && appColors.length) ? appColors.map((c) => c.id) : KNOWN_COLOR_IDS;
+}
+
+function isShowingAllCategories() {
+  return categoryOff.size === 0;
+}
+
+function syncCategoryClasses(colors) {
+  const ids = (colors && colors.length) ? colors.map((c) => c.id) : KNOWN_COLOR_IDS;
+  ids.forEach((id) => {
+    document.body.classList.toggle("cat-" + id, isCategoryOn(id));
+  });
+}
+
+function syncLegendButtons() {
+  document.querySelectorAll(".legend-btn[data-color]").forEach((btn) => {
+    const on = isCategoryOn(btn.dataset.color);
+    btn.classList.toggle("is-active", on);
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+  const allBtn = document.getElementById("legend-all");
+  if (allBtn) allBtn.hidden = isShowingAllCategories();
+}
+
+function selectAllCategories() {
+  if (isShowingAllCategories()) return;
+  categoryOff = new Set();
+  saveCategoryOff();
+  syncCategoryClasses(appColors);
+  syncLegendButtons();
+  if (!appConfig) return;
+  clearTimeout(filterRefreshTimer);
+  filterRefreshTimer = setTimeout(() => {
+    renderChart(appConfig, appJobs, appColors);
+  }, 280);
+}
+
+function toggleCategory(colorId) {
+  if (!colorId) return;
+  const ids = colorIds();
+  if (isShowingAllCategories()) {
+    categoryOff = new Set(ids.filter((id) => id !== colorId));
+  } else if (categoryOff.has(colorId)) {
+    categoryOff.delete(colorId);
+  } else {
+    categoryOff.add(colorId);
+    const stillOn = ids.some((id) => !categoryOff.has(id));
+    if (!stillOn) categoryOff = new Set();
+  }
+  if (categoryOff.size === ids.length) categoryOff = new Set();
+  saveCategoryOff();
+  syncCategoryClasses(appColors);
+  syncLegendButtons();
+  if (!appConfig) return;
+  clearTimeout(filterRefreshTimer);
+  filterRefreshTimer = setTimeout(() => {
+    renderChart(appConfig, appJobs, appColors);
+  }, 280);
+}
 
 function crewCount(d) {
   return Math.ceil(d / 1200 / 10);
@@ -729,6 +1338,7 @@ function syncCrewToggle() {
 
 function setCrewMode(on) {
   if (periodMode !== "biweekly") return;
+  clearTimeout(filterRefreshTimer);
   crewMode = !!on;
   syncCrewToggle();
   if (appConfig) renderChart(appConfig, appJobs, appColors);
@@ -737,7 +1347,9 @@ function setCrewMode(on) {
 function setPeriodMode(mode) {
   if (mode !== "biweekly" && mode !== "monthly") return;
   if (mode === periodMode) return;
+  clearTimeout(filterRefreshTimer);
   if (barMove) endBarMove(true);
+  if (barResize) endBarResize(true);
   if (rangeDrag) {
     clearRangeHighlight(rangeDrag.grid);
     rangeDrag = null;
@@ -829,6 +1441,7 @@ document.getElementById("crew-toggle").addEventListener("click", () => {
   setCrewMode(!crewMode);
 });
 syncPeriodToggle();
+syncCategoryClasses(appColors);
 
 function fmtMoney(n) {
   return "$" + Math.round(n).toLocaleString();
@@ -889,6 +1502,85 @@ function endBarMove(resetPreview) {
   move.segments.forEach((seg) => seg.classList.remove("is-moving"));
   if (resetPreview) applyBarPreview(move, 0);
   return move;
+}
+
+function segmentEdgeAt(seg, clientX, isFirst, isLast) {
+  const rect = seg.getBoundingClientRect();
+  if (isFirst && clientX - rect.left <= EDGE_HIT) return "left";
+  if (isLast && rect.right - clientX <= EDGE_HIT) return "right";
+  return null;
+}
+
+function clampResizeRange(edge, lo, hi, col, colCount) {
+  if (edge === "left") {
+    return { lo: Math.max(0, Math.min(hi, col)), hi };
+  }
+  return { lo, hi: Math.max(lo, Math.min(colCount - 1, col)) };
+}
+
+function clearResizeTemps(resize) {
+  (resize.temps || []).forEach((el) => el.remove());
+  resize.temps = [];
+}
+
+function applyResizePreview(resize) {
+  const count = resize.newHi - resize.newLo + 1;
+  const per = count ? (resize.value || 0) / count : 0;
+  const label = resize.formatSeg(per);
+  clearResizeTemps(resize);
+  resize.segments.forEach((seg) => {
+    seg.style.display = "none";
+    seg.classList.remove("first", "last", "is-moving");
+  });
+  for (let i = 0; i < count; i++) {
+    const col = resize.newLo + i;
+    let seg = resize.segments[i];
+    if (!seg) {
+      const src = resize.segments[0];
+      seg = document.createElement("div");
+      seg.className = "segment is-moving";
+      seg.style.background = src.style.background;
+      seg.style.color = src.style.color;
+      seg.style.width = COL_W + "px";
+      resize.grid.appendChild(seg);
+      resize.temps.push(seg);
+    } else {
+      seg.style.display = "";
+      seg.classList.add("is-moving");
+    }
+    seg.style.left = (col * COL_W) + "px";
+    seg.textContent = label;
+    if (i === 0) seg.classList.add("first");
+    if (i === count - 1) seg.classList.add("last");
+  }
+}
+
+function restoreResizePreview(resize) {
+  clearResizeTemps(resize);
+  const count = resize.hi - resize.lo + 1;
+  const per = count ? (resize.value || 0) / count : 0;
+  const label = resize.formatSeg(per);
+  resize.segments.forEach((seg, i) => {
+    seg.style.display = "";
+    seg.style.left = ((resize.lo + i) * COL_W) + "px";
+    seg.textContent = label;
+    seg.classList.toggle("first", i === 0);
+    seg.classList.toggle("last", i === count - 1);
+    seg.classList.remove("is-moving");
+  });
+}
+
+function endBarResize(resetPreview) {
+  if (!barResize) return null;
+  const resize = barResize;
+  barResize = null;
+  document.body.classList.remove("is-bar-resizing");
+  if (resetPreview) restoreResizePreview(resize);
+  else {
+    clearResizeTemps(resize);
+    resize.segments.forEach((seg) => seg.classList.remove("is-moving"));
+  }
+  return resize;
 }
 
 function openTaskDialog(opts) {
@@ -990,7 +1682,307 @@ async function persistJob(job) {
   }
 }
 
+function openJobDialog() {
+  const dialog = document.getElementById("job-dialog");
+  const form = document.getElementById("job-dialog-form");
+  const nameInput = document.getElementById("job-dialog-name");
+  const list = document.getElementById("job-dialog-tasks");
+  const errorEl = document.getElementById("job-dialog-error");
+  const cancelBtn = document.getElementById("job-dialog-cancel");
+
+  list.innerHTML = "";
+  (appColors || []).forEach((c) => {
+    const label = document.createElement("label");
+    label.className = "task-check-item";
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.value = c.id;
+    input.name = "task-type";
+    const swatch = document.createElement("span");
+    swatch.className = "swatch";
+    swatch.style.background = c.hex || "#35507f";
+    const text = document.createElement("span");
+    text.textContent = c.name;
+    label.appendChild(input);
+    label.appendChild(swatch);
+    label.appendChild(text);
+    list.appendChild(label);
+  });
+
+  nameInput.value = "";
+  errorEl.textContent = "";
+
+  return new Promise((resolve) => {
+    let result = null;
+    function onCancelClick() {
+      dialog.close("cancel");
+    }
+    function onSubmit(e) {
+      const name = nameInput.value.trim();
+      const colorIds = Array.from(list.querySelectorAll('input[type="checkbox"]:checked'))
+        .map((el) => el.value);
+      if (!name) {
+        e.preventDefault();
+        errorEl.textContent = "Enter a job name.";
+        nameInput.focus();
+        return;
+      }
+      if (!colorIds.length) {
+        e.preventDefault();
+        errorEl.textContent = "Select at least one task.";
+        return;
+      }
+      result = { name, colorIds };
+      dialog.returnValue = "confirm";
+    }
+    function onClose() {
+      form.removeEventListener("submit", onSubmit);
+      dialog.removeEventListener("close", onClose);
+      cancelBtn.removeEventListener("click", onCancelClick);
+      resolve(dialog.returnValue === "confirm" ? result : null);
+    }
+    cancelBtn.addEventListener("click", onCancelClick);
+    form.addEventListener("submit", onSubmit);
+    dialog.addEventListener("close", onClose);
+    dialog.showModal();
+    nameInput.focus();
+  });
+}
+
+async function createJob({ name, colorIds }) {
+  const status = document.getElementById("api-status");
+  const placeholder = appConfig && appConfig.placeholderValue != null
+    ? Number(appConfig.placeholderValue)
+    : 0;
+  const colorById = new Map((appColors || []).map((c) => [c.id, c]));
+  const tasks = colorIds
+    .map((id) => colorById.get(id))
+    .filter(Boolean)
+    .map((c) => ({
+      name: c.name,
+      color: c.id,
+      value: placeholder
+    }));
+  try {
+    const res = await fetch(API + "/jobs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, tasks })
+    });
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => null);
+      throw new Error((errBody && errBody.error) || "Create failed (" + res.status + ")");
+    }
+    const job = await res.json();
+    appJobs.push(job);
+    renderChart(appConfig, appJobs, appColors);
+    if (status) status.textContent = "Saved · " + appJobs.length + " jobs";
+  } catch (err) {
+    if (status) status.textContent = "Create failed";
+    openTaskDialog({
+      mode: "warn",
+      title: "Could not add job",
+      message: String(err.message || err)
+    });
+  }
+}
+
+async function onAddJobClick() {
+  const result = await openJobDialog();
+  if (!result) return;
+  await createJob(result);
+}
+
+function openAddTaskDialog(job) {
+  const dialog = document.getElementById("add-task-dialog");
+  const form = document.getElementById("add-task-dialog-form");
+  const jobInput = document.getElementById("add-task-dialog-job");
+  const list = document.getElementById("add-task-dialog-tasks");
+  const errorEl = document.getElementById("add-task-dialog-error");
+  const cancelBtn = document.getElementById("add-task-dialog-cancel");
+  const confirmBtn = document.getElementById("add-task-dialog-confirm");
+  const existingColors = new Set(
+    (job.tasks || []).map((t) => t.color).filter(Boolean)
+  );
+
+  list.innerHTML = "";
+  (appColors || []).forEach((c) => {
+    const label = document.createElement("label");
+    label.className = "task-check-item";
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.value = c.id;
+    input.name = "add-task-type";
+    input.checked = existingColors.has(c.id);
+    const swatch = document.createElement("span");
+    swatch.className = "swatch";
+    swatch.style.background = c.hex || "#35507f";
+    const text = document.createElement("span");
+    text.textContent = c.name;
+    label.appendChild(input);
+    label.appendChild(swatch);
+    label.appendChild(text);
+    list.appendChild(label);
+  });
+
+  jobInput.value = job.name || "";
+  errorEl.textContent = "";
+
+  return new Promise((resolve) => {
+    let result = null;
+    function onCancelClick() {
+      dialog.close("cancel");
+    }
+    function onSubmit(e) {
+      const colorIds = Array.from(list.querySelectorAll('input[type="checkbox"]:checked'))
+        .map((el) => el.value)
+        .filter((id) => !existingColors.has(id));
+      if (!colorIds.length) {
+        e.preventDefault();
+        errorEl.textContent = existingColors.size
+          ? "Select a new task type to add."
+          : "Select at least one task.";
+        return;
+      }
+      result = { colorIds };
+      dialog.returnValue = "confirm";
+    }
+    function onClose() {
+      form.removeEventListener("submit", onSubmit);
+      dialog.removeEventListener("close", onClose);
+      cancelBtn.removeEventListener("click", onCancelClick);
+      resolve(dialog.returnValue === "confirm" ? result : null);
+    }
+    cancelBtn.addEventListener("click", onCancelClick);
+    form.addEventListener("submit", onSubmit);
+    dialog.addEventListener("close", onClose);
+    dialog.showModal();
+    confirmBtn.focus();
+  });
+}
+
+async function addTasksToJob(job, { colorIds }) {
+  const placeholder = appConfig && appConfig.placeholderValue != null
+    ? Number(appConfig.placeholderValue)
+    : 0;
+  const colorById = new Map((appColors || []).map((c) => [c.id, c]));
+  const tasks = colorIds
+    .map((id) => colorById.get(id))
+    .filter(Boolean)
+    .map((c) => ({
+      name: c.name,
+      color: c.id,
+      value: placeholder
+    }));
+  if (!tasks.length) return;
+  try {
+    const res = await fetch(API + "/jobs/" + job.id + "/tasks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tasks })
+    });
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => null);
+      throw new Error((errBody && errBody.error) || "Add task failed (" + res.status + ")");
+    }
+    const updated = await res.json();
+    const i = appJobs.findIndex((j) => Number(j.id) === Number(updated.id));
+    if (i >= 0) appJobs[i] = updated;
+    else appJobs.push(updated);
+    renderChart(appConfig, appJobs, appColors);
+    const status = document.getElementById("api-status");
+    if (status) status.textContent = "Saved · " + appJobs.length + " jobs";
+  } catch (err) {
+    const status = document.getElementById("api-status");
+    if (status) status.textContent = "Add task failed";
+    openTaskDialog({
+      mode: "warn",
+      title: "Could not add task",
+      message: String(err.message || err)
+    });
+  }
+}
+
+async function onAddTaskClick(job) {
+  const result = await openAddTaskDialog(job);
+  if (!result) return;
+  await addTasksToJob(job, result);
+}
+
+function openRemoveJobDialog(job) {
+  const dialog = document.getElementById("remove-job-dialog");
+  const form = document.getElementById("remove-job-dialog-form");
+  const message = document.getElementById("remove-job-dialog-message");
+  const cancelBtn = document.getElementById("remove-job-dialog-cancel");
+  const confirmBtn = document.getElementById("remove-job-dialog-confirm");
+  const taskCount = (job.tasks || []).length;
+  message.textContent = taskCount
+    ? "Remove “" + job.name + "” and its " + taskCount + " task" + (taskCount === 1 ? "" : "s") + "? This cannot be undone."
+    : "Remove “" + job.name + "”? This cannot be undone.";
+
+  return new Promise((resolve) => {
+    function onCancelClick() {
+      dialog.close("cancel");
+    }
+    function onSubmit() {
+      dialog.returnValue = "confirm";
+    }
+    function onClose() {
+      form.removeEventListener("submit", onSubmit);
+      dialog.removeEventListener("close", onClose);
+      cancelBtn.removeEventListener("click", onCancelClick);
+      resolve(dialog.returnValue === "confirm");
+    }
+    cancelBtn.addEventListener("click", onCancelClick);
+    form.addEventListener("submit", onSubmit);
+    dialog.addEventListener("close", onClose);
+    dialog.showModal();
+    confirmBtn.focus();
+  });
+}
+
+async function removeJob(job) {
+  const status = document.getElementById("api-status");
+  try {
+    const res = await fetch(API + "/jobs/" + job.id, { method: "DELETE" });
+    if (!res.ok) throw new Error("Remove failed (" + res.status + ")");
+    appJobs = appJobs.filter((j) => Number(j.id) !== Number(job.id));
+    renderChart(appConfig, appJobs, appColors);
+    if (status) status.textContent = "Saved · " + appJobs.length + " jobs";
+  } catch (err) {
+    if (status) status.textContent = "Remove failed";
+    openTaskDialog({
+      mode: "warn",
+      title: "Could not remove job",
+      message: String(err.message || err)
+    });
+  }
+}
+
+async function onRemoveJobClick(job) {
+  const confirmed = await openRemoveJobDialog(job);
+  if (!confirmed) return;
+  await removeJob(job);
+}
+
 document.addEventListener("pointermove", (e) => {
+  if (barResize) {
+    const dx = e.clientX - barResize.x;
+    const dy = e.clientY - barResize.y;
+    if (!barResize.moving && dx * dx + dy * dy >= 25) {
+      barResize.moving = true;
+      document.body.classList.add("is-bar-resizing");
+      applyResizePreview(barResize);
+    }
+    if (!barResize.moving) return;
+    const col = columnIndexFromPoint(barResize.grid, e.clientX, barResize.colCount);
+    const next = clampResizeRange(barResize.edge, barResize.lo, barResize.hi, col, barResize.colCount);
+    if (next.lo === barResize.newLo && next.hi === barResize.newHi) return;
+    barResize.newLo = next.lo;
+    barResize.newHi = next.hi;
+    applyResizePreview(barResize);
+    return;
+  }
   if (barMove) {
     const dx = e.clientX - barMove.x;
     const dy = e.clientY - barMove.y;
@@ -1015,6 +2007,17 @@ document.addEventListener("pointermove", (e) => {
 });
 
 document.addEventListener("pointerup", (e) => {
+  if (barResize) {
+    const changed = barResize.newLo !== barResize.lo || barResize.newHi !== barResize.hi;
+    const wasMoving = barResize.moving;
+    const resize = endBarResize(!wasMoving || !changed);
+    if (!wasMoving) {
+      resize.onClick();
+      return;
+    }
+    if (changed) resize.onFinish(resize.newLo, resize.newHi);
+    return;
+  }
   if (barMove) {
     const move = endBarMove(barMove.moving && barMove.delta === 0);
     if (!move.moving) {
@@ -1033,11 +2036,16 @@ document.addEventListener("pointerup", (e) => {
 });
 
 document.addEventListener("pointercancel", () => {
+  if (barResize) endBarResize(true);
   if (barMove) endBarMove(true);
 });
 
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
+  if (barResize) {
+    endBarResize(true);
+    return;
+  }
   if (barMove) {
     endBarMove(true);
     return;
@@ -1069,13 +2077,31 @@ function renderChart(config, JOBS, colors) {
 
   const legend = document.getElementById("legend");
   legend.innerHTML = "";
+  syncCategoryClasses(colors);
+  const allBtn = document.createElement("button");
+  allBtn.type = "button";
+  allBtn.id = "legend-all";
+  allBtn.className = "legend-btn legend-btn-all";
+  allBtn.textContent = "All";
+  allBtn.title = "Show all categories";
+  allBtn.hidden = isShowingAllCategories();
+  allBtn.addEventListener("click", selectAllCategories);
+  legend.appendChild(allBtn);
   (colors || []).forEach(c => {
-    const item = document.createElement("span");
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = "legend-btn" + (isCategoryOn(c.id) ? " is-active" : "");
+    item.dataset.color = c.id;
+    item.setAttribute("aria-pressed", isCategoryOn(c.id) ? "true" : "false");
+    item.title = "Toggle " + c.name;
     const swatch = document.createElement("span");
     swatch.className = "swatch";
+    swatch.style.borderColor = c.hex;
     swatch.style.background = c.hex;
+    swatch.style.color = c.hex;
     item.appendChild(swatch);
     item.appendChild(document.createTextNode(c.name));
+    item.addEventListener("click", () => toggleCategory(c.id));
     legend.appendChild(item);
   });
 
@@ -1085,6 +2111,7 @@ function renderChart(config, JOBS, colors) {
   const start = new Date(TIMELINE_START + "T00:00:00");
   const end = new Date(TIMELINE_END + "T00:00:00");
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   updatePeriodCopy(start, end);
 
@@ -1097,6 +2124,15 @@ function renderChart(config, JOBS, colors) {
     if (index === 0) return false;
     const prev = columns[index - 1];
     return colDate.getFullYear() !== prev.getFullYear();
+  }
+  function isCurrentPeriod(colDate, index) {
+    const periodEnd = index + 1 < columns.length ? columns[index + 1] : end;
+    return today >= colDate && today < periodEnd;
+  }
+  function periodColClass(base, colDate, index) {
+    return base
+      + (isYearStart(colDate, index) ? " year-start" : "")
+      + (isCurrentPeriod(colDate, index) ? " is-current" : "");
   }
   function fmtMoney(n) {
     return "$" + Math.round(n).toLocaleString();
@@ -1125,11 +2161,21 @@ function renderChart(config, JOBS, colors) {
   headerRow.className = "header-row";
   const headerLabel = document.createElement("div");
   headerLabel.className = "header-label";
-  headerLabel.textContent = "Job / task";
+  const headerTitle = document.createElement("span");
+  headerTitle.textContent = "Job / task";
+  headerLabel.appendChild(headerTitle);
+  const addBtn = document.createElement("button");
+  addBtn.type = "button";
+  addBtn.className = "header-add-btn";
+  addBtn.setAttribute("aria-label", "Add job");
+  addBtn.title = "Add job";
+  addBtn.textContent = "Add +";
+  addBtn.addEventListener("click", onAddJobClick);
+  headerLabel.appendChild(addBtn);
   headerRow.appendChild(headerLabel);
   columns.forEach((colDate, i) => {
     const col = document.createElement("div");
-    col.className = "header-col" + (isYearStart(colDate, i) ? " year-start" : "");
+    col.className = periodColClass("header-col", colDate, i);
     col.textContent = formatColumnHeader(colDate, periodMode);
     headerRow.appendChild(col);
   });
@@ -1146,7 +2192,7 @@ function renderChart(config, JOBS, colors) {
     gridCols.className = "row-grid-cols";
     columns.forEach((colDate, i) => {
       const c = document.createElement("div");
-      c.className = "grid-col" + (isYearStart(colDate, i) ? " year-start" : "");
+      c.className = periodColClass("grid-col", colDate, i);
       c.dataset.col = String(i);
       gridCols.appendChild(c);
     });
@@ -1231,13 +2277,21 @@ function renderChart(config, JOBS, colors) {
     await persistJob(job);
   }
 
+  async function finishResize(job, task, newLo, newHi) {
+    task.start = toIsoDate(columns[newLo]);
+    task.end = toIsoDate(newHi + 1 < columns.length ? columns[newHi + 1] : end);
+    await persistJob(job);
+  }
+
   function bindTaskGrid(grid, job, task, idxList) {
     const occupied = new Set(idxList);
     grid.addEventListener("pointerdown", (e) => {
       if (e.button !== 0) return;
-      if (barMove) return;
+      if (barMove || barResize) return;
       if (e.target.closest(".segment")) return;
       if (document.getElementById("task-dialog").open) return;
+      if (document.getElementById("job-dialog").open) return;
+      if (document.getElementById("add-task-dialog").open) return;
       const col = columnIndexFromPoint(grid, e.clientX, columns.length);
       rangeDrag = {
         grid,
@@ -1252,25 +2306,71 @@ function renderChart(config, JOBS, colors) {
       e.preventDefault();
     });
     grid.querySelectorAll(".segment").forEach((seg) => {
+      seg.addEventListener("pointermove", (e) => {
+        if (barMove || barResize || rangeDrag) return;
+        const edge = segmentEdgeAt(
+          seg,
+          e.clientX,
+          seg.classList.contains("first"),
+          seg.classList.contains("last")
+        );
+        seg.style.cursor = edge ? "ew-resize" : "";
+      });
+      seg.addEventListener("pointerleave", () => {
+        if (!barResize) seg.style.cursor = "";
+      });
       seg.addEventListener("pointerdown", (e) => {
         if (e.button !== 0) return;
         if (document.getElementById("task-dialog").open) return;
+        if (document.getElementById("job-dialog").open) return;
+        if (document.getElementById("add-task-dialog").open) return;
         e.stopPropagation();
         e.preventDefault();
         try { seg.setPointerCapture(e.pointerId); } catch (err) {}
+        const lo = idxList[0];
+        const hi = idxList[idxList.length - 1];
+        const edge = segmentEdgeAt(
+          seg,
+          e.clientX,
+          seg.classList.contains("first"),
+          seg.classList.contains("last")
+        );
+        const segments = Array.from(grid.querySelectorAll(".segment"));
+        const onClick = () => updateAmount(job, task, idxList.length);
+        if (edge) {
+          barResize = {
+            edge,
+            grid,
+            colCount: columns.length,
+            lo,
+            hi,
+            newLo: lo,
+            newHi: hi,
+            value: task.value || 0,
+            formatSeg: (n) => fmtDisplay(n, false),
+            temps: [],
+            moving: false,
+            x: e.clientX,
+            y: e.clientY,
+            segments,
+            onClick,
+            onFinish: (newLo, newHi) => finishResize(job, task, newLo, newHi)
+          };
+          return;
+        }
         barMove = {
           grid,
           colCount: columns.length,
           idxList: idxList.slice(),
-          lo: idxList[0],
-          hi: idxList[idxList.length - 1],
+          lo,
+          hi,
           grabCol: columnIndexFromPoint(grid, e.clientX, columns.length),
           delta: 0,
           moving: false,
           x: e.clientX,
           y: e.clientY,
-          segments: Array.from(grid.querySelectorAll(".segment")),
-          onClick: () => updateAmount(job, task, idxList.length),
+          segments,
+          onClick,
           onFinish: (delta) => finishMove(job, task, idxList, delta)
         };
       });
@@ -1284,21 +2384,52 @@ function renderChart(config, JOBS, colors) {
   }
 
   JOBS.forEach(job => {
+    const block = document.createElement("div");
+    block.className = "job-block";
+
     const jobRow = document.createElement("div");
     jobRow.className = "body-row job-row";
     const jobLabel = document.createElement("div");
     jobLabel.className = "row-label";
-    jobLabel.textContent = job.name;
+    const jobName = document.createElement("span");
+    jobName.textContent = job.name;
+    jobLabel.appendChild(jobName);
+    const jobActions = document.createElement("div");
+    jobActions.className = "job-row-actions";
+    const addTaskBtn = document.createElement("button");
+    addTaskBtn.type = "button";
+    addTaskBtn.className = "job-add-task-btn";
+    addTaskBtn.setAttribute("aria-label", "Add task to " + job.name);
+    addTaskBtn.title = "Add task";
+    addTaskBtn.textContent = "+";
+    addTaskBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      onAddTaskClick(job);
+    });
+    const removeJobBtn = document.createElement("button");
+    removeJobBtn.type = "button";
+    removeJobBtn.className = "job-remove-btn";
+    removeJobBtn.setAttribute("aria-label", "Remove " + job.name);
+    removeJobBtn.title = "Remove job";
+    removeJobBtn.textContent = "−";
+    removeJobBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      onRemoveJobClick(job);
+    });
+    jobActions.appendChild(removeJobBtn);
+    jobActions.appendChild(addTaskBtn);
+    jobLabel.appendChild(jobActions);
     jobRow.appendChild(jobLabel);
     const jobGrid = document.createElement("div");
     jobGrid.className = "row-grid";
     addGridCols(jobGrid);
     jobRow.appendChild(jobGrid);
-    chart.appendChild(jobRow);
+    block.appendChild(jobRow);
 
     job.tasks.forEach(task => {
       const row = document.createElement("div");
       row.className = "body-row task-row";
+      if (task.color) row.dataset.color = task.color;
       const label = document.createElement("div");
       label.className = "row-label";
       label.textContent = task.name;
@@ -1310,6 +2441,7 @@ function renderChart(config, JOBS, colors) {
 
       const idxList = taskColumnIndices(task);
       const perPeriod = idxList.length ? (task.value || 0) / idxList.length : 0;
+      const includeInTotals = isCategoryOn(task.color);
 
       idxList.forEach((colIdx, pos) => {
         const seg = document.createElement("div");
@@ -1325,14 +2457,15 @@ function renderChart(config, JOBS, colors) {
         seg.title = task.name + " — " + formatColumnHeader(columns[colIdx], periodMode) + ": " + fmtTitle(perPeriod);
         grid.appendChild(seg);
 
-        periodTotals[colIdx] += perPeriod;
+        if (includeInTotals) periodTotals[colIdx] += perPeriod;
       });
 
       row.appendChild(grid);
       bindTaskGrid(grid, job, task, idxList);
-
-      chart.appendChild(row);
+      block.appendChild(row);
     });
+
+    chart.appendChild(block);
   });
 
   // Precompute which column indices start a new month (used to "square off" the bottom rows by month)
@@ -1384,26 +2517,31 @@ function renderChart(config, JOBS, colors) {
   footerRow.appendChild(footerLabel);
   periodTotals.forEach((v, idx) => {
     const cell = document.createElement("div");
-    cell.className = "footer-col" + (isMonthStart[idx] ? " month-start" : "");
+    cell.className = "footer-col"
+      + (isMonthStart[idx] ? " month-start" : "")
+      + (isCurrentPeriod(columns[idx], idx) ? " is-current" : "");
     cell.textContent = v > 0 ? fmtDisplay(v, true) : "";
     footerRow.appendChild(cell);
   });
   footerBar.appendChild(footerRow);
 
-  // Footer: KMI Cost (70% of period billing total)
-  const kmiCostRow = document.createElement("div");
-  kmiCostRow.className = "footer-row row-teal";
-  const kmiCostLabel = document.createElement("div");
-  kmiCostLabel.className = "footer-label label-teal";
-  kmiCostLabel.textContent = "KMI Cost";
-  kmiCostRow.appendChild(kmiCostLabel);
-  periodTotals.forEach((v, idx) => {
-    const cell = document.createElement("div");
-    cell.className = "footer-col" + (isMonthStart[idx] ? " month-start" : "");
-    cell.textContent = v > 0 ? fmtDisplay(v * kmiCostRate, true) : "";
-    kmiCostRow.appendChild(cell);
-  });
-  footerBar.appendChild(kmiCostRow);
+  if (!crewMode) {
+    const kmiCostRow = document.createElement("div");
+    kmiCostRow.className = "footer-row row-teal";
+    const kmiCostLabel = document.createElement("div");
+    kmiCostLabel.className = "footer-label label-teal";
+    kmiCostLabel.textContent = "KMI Cost";
+    kmiCostRow.appendChild(kmiCostLabel);
+    periodTotals.forEach((v, idx) => {
+      const cell = document.createElement("div");
+      cell.className = "footer-col"
+        + (isMonthStart[idx] ? " month-start" : "")
+        + (isCurrentPeriod(columns[idx], idx) ? " is-current" : "");
+      cell.textContent = v > 0 ? fmtDisplay(v * kmiCostRate, true) : "";
+      kmiCostRow.appendChild(cell);
+    });
+    footerBar.appendChild(kmiCostRow);
+  }
 
   // Footer: monthly total (groups the two-week period columns by month)
   const monthlyTotalRow = document.createElement("div");
@@ -1439,18 +2577,22 @@ function renderChart(config, JOBS, colors) {
     const ROWS_HEIGHT_BUDGET = 905; // usable row space per sheet at this font/row size
 
     // Precompute each job's row-block height, then pack jobs into row-groups (never splitting a job)
-    const jobHeights = JOBS.map(job => JOB_ROW_H + job.tasks.length * TASK_ROW_H);
+    const printJobs = JOBS.map((job) => ({
+      job,
+      tasks: job.tasks.filter((task) => isCategoryOn(task.color))
+    })).filter((entry) => entry.tasks.length);
+    const jobHeights = printJobs.map((entry) => JOB_ROW_H + entry.tasks.length * TASK_ROW_H);
     const rowGroups = [];
     let current = [];
     let currentHeight = 0;
-    JOBS.forEach((job, i) => {
+    printJobs.forEach((entry, i) => {
       const h = jobHeights[i];
       if (current.length && currentHeight + h > ROWS_HEIGHT_BUDGET) {
         rowGroups.push(current);
         current = [];
         currentHeight = 0;
       }
-      current.push(job);
+      current.push(entry);
       currentHeight += h;
     });
     if (current.length) rowGroups.push(current);
@@ -1473,6 +2615,7 @@ function renderChart(config, JOBS, colors) {
       const totals = new Array(pageColIdx.length).fill(0);
       JOBS.forEach(job => {
         job.tasks.forEach(task => {
+          if (!isCategoryOn(task.color)) return;
           const fullIdxList = taskColumnIndices(task);
           if (!fullIdxList.length) return;
           const perPeriod = (task.value || 0) / fullIdxList.length;
@@ -1532,7 +2675,10 @@ function renderChart(config, JOBS, colors) {
         });
         page.appendChild(pHeader);
 
-        groupJobs.forEach(job => {
+        groupJobs.forEach(({ job, tasks }) => {
+          const block = document.createElement("div");
+          block.className = "p-job-block";
+
           const jobRow = document.createElement("div");
           jobRow.className = "p-body-row p-job-row";
           if (p === 0) {
@@ -1545,15 +2691,16 @@ function renderChart(config, JOBS, colors) {
           jobGrid.className = "p-row-grid";
           pAddGridCols(jobGrid, pageColIdx);
           jobRow.appendChild(jobGrid);
-          page.appendChild(jobRow);
+          block.appendChild(jobRow);
 
-          job.tasks.forEach(task => {
+          tasks.forEach(task => {
             const fullIdxList = taskColumnIndices(task);
             const pageIdxList = fullIdxList.filter(i => pageColIdx.includes(i));
             const perPeriod = fullIdxList.length ? (task.value || 0) / fullIdxList.length : 0;
 
             const row = document.createElement("div");
             row.className = "p-body-row p-task-row";
+            if (task.color) row.dataset.color = task.color;
             if (p === 0) {
               const label = document.createElement("div");
               label.className = "p-row-label";
@@ -1579,8 +2726,10 @@ function renderChart(config, JOBS, colors) {
             });
 
             row.appendChild(grid);
-            page.appendChild(row);
+            block.appendChild(row);
           });
+
+          page.appendChild(block);
         });
 
         // footer for this page — same totals repeat under every row-group for this date range
@@ -1617,22 +2766,23 @@ function renderChart(config, JOBS, colors) {
         });
         page.appendChild(pActual);
 
-        // KMI Cost row — 70% of period billing total
-        const pKmiCost = document.createElement("div");
-        pKmiCost.className = "p-kmicost-row";
-        if (p === 0) {
-          const pKmiCostLabel = document.createElement("div");
-          pKmiCostLabel.className = "p-kmicost-label";
-          pKmiCostLabel.textContent = "KMI Cost";
-          pKmiCost.appendChild(pKmiCostLabel);
+        if (!crewMode) {
+          const pKmiCost = document.createElement("div");
+          pKmiCost.className = "p-kmicost-row";
+          if (p === 0) {
+            const pKmiCostLabel = document.createElement("div");
+            pKmiCostLabel.className = "p-kmicost-label";
+            pKmiCostLabel.textContent = "KMI Cost";
+            pKmiCost.appendChild(pKmiCostLabel);
+          }
+          computePeriodTotals(pageColIdx).forEach(v => {
+            const cell = document.createElement("div");
+            cell.className = "p-kmicost-col";
+            cell.textContent = v > 0 ? fmtDisplay(v * kmiCostRate, true) : "";
+            pKmiCost.appendChild(cell);
+          });
+          page.appendChild(pKmiCost);
         }
-        computePeriodTotals(pageColIdx).forEach(v => {
-          const cell = document.createElement("div");
-          cell.className = "p-kmicost-col";
-          cell.textContent = v > 0 ? fmtDisplay(v * kmiCostRate, true) : "";
-          pKmiCost.appendChild(cell);
-        });
-        page.appendChild(pKmiCost);
 
         printRoot.appendChild(page);
       }
