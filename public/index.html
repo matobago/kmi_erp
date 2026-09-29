@@ -14,6 +14,10 @@
     --purple: #6b4f9e;
     --gray: #7a7a76;
     --green: #7cb885;
+    --plaster: #b8956a;
+    --shower: #5a9e9a;
+    --ballistic: #4a5568;
+    --mineral: #8a9a5b;
     --job-row-bg: #e4e4e1;
     --gold: #c9a44c;
     --gold-seg: #d4b565;
@@ -173,7 +177,11 @@
   body:not(.cat-gold) .task-row[data-color="gold"],
   body:not(.cat-purple) .task-row[data-color="purple"],
   body:not(.cat-gray) .task-row[data-color="gray"],
-  body:not(.cat-green) .task-row[data-color="green"] {
+  body:not(.cat-green) .task-row[data-color="green"],
+  body:not(.cat-plaster) .task-row[data-color="plaster"],
+  body:not(.cat-shower) .task-row[data-color="shower"],
+  body:not(.cat-ballistic) .task-row[data-color="ballistic"],
+  body:not(.cat-mineral) .task-row[data-color="mineral"] {
     height: 0;
     min-height: 0;
     opacity: 0;
@@ -193,7 +201,11 @@
   body.cat-gold .job-block:has(.task-row[data-color="gold"]) > .job-row,
   body.cat-purple .job-block:has(.task-row[data-color="purple"]) > .job-row,
   body.cat-gray .job-block:has(.task-row[data-color="gray"]) > .job-row,
-  body.cat-green .job-block:has(.task-row[data-color="green"]) > .job-row {
+  body.cat-green .job-block:has(.task-row[data-color="green"]) > .job-row,
+  body.cat-plaster .job-block:has(.task-row[data-color="plaster"]) > .job-row,
+  body.cat-shower .job-block:has(.task-row[data-color="shower"]) > .job-row,
+  body.cat-ballistic .job-block:has(.task-row[data-color="ballistic"]) > .job-row,
+  body.cat-mineral .job-block:has(.task-row[data-color="mineral"]) > .job-row {
     height: 30px;
     min-height: 30px;
     opacity: 1;
@@ -932,6 +944,44 @@
   .footer-col.col-green-alt {
     background: #76aed8;
   }
+  .footer-row.row-billing {
+    background: #e0cb93;
+    min-height: 36px;
+    margin-top: 8px;
+  }
+  .footer-label.label-billing {
+    background: #e0cb93;
+    color: #1e2939;
+    border-right: 2px solid var(--gold);
+  }
+  .footer-col.footer-billing-cell {
+    padding: 0 2px;
+  }
+  .footer-billing-input {
+    width: 100%;
+    height: 28px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.55);
+    color: #1e2939;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    padding: 0 2px;
+  }
+  .footer-billing-input:hover {
+    border-color: rgba(30, 41, 57, 0.25);
+  }
+  .footer-billing-input:focus {
+    outline: none;
+    border-color: var(--navy);
+    background: #fff;
+  }
+  .footer-billing-input::placeholder {
+    color: rgba(30, 41, 57, 0.35);
+    font-weight: 600;
+  }
   .footer-month-row {
     display: flex;
     background: var(--navy);
@@ -1030,7 +1080,11 @@
     body:not(.cat-gold) .p-task-row[data-color="gold"],
     body:not(.cat-purple) .p-task-row[data-color="purple"],
     body:not(.cat-gray) .p-task-row[data-color="gray"],
-    body:not(.cat-green) .p-task-row[data-color="green"] {
+    body:not(.cat-green) .p-task-row[data-color="green"],
+    body:not(.cat-plaster) .p-task-row[data-color="plaster"],
+    body:not(.cat-shower) .p-task-row[data-color="shower"],
+    body:not(.cat-ballistic) .p-task-row[data-color="ballistic"],
+    body:not(.cat-mineral) .p-task-row[data-color="mineral"] {
       height: 0 !important;
       min-height: 0;
       opacity: 0;
@@ -1048,7 +1102,11 @@
     body.cat-gold .p-job-block:has(.p-task-row[data-color="gold"]) > .p-job-row,
     body.cat-purple .p-job-block:has(.p-task-row[data-color="purple"]) > .p-job-row,
     body.cat-gray .p-job-block:has(.p-task-row[data-color="gray"]) > .p-job-row,
-    body.cat-green .p-job-block:has(.p-task-row[data-color="green"]) > .p-job-row {
+    body.cat-green .p-job-block:has(.p-task-row[data-color="green"]) > .p-job-row,
+    body.cat-plaster .p-job-block:has(.p-task-row[data-color="plaster"]) > .p-job-row,
+    body.cat-shower .p-job-block:has(.p-task-row[data-color="shower"]) > .p-job-row,
+    body.cat-ballistic .p-job-block:has(.p-task-row[data-color="ballistic"]) > .p-job-row,
+    body.cat-mineral .p-job-block:has(.p-task-row[data-color="mineral"]) > .p-job-row {
       height: 17px !important;
       opacity: 1;
       border-bottom-width: 1px;
@@ -1101,18 +1159,18 @@
       display: flex; align-items: center; justify-content: center; font-size: 9px; color: #8a4b12;
       border-right: 1px solid rgba(0,0,0,0.06);
     }
-    .p-kmicost-row {
-      display: flex; background: #dbe9f5; border-top: 1px solid #a8c9e0;
+    .p-billing-row {
+      display: flex; background: #e0cb93; border-top: 1px solid var(--gold);
       height: 20px; font-weight: 700; margin-top: 3px;
     }
-    .p-kmicost-label {
+    .p-billing-label {
       width: var(--label-w-p); min-width: var(--label-w-p); flex-shrink: 0;
-      display: flex; align-items: center; padding: 0 8px; font-size: 9.5px; color: #1b4f72;
-      border-right: 2px solid #a8c9e0;
+      display: flex; align-items: center; padding: 0 8px; font-size: 9.5px; color: #1e2939;
+      border-right: 2px solid var(--gold);
     }
-    .p-kmicost-col {
+    .p-billing-col {
       width: var(--col-w-p); min-width: var(--col-w-p); flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 9px; color: #1b4f72;
+      display: flex; align-items: center; justify-content: center; font-size: 9px; color: #1e2939;
       border-right: 1px solid rgba(0,0,0,0.06);
     }
   }
@@ -1136,8 +1194,8 @@
   <h1>Construction timeline</h1>
   <div class="period-controls">
     <div class="period-toggle" role="group" aria-label="Period view">
-      <button type="button" id="period-biweekly" class="is-active" data-period="biweekly">Biweekly</button>
-      <button type="button" id="period-monthly" data-period="monthly">Monthly</button>
+      <button type="button" id="period-monthly" class="is-active" data-period="monthly">Monthly</button>
+      <button type="button" id="period-biweekly" data-period="biweekly">Biweekly</button>
     </div>
     <button type="button" id="crew-toggle" class="crew-toggle" aria-pressed="false">Crew</button>
   </div>
@@ -1224,7 +1282,10 @@ const COL_W = 62;
 const EDGE_HIT = 8;
 const PERIOD_MODE_KEY = "kmi-period-mode";
 const CATEGORY_OFF_KEY = "kmi-category-off";
-const KNOWN_COLOR_IDS = ["navy", "steel", "coral", "gold", "purple", "gray"];
+const KNOWN_COLOR_IDS = [
+  "navy", "steel", "coral", "gold", "purple", "gray",
+  "plaster", "shower", "ballistic", "mineral"
+];
 
 let appConfig = null;
 let appJobs = [];
@@ -1232,7 +1293,7 @@ let appColors = [];
 let rangeDrag = null;
 let barMove = null;
 let barResize = null;
-let periodMode = localStorage.getItem(PERIOD_MODE_KEY) === "monthly" ? "monthly" : "biweekly";
+let periodMode = localStorage.getItem(PERIOD_MODE_KEY) === "biweekly" ? "biweekly" : "monthly";
 let crewMode = false;
 let categoryOff = loadCategoryOff();
 let filterRefreshTimer = null;
@@ -1370,6 +1431,10 @@ function addMonths(d, n) {
   return new Date(d.getFullYear(), d.getMonth() + n, 1);
 }
 
+function addDays(d, n) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+}
+
 function buildPeriodColumns(start, end, mode) {
   const columns = [];
   if (mode === "monthly") {
@@ -1380,11 +1445,10 @@ function buildPeriodColumns(start, end, mode) {
     }
     return columns;
   }
-  let cursor = new Date(start);
-  const MS_DAY = 86400000;
+  let cursor = addDays(start, 0);
   while (cursor < end) {
     columns.push(new Date(cursor));
-    cursor = new Date(cursor.getTime() + 14 * MS_DAY);
+    cursor = addDays(cursor, 14);
   }
   return columns;
 }
@@ -1677,6 +1741,42 @@ async function persistJob(job) {
     openTaskDialog({
       mode: "warn",
       title: "Could not save",
+      message: String(err.message || err)
+    });
+  }
+}
+
+function monthBillingKey(d) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+}
+
+function formatBillingInput(n) {
+  if (n == null || n === "") return "";
+  return "$" + Math.round(Number(n)).toLocaleString();
+}
+
+async function persistActualBilling(monthKey, amount) {
+  const status = document.getElementById("api-status");
+  if (!appConfig.actualBilling || typeof appConfig.actualBilling !== "object") {
+    appConfig.actualBilling = {};
+  }
+  const next = { ...appConfig.actualBilling };
+  if (amount == null) delete next[monthKey];
+  else next[monthKey] = amount;
+  appConfig.actualBilling = next;
+  try {
+    const res = await fetch(API + "/config", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ actualBilling: next })
+    });
+    if (!res.ok) throw new Error("Save failed (" + res.status + ")");
+    if (status) status.textContent = "Saved · Actual Billing";
+  } catch (err) {
+    if (status) status.textContent = "Save failed";
+    openTaskDialog({
+      mode: "warn",
+      title: "Could not save Actual Billing",
       message: String(err.message || err)
     });
   }
@@ -2064,8 +2164,7 @@ function renderChart(config, JOBS, colors) {
   const pageY = window.scrollY;
   const TIMELINE_START = config.timelineStart;
   const TIMELINE_END = config.timelineEnd;
-  const actualCostRate = config.actualCostRate != null ? config.actualCostRate : 0.75;
-  const kmiCostRate = config.kmiCostRate != null ? config.kmiCostRate : 0.7;
+  const actualCostRate = config.actualCostRate != null ? config.actualCostRate : 0.7;
   const colorMap = {};
   (colors || []).forEach(c => { colorMap[c.id] = c; });
 
@@ -2508,47 +2607,11 @@ function renderChart(config, JOBS, colors) {
   footerBar.className = "footer-bar";
   footerBar.appendChild(footerMonthRow);
 
-  // Footer: period totals
-  const footerRow = document.createElement("div");
-  footerRow.className = "footer-row";
-  const footerLabel = document.createElement("div");
-  footerLabel.className = "footer-label";
-  footerLabel.textContent = crewMode ? "Period crew total" : "Period billing total";
-  footerRow.appendChild(footerLabel);
-  periodTotals.forEach((v, idx) => {
-    const cell = document.createElement("div");
-    cell.className = "footer-col"
-      + (isMonthStart[idx] ? " month-start" : "")
-      + (isCurrentPeriod(columns[idx], idx) ? " is-current" : "");
-    cell.textContent = v > 0 ? fmtDisplay(v, true) : "";
-    footerRow.appendChild(cell);
-  });
-  footerBar.appendChild(footerRow);
-
-  if (!crewMode) {
-    const kmiCostRow = document.createElement("div");
-    kmiCostRow.className = "footer-row row-teal";
-    const kmiCostLabel = document.createElement("div");
-    kmiCostLabel.className = "footer-label label-teal";
-    kmiCostLabel.textContent = "KMI Cost";
-    kmiCostRow.appendChild(kmiCostLabel);
-    periodTotals.forEach((v, idx) => {
-      const cell = document.createElement("div");
-      cell.className = "footer-col"
-        + (isMonthStart[idx] ? " month-start" : "")
-        + (isCurrentPeriod(columns[idx], idx) ? " is-current" : "");
-      cell.textContent = v > 0 ? fmtDisplay(v * kmiCostRate, true) : "";
-      kmiCostRow.appendChild(cell);
-    });
-    footerBar.appendChild(kmiCostRow);
-  }
-
-  // Footer: monthly total (groups the two-week period columns by month)
   const monthlyTotalRow = document.createElement("div");
   monthlyTotalRow.className = "footer-row row-green";
   const monthlyTotalLabel = document.createElement("div");
   monthlyTotalLabel.className = "footer-label label-green";
-  monthlyTotalLabel.textContent = crewMode ? "Monthly crew total" : "Monthly total";
+  monthlyTotalLabel.textContent = crewMode ? "Monthly crew total" : "Monthly Billing total";
   monthlyTotalRow.appendChild(monthlyTotalLabel);
 
   monthGroups.forEach((group) => {
@@ -2561,6 +2624,93 @@ function renderChart(config, JOBS, colors) {
     monthlyTotalRow.appendChild(cell);
   });
   footerBar.appendChild(monthlyTotalRow);
+
+  if (!crewMode) {
+    const actualBillingMap = (config.actualBilling && typeof config.actualBilling === "object")
+      ? config.actualBilling
+      : {};
+
+    const actualCostRow = document.createElement("div");
+    actualCostRow.className = "footer-row row-teal";
+    const actualCostLabel = document.createElement("div");
+    actualCostLabel.className = "footer-label label-teal";
+    actualCostLabel.textContent = "Actual cost";
+    actualCostRow.appendChild(actualCostLabel);
+    monthGroups.forEach((group) => {
+      const cell = document.createElement("div");
+      cell.className = "footer-col month-box";
+      cell.style.width = (group.count * COL_W_PX) + "px";
+      cell.style.minWidth = (group.count * COL_W_PX) + "px";
+      cell.style.flexShrink = "0";
+      cell.textContent = group.sum > 0 ? fmtDisplay(group.sum * actualCostRate, true) : "";
+      actualCostRow.appendChild(cell);
+    });
+    footerBar.appendChild(actualCostRow);
+
+    const actualBillingRow = document.createElement("div");
+    actualBillingRow.className = "footer-row row-billing";
+    const actualBillingLabel = document.createElement("div");
+    actualBillingLabel.className = "footer-label label-billing";
+    actualBillingLabel.textContent = "Actual Billing";
+    actualBillingRow.appendChild(actualBillingLabel);
+    monthGroups.forEach((group) => {
+      const key = monthBillingKey(group.date);
+      const saved = actualBillingMap[key];
+      const cell = document.createElement("div");
+      cell.className = "footer-col month-box footer-billing-cell";
+      cell.style.width = (group.count * COL_W_PX) + "px";
+      cell.style.minWidth = (group.count * COL_W_PX) + "px";
+      cell.style.flexShrink = "0";
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "footer-billing-input";
+      input.inputMode = "decimal";
+      input.autocomplete = "off";
+      input.placeholder = "—";
+      input.dataset.monthKey = key;
+      input.value = formatBillingInput(saved);
+      input.title = "Actual Billing · " + group.date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+      input.addEventListener("focus", () => {
+        const current = appConfig.actualBilling && appConfig.actualBilling[key];
+        input.value = current != null ? String(current) : "";
+        input.select();
+      });
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          input.blur();
+        }
+        if (e.key === "Escape") {
+          e.preventDefault();
+          const current = appConfig.actualBilling && appConfig.actualBilling[key];
+          input.value = formatBillingInput(current);
+          input.blur();
+        }
+      });
+      input.addEventListener("blur", () => {
+        const raw = input.value.trim();
+        const prev = appConfig.actualBilling && appConfig.actualBilling[key];
+        if (raw === "") {
+          input.value = "";
+          if (prev == null) return;
+          persistActualBilling(key, null);
+          return;
+        }
+        const amount = parseAmount(raw);
+        if (amount == null) {
+          input.value = formatBillingInput(prev);
+          return;
+        }
+        input.value = formatBillingInput(amount);
+        if (prev === amount) return;
+        persistActualBilling(key, amount);
+      });
+      cell.appendChild(input);
+      actualBillingRow.appendChild(cell);
+    });
+    footerBar.appendChild(actualBillingRow);
+  }
+
   chart.appendChild(footerBar);
 
   // ---- Build print pages: chunk the timeline into landscape-page-sized slices.
@@ -2733,15 +2883,17 @@ function renderChart(config, JOBS, colors) {
         });
 
         // footer for this page — same totals repeat under every row-group for this date range
+        const pageTotals = computePeriodTotals(pageColIdx);
+
         const pFooter = document.createElement("div");
         pFooter.className = "p-footer-row";
         if (p === 0) {
           const pFooterLabel = document.createElement("div");
           pFooterLabel.className = "p-footer-label";
-          pFooterLabel.textContent = crewMode ? "Period crew total" : "Period billing total";
+          pFooterLabel.textContent = crewMode ? "Monthly crew total" : "Monthly Billing total";
           pFooter.appendChild(pFooterLabel);
         }
-        computePeriodTotals(pageColIdx).forEach(v => {
+        pageTotals.forEach(v => {
           const cell = document.createElement("div");
           cell.className = "p-footer-col";
           cell.textContent = v > 0 ? fmtDisplay(v, true) : "";
@@ -2749,39 +2901,44 @@ function renderChart(config, JOBS, colors) {
         });
         page.appendChild(pFooter);
 
-        // Actual Cost row — period billing total less 25%
-        const pActual = document.createElement("div");
-        pActual.className = "p-actual-row";
-        if (p === 0) {
-          const pActualLabel = document.createElement("div");
-          pActualLabel.className = "p-actual-label";
-          pActualLabel.textContent = "Actual Cost";
-          pActual.appendChild(pActualLabel);
-        }
-        computePeriodTotals(pageColIdx).forEach(v => {
-          const cell = document.createElement("div");
-          cell.className = "p-actual-col";
-          cell.textContent = v > 0 ? fmtDisplay(v * actualCostRate, false) : "";
-          pActual.appendChild(cell);
-        });
-        page.appendChild(pActual);
-
         if (!crewMode) {
-          const pKmiCost = document.createElement("div");
-          pKmiCost.className = "p-kmicost-row";
+          const actualBillingMap = (config.actualBilling && typeof config.actualBilling === "object")
+            ? config.actualBilling
+            : {};
+
+          const pActual = document.createElement("div");
+          pActual.className = "p-actual-row";
           if (p === 0) {
-            const pKmiCostLabel = document.createElement("div");
-            pKmiCostLabel.className = "p-kmicost-label";
-            pKmiCostLabel.textContent = "KMI Cost";
-            pKmiCost.appendChild(pKmiCostLabel);
+            const pActualLabel = document.createElement("div");
+            pActualLabel.className = "p-actual-label";
+            pActualLabel.textContent = "Actual cost";
+            pActual.appendChild(pActualLabel);
           }
-          computePeriodTotals(pageColIdx).forEach(v => {
+          pageTotals.forEach(v => {
             const cell = document.createElement("div");
-            cell.className = "p-kmicost-col";
-            cell.textContent = v > 0 ? fmtDisplay(v * kmiCostRate, true) : "";
-            pKmiCost.appendChild(cell);
+            cell.className = "p-actual-col";
+            cell.textContent = v > 0 ? fmtDisplay(v * actualCostRate, false) : "";
+            pActual.appendChild(cell);
           });
-          page.appendChild(pKmiCost);
+          page.appendChild(pActual);
+
+          const pBilling = document.createElement("div");
+          pBilling.className = "p-billing-row";
+          if (p === 0) {
+            const pBillingLabel = document.createElement("div");
+            pBillingLabel.className = "p-billing-label";
+            pBillingLabel.textContent = "Actual Billing";
+            pBilling.appendChild(pBillingLabel);
+          }
+          pageColIdx.forEach((ci) => {
+            const key = monthBillingKey(columns[ci]);
+            const saved = actualBillingMap[key];
+            const cell = document.createElement("div");
+            cell.className = "p-billing-col";
+            cell.textContent = saved != null && saved > 0 ? fmtDisplay(saved, true) : "";
+            pBilling.appendChild(cell);
+          });
+          page.appendChild(pBilling);
         }
 
         printRoot.appendChild(page);
