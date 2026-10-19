@@ -46,7 +46,7 @@
     flex-direction: column;
     overflow: hidden;
   }
-  h1, .subtitle, .legend, .title-bar {
+  h1, .subtitle, .legend, .title-bar, .period-controls {
     flex-shrink: 0;
   }
   .title-bar {
@@ -64,10 +64,10 @@
   }
   .period-controls {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
+    align-items: center;
+    gap: 8px;
     flex-shrink: 0;
+    margin: 0 0 8px;
   }
   .period-toggle {
     display: inline-flex;
@@ -76,6 +76,45 @@
     overflow: hidden;
     background: #fff;
     flex-shrink: 0;
+  }
+  .chart-lock-btn {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text-muted);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .chart-lock-btn svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+  }
+  .chart-lock-btn:hover {
+    color: var(--navy);
+    border-color: var(--navy);
+  }
+  .chart-lock-btn.is-unlocked {
+    background: var(--navy);
+    color: #fff;
+    border-color: var(--navy);
+  }
+  .chart-lock-btn:focus-visible {
+    outline: 2px solid var(--navy);
+    outline-offset: 2px;
+  }
+  body.chart-locked .task-row .row-grid {
+    cursor: default;
+  }
+  body.chart-locked .segment {
+    cursor: default;
   }
   .period-toggle button {
     appearance: none;
@@ -118,7 +157,7 @@
   .subtitle {
     font-size: 13px;
     color: var(--text-muted);
-    margin: 0 0 16px;
+    margin: 0 0 12px;
   }
   .subtitle a.crew-formula-edit {
     color: var(--navy);
@@ -1480,15 +1519,16 @@
 
 <div class="title-bar screen-only">
   <h1>Construction timeline</h1>
-  <div class="period-controls">
-    <div class="period-toggle" role="group" aria-label="Period view">
-      <button type="button" id="period-monthly" class="is-active" data-period="monthly">Monthly</button>
-      <button type="button" id="period-weekly" data-period="weekly">Weekly</button>
-    </div>
-    <button type="button" id="crew-toggle" class="crew-toggle" aria-pressed="false">Crew</button>
-  </div>
+  <button type="button" id="chart-lock-btn" class="chart-lock-btn" aria-pressed="true" title="Unlock chart to edit" aria-label="Unlock chart to edit"></button>
 </div>
 <p class="subtitle screen-only" id="period-subtitle">Weekly increments · <span id="range-label">…</span> · billing shown per week, split evenly across each task's active weeks</p>
+<div class="period-controls screen-only">
+  <div class="period-toggle" role="group" aria-label="Period view">
+    <button type="button" id="period-monthly" class="is-active" data-period="monthly">Monthly</button>
+    <button type="button" id="period-weekly" data-period="weekly">Weekly</button>
+  </div>
+  <button type="button" id="crew-toggle" class="crew-toggle" aria-pressed="false">Crew</button>
+</div>
 <div class="legend screen-only" id="legend"></div>
 
 <div class="chart-wrap screen-only">
@@ -1615,8 +1655,42 @@ const storedPeriod = localStorage.getItem(PERIOD_MODE_KEY);
 let periodMode = storedPeriod === "weekly" || storedPeriod === "biweekly" ? "weekly" : "monthly";
 if (storedPeriod === "biweekly") localStorage.setItem(PERIOD_MODE_KEY, "weekly");
 let crewMode = false;
+let chartLocked = true;
 let categoryOff = loadCategoryOff();
 let filterRefreshTimer = null;
+
+const CHART_LOCK_ICON =
+  '<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5A2.75 2.75 0 0 0 5.25 4.25V6H4.5A1.5 1.5 0 0 0 3 7.5v5A1.5 1.5 0 0 0 4.5 14h7A1.5 1.5 0 0 0 13 12.5v-5A1.5 1.5 0 0 0 11.5 6h-.75V4.25A2.75 2.75 0 0 0 8 1.5zm1.25 4.5h-2.5V4.25a1.25 1.25 0 1 1 2.5 0V6z"/></svg>';
+const CHART_UNLOCK_ICON =
+  '<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5A2.75 2.75 0 0 1 10.75 4.25V6h.75A1.5 1.5 0 0 1 13 7.5v5A1.5 1.5 0 0 1 11.5 14h-7A1.5 1.5 0 0 1 3 12.5v-5A1.5 1.5 0 0 1 4.5 6H9.25V4.25a1.25 1.25 0 0 0-2.4-.5l-1.2-.5A2.75 2.75 0 0 1 8 1.5z"/></svg>';
+
+function cancelChartInteractions() {
+  if (barResize) endBarResize(true);
+  if (barMove) endBarMove(true);
+  if (rangeDrag) {
+    const grid = rangeDrag.grid;
+    rangeDrag = null;
+    document.body.classList.remove("is-range-selecting");
+    clearRangeHighlight(grid);
+  }
+}
+
+function setChartLocked(locked) {
+  chartLocked = !!locked;
+  if (chartLocked) cancelChartInteractions();
+  document.body.classList.toggle("chart-locked", chartLocked);
+  document.querySelectorAll("#chart .segment").forEach((seg) => {
+    seg.setAttribute("tabindex", chartLocked ? "-1" : "0");
+  });
+  const btn = document.getElementById("chart-lock-btn");
+  if (!btn) return;
+  btn.classList.toggle("is-unlocked", !chartLocked);
+  btn.setAttribute("aria-pressed", chartLocked ? "true" : "false");
+  const label = chartLocked ? "Unlock chart to edit" : "Lock chart (view mode)";
+  btn.title = label;
+  btn.setAttribute("aria-label", label);
+  btn.innerHTML = chartLocked ? CHART_LOCK_ICON : CHART_UNLOCK_ICON;
+}
 
 function loadCategoryOff() {
   try {
@@ -1827,6 +1901,10 @@ document.querySelectorAll(".period-toggle button").forEach((btn) => {
 document.getElementById("crew-toggle").addEventListener("click", () => {
   setCrewMode(!crewMode);
 });
+document.getElementById("chart-lock-btn").addEventListener("click", () => {
+  setChartLocked(!chartLocked);
+});
+setChartLocked(true);
 document.getElementById("period-subtitle").addEventListener("click", (e) => {
   const link = e.target.closest("#crew-formula-edit");
   if (!link) return;
@@ -3022,6 +3100,7 @@ function renderChart(config, JOBS, colors) {
   function bindTaskGrid(grid, job, task, idxList) {
     const occupied = new Set(idxList);
     grid.addEventListener("pointerdown", (e) => {
+      if (chartLocked) return;
       if (e.button !== 0) return;
       if (barMove || barResize) return;
       if (e.target.closest(".segment")) return;
@@ -3043,7 +3122,7 @@ function renderChart(config, JOBS, colors) {
     });
     grid.querySelectorAll(".segment").forEach((seg) => {
       seg.addEventListener("pointermove", (e) => {
-        if (barMove || barResize || rangeDrag) return;
+        if (chartLocked || barMove || barResize || rangeDrag) return;
         const edge = segmentEdgeAt(
           seg,
           e.clientX,
@@ -3056,6 +3135,7 @@ function renderChart(config, JOBS, colors) {
         if (!barResize) seg.style.cursor = "";
       });
       seg.addEventListener("pointerdown", (e) => {
+        if (chartLocked) return;
         if (e.button !== 0) return;
         if (document.getElementById("task-dialog").open) return;
         if (document.getElementById("job-dialog").open) return;
@@ -3111,6 +3191,7 @@ function renderChart(config, JOBS, colors) {
         };
       });
       seg.addEventListener("keydown", (e) => {
+        if (chartLocked) return;
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           updateAmount(job, task, idxList.length);
@@ -3175,7 +3256,7 @@ function renderChart(config, JOBS, colors) {
         const seg = document.createElement("div");
         seg.className = "segment";
         seg.setAttribute("role", "button");
-        seg.setAttribute("tabindex", "0");
+        seg.setAttribute("tabindex", chartLocked ? "-1" : "0");
         paint(seg, task.color);
         if (pos === 0) seg.classList.add("first");
         if (pos === idxList.length - 1) seg.classList.add("last");
