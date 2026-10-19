@@ -274,6 +274,39 @@
     z-index: 7;
     border-right: 2px solid var(--gold);
   }
+  .header-title-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  .header-sort-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: #f0e2bd;
+    cursor: pointer;
+  }
+  .header-sort-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .header-sort-btn:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .header-sort-btn svg {
+    display: block;
+    width: 14px;
+    height: 14px;
+  }
   .header-add-btn {
     flex-shrink: 0;
     padding: 0;
@@ -934,6 +967,147 @@
     background: var(--navy);
     color: #fff;
   }
+  #sort-jobs-dialog {
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    width: min(420px, calc(100vw - 32px));
+    color: var(--text);
+    font-family: inherit;
+    box-shadow: 0 16px 48px rgba(27, 42, 74, 0.28);
+  }
+  #sort-jobs-dialog::backdrop {
+    background: rgba(27, 42, 74, 0.4);
+  }
+  #sort-jobs-dialog .dialog-inner {
+    padding: 20px 22px 16px;
+  }
+  #sort-jobs-dialog h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 8px;
+  }
+  #sort-jobs-dialog .dialog-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+    line-height: 1.4;
+  }
+  #sort-jobs-dialog .sort-jobs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: min(52vh, 420px);
+    overflow: auto;
+    padding: 2px;
+  }
+  #sort-jobs-dialog .sort-job-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 10px 10px 8px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    cursor: grab;
+    user-select: none;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  }
+  #sort-jobs-dialog .sort-job-card:hover {
+    border-color: #c8c8c8;
+  }
+  #sort-jobs-dialog .sort-job-card.is-dragging {
+    opacity: 0.45;
+    cursor: grabbing;
+  }
+  #sort-jobs-dialog .sort-job-card.is-drag-over {
+    border-color: var(--navy-seg);
+    box-shadow: 0 0 0 2px rgba(53, 80, 127, 0.18);
+  }
+  #sort-jobs-dialog .sort-job-handle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+  #sort-jobs-dialog .sort-job-handle svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+  }
+  #sort-jobs-dialog .sort-job-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #sort-jobs-dialog .sort-job-moves {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  #sort-jobs-dialog .sort-job-move {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 22px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: #f3f3f3;
+    color: var(--navy);
+    cursor: pointer;
+  }
+  #sort-jobs-dialog .sort-job-move:hover:not(:disabled) {
+    background: #e6e6e6;
+  }
+  #sort-jobs-dialog .sort-job-move:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+  #sort-jobs-dialog .sort-job-move:focus-visible {
+    outline: 2px solid var(--navy-seg);
+    outline-offset: 1px;
+  }
+  #sort-jobs-dialog .sort-job-move svg {
+    display: block;
+    width: 12px;
+    height: 12px;
+  }
+  #sort-jobs-dialog menu {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 14px 0 0;
+    padding: 0;
+  }
+  #sort-jobs-dialog menu button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+  }
+  #sort-jobs-dialog .btn-cancel {
+    background: #eee;
+    color: var(--text);
+  }
+  #sort-jobs-dialog .btn-confirm {
+    background: var(--navy);
+    color: #fff;
+  }
   .segment.gold {
     background: var(--gold-seg);
     color: #3a2f10;
@@ -1383,6 +1557,18 @@
     <menu>
       <button type="button" class="btn-cancel" id="remove-job-dialog-cancel">Cancel</button>
       <button type="submit" class="btn-confirm" id="remove-job-dialog-confirm" value="confirm">Remove</button>
+    </menu>
+  </form>
+</dialog>
+
+<dialog id="sort-jobs-dialog" class="screen-only">
+  <form method="dialog" id="sort-jobs-dialog-form" class="dialog-inner">
+    <h2>Sort jobs</h2>
+    <p class="dialog-hint">Drag jobs or use the arrows to set the chart order.</p>
+    <div class="sort-jobs-list" id="sort-jobs-list" role="list" aria-label="Job order"></div>
+    <menu>
+      <button type="button" class="btn-cancel" id="sort-jobs-dialog-cancel">Cancel</button>
+      <button type="submit" class="btn-confirm" id="sort-jobs-dialog-confirm" value="confirm">Save</button>
     </menu>
   </form>
 </dialog>
@@ -2287,6 +2473,222 @@ async function onRemoveJobClick(job) {
   await removeJob(job);
 }
 
+const SORT_ICON_HAMBURGER =
+  '<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M2 4h12v1.5H2V4zm0 3.25h12v1.5H2v-1.5zm0 3.25h12V12H2v-1.5z"/></svg>';
+const SORT_ICON_UP =
+  '<svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 2.2 10.2 7H1.8L6 2.2z"/></svg>';
+const SORT_ICON_DOWN =
+  '<svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 9.8 1.8 5h8.4L6 9.8z"/></svg>';
+const SORT_ICON_HEADER =
+  '<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M4.2 2.5 1.8 5.2h1.7V10h1.4V5.2h1.7L4.2 2.5zm7.6 11-2.4-2.7h1.7V6H12.5v4.8h1.7l-2.4 2.7z"/></svg>';
+
+function jobEarliestStart(job) {
+  let earliest = Infinity;
+  (job.tasks || []).forEach((task) => {
+    if (!task.start) return;
+    const t = new Date(task.start + "T00:00:00").getTime();
+    if (!isNaN(t) && t < earliest) earliest = t;
+  });
+  return earliest;
+}
+
+function sortJobsByEarliestStart(jobs) {
+  return jobs.slice().sort((a, b) => {
+    const aStart = jobEarliestStart(a);
+    const bStart = jobEarliestStart(b);
+    if (aStart === bStart) return 0;
+    if (aStart === Infinity) return 1;
+    if (bStart === Infinity) return -1;
+    return aStart - bStart;
+  });
+}
+
+function orderJobsForDisplay(jobs, config) {
+  const manual = config && Array.isArray(config.jobOrder) ? config.jobOrder : null;
+  if (!manual || !manual.length) return sortJobsByEarliestStart(jobs || []);
+  const byId = new Map((jobs || []).map((j) => [Number(j.id), j]));
+  const used = new Set();
+  const ordered = [];
+  manual.forEach((id) => {
+    const job = byId.get(Number(id));
+    if (!job) return;
+    ordered.push(job);
+    used.add(Number(job.id));
+  });
+  const rest = sortJobsByEarliestStart(
+    (jobs || []).filter((j) => !used.has(Number(j.id)))
+  );
+  return ordered.concat(rest);
+}
+
+function openSortJobsDialog(jobs) {
+  const dialog = document.getElementById("sort-jobs-dialog");
+  const form = document.getElementById("sort-jobs-dialog-form");
+  const list = document.getElementById("sort-jobs-list");
+  const cancelBtn = document.getElementById("sort-jobs-dialog-cancel");
+  const confirmBtn = document.getElementById("sort-jobs-dialog-confirm");
+  let order = (jobs || []).map((j) => j);
+  let dragFrom = -1;
+
+  function moveItem(from, to) {
+    if (from < 0 || to < 0 || from >= order.length || to >= order.length || from === to) return;
+    const next = order.slice();
+    const [item] = next.splice(from, 1);
+    next.splice(to, 0, item);
+    order = next;
+    renderList();
+  }
+
+  function renderList() {
+    list.innerHTML = "";
+    order.forEach((job, index) => {
+      const card = document.createElement("div");
+      card.className = "sort-job-card";
+      card.setAttribute("role", "listitem");
+      card.draggable = true;
+      card.dataset.index = String(index);
+
+      const handle = document.createElement("span");
+      handle.className = "sort-job-handle";
+      handle.innerHTML = SORT_ICON_HAMBURGER;
+
+      const name = document.createElement("span");
+      name.className = "sort-job-name";
+      name.textContent = job.name || "Untitled job";
+
+      const moves = document.createElement("div");
+      moves.className = "sort-job-moves";
+
+      const upBtn = document.createElement("button");
+      upBtn.type = "button";
+      upBtn.className = "sort-job-move";
+      upBtn.setAttribute("aria-label", "Move up");
+      upBtn.title = "Move up";
+      upBtn.innerHTML = SORT_ICON_UP;
+      upBtn.disabled = index === 0;
+      upBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        moveItem(index, index - 1);
+      });
+
+      const downBtn = document.createElement("button");
+      downBtn.type = "button";
+      downBtn.className = "sort-job-move";
+      downBtn.setAttribute("aria-label", "Move down");
+      downBtn.title = "Move down";
+      downBtn.innerHTML = SORT_ICON_DOWN;
+      downBtn.disabled = index === order.length - 1;
+      downBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        moveItem(index, index + 1);
+      });
+
+      moves.appendChild(upBtn);
+      moves.appendChild(downBtn);
+      card.appendChild(handle);
+      card.appendChild(name);
+      card.appendChild(moves);
+
+      card.addEventListener("dragstart", (e) => {
+        dragFrom = index;
+        card.classList.add("is-dragging");
+        if (e.dataTransfer) {
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", String(index));
+        }
+      });
+      card.addEventListener("dragend", () => {
+        dragFrom = -1;
+        list.querySelectorAll(".sort-job-card").forEach((el) => {
+          el.classList.remove("is-dragging", "is-drag-over");
+        });
+      });
+      card.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+        card.classList.add("is-drag-over");
+      });
+      card.addEventListener("dragleave", () => {
+        card.classList.remove("is-drag-over");
+      });
+      card.addEventListener("drop", (e) => {
+        e.preventDefault();
+        card.classList.remove("is-drag-over");
+        const to = index;
+        const from = dragFrom;
+        if (from === to || from < 0) return;
+        moveItem(from, to);
+      });
+
+      list.appendChild(card);
+    });
+  }
+
+  renderList();
+
+  return new Promise((resolve) => {
+    let saved = null;
+    function onCancelClick() {
+      dialog.close("cancel");
+    }
+    function onSubmit() {
+      saved = order.slice();
+      dialog.returnValue = "confirm";
+    }
+    function onClose() {
+      form.removeEventListener("submit", onSubmit);
+      dialog.removeEventListener("close", onClose);
+      cancelBtn.removeEventListener("click", onCancelClick);
+      resolve(dialog.returnValue === "confirm" ? saved : null);
+    }
+    cancelBtn.addEventListener("click", onCancelClick);
+    form.addEventListener("submit", onSubmit);
+    dialog.addEventListener("close", onClose);
+    dialog.showModal();
+    confirmBtn.focus();
+  });
+}
+
+async function persistJobsOrder(jobs) {
+  const status = document.getElementById("api-status");
+  const jobOrder = jobs.map((j) => j.id);
+  appJobs = jobs.slice();
+  if (!appConfig) appConfig = {};
+  appConfig.jobOrder = jobOrder;
+  renderChart(appConfig, appJobs, appColors);
+  try {
+    const [jobsRes, configRes] = await Promise.all([
+      fetch(API + "/jobs", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jobs)
+      }),
+      fetch(API + "/config", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobOrder })
+      })
+    ]);
+    if (!jobsRes.ok || !configRes.ok) {
+      throw new Error("Save failed (" + jobsRes.status + "/" + configRes.status + ")");
+    }
+    if (status) status.textContent = "Saved · job order";
+  } catch (err) {
+    if (status) status.textContent = "Save failed";
+    openTaskDialog({
+      mode: "warn",
+      title: "Could not save job order",
+      message: String(err.message || err)
+    });
+  }
+}
+
+async function onSortJobsClick() {
+  const result = await openSortJobsDialog(orderJobsForDisplay(appJobs, appConfig));
+  if (!result) return;
+  await persistJobsOrder(result);
+}
+
 document.addEventListener("pointermove", (e) => {
   if (barResize) {
     const dx = e.clientX - barResize.x;
@@ -2475,23 +2877,7 @@ function renderChart(config, JOBS, colors) {
     return fmtMoney(n);
   }
 
-  function jobEarliestStart(job) {
-    let earliest = Infinity;
-    (job.tasks || []).forEach((task) => {
-      if (!task.start) return;
-      const t = new Date(task.start + "T00:00:00").getTime();
-      if (!isNaN(t) && t < earliest) earliest = t;
-    });
-    return earliest;
-  }
-  const orderedJobs = JOBS.slice().sort((a, b) => {
-    const aStart = jobEarliestStart(a);
-    const bStart = jobEarliestStart(b);
-    if (aStart === bStart) return 0;
-    if (aStart === Infinity) return 1;
-    if (bStart === Infinity) return -1;
-    return aStart - bStart;
-  });
+  const orderedJobs = orderJobsForDisplay(JOBS, config);
 
   const chart = document.getElementById("chart");
   chart.innerHTML = "";
@@ -2500,9 +2886,20 @@ function renderChart(config, JOBS, colors) {
   headerRow.className = "header-row";
   const headerLabel = document.createElement("div");
   headerLabel.className = "header-label";
+  const titleGroup = document.createElement("span");
+  titleGroup.className = "header-title-group";
   const headerTitle = document.createElement("span");
   headerTitle.textContent = "Job / task";
-  headerLabel.appendChild(headerTitle);
+  titleGroup.appendChild(headerTitle);
+  const sortBtn = document.createElement("button");
+  sortBtn.type = "button";
+  sortBtn.className = "header-sort-btn";
+  sortBtn.setAttribute("aria-label", "Sort jobs");
+  sortBtn.title = "Sort jobs";
+  sortBtn.innerHTML = SORT_ICON_HEADER;
+  sortBtn.addEventListener("click", onSortJobsClick);
+  titleGroup.appendChild(sortBtn);
+  headerLabel.appendChild(titleGroup);
   const addBtn = document.createElement("button");
   addBtn.type = "button";
   addBtn.className = "header-add-btn";
