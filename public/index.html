@@ -8,8 +8,8 @@
     --navy: #1b2a4a;
     --navy-light: #2c4270;
     --navy-seg: #35507f;
-    --steel: #3f8f9c;
-    --steel-light: #327884;
+    --steel: #02CCFE;
+    --steel-light: #01A8D4;
     --coral: #c1573f;
     --purple: #6b4f9e;
     --gray: #7a7a76;
@@ -455,17 +455,35 @@
   }
   .task-row .row-label {
     color: var(--text);
-    padding-left: 12px;
+    padding-left: 24px;
     padding-right: 10px;
-    justify-content: flex-end;
+    justify-content: space-between;
     gap: 14px;
+  }
+  .body-row.special-task-row {
+    background: var(--job-row-bg);
+  }
+  .special-task-row .row-label {
+    background: var(--job-row-bg);
+    color: #1a1a1a;
+    font-weight: 600;
+    font-size: 13px;
+    padding-left: 12px;
+    padding-right: 8px;
+    justify-content: space-between;
+    gap: 8px;
   }
   .task-label-text {
     min-width: 0;
     flex: 1;
-    text-align: right;
+    text-align: left;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  .task-label-total {
+    flex-shrink: 0;
+    font-weight: 700;
+    text-align: right;
   }
   .row-grid {
     position: relative;
@@ -1199,20 +1217,25 @@
     display: flex;
     background: #e0cb93;
     font-weight: 700;
-    min-height: 36px;
-    margin-top: 8px;
-    border-top: 2px solid var(--gold);
+    min-height: 28px;
+    margin-top: 0;
+    border-top: 1px solid var(--gold);
   }
   .footer-col.is-current {
     background: rgba(53, 80, 127, 0.1);
   }
   .footer-col.month-start {
-    border-left: 2px solid var(--gold);
+    border-left: 1px solid var(--gold);
   }
   .footer-col.month-box,
   .footer-month-col.month-box {
-    border-left: 2px solid var(--gold);
-    border-right: 2px solid var(--gold);
+    border-left: 1px solid var(--gold);
+    border-right: none;
+    box-sizing: border-box;
+  }
+  .footer-col.month-box:last-child,
+  .footer-month-col.month-box:last-child {
+    border-right: 1px solid var(--gold);
   }
   .footer-label {
     width: var(--label-w);
@@ -1220,15 +1243,15 @@
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    padding: 0 12px;
-    font-size: 14px;
+    padding: 0 8px;
+    font-size: 13px;
     font-weight: 700;
     color: #1e2939;
     background: #e0cb93;
     position: sticky;
     left: 0;
     z-index: 2;
-    border-right: 2px solid var(--gold);
+    border-right: 1px solid var(--gold);
   }
   .footer-col {
     width: var(--col-w);
@@ -1237,23 +1260,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     color: #1e2939;
+    padding: 0 2px;
+    box-sizing: border-box;
   }
   .footer-col.col-alt {
     background: #c9b684;
   }
   .footer-row.row-teal {
     background: #fdebd0;
-    min-height: 36px;
+    min-height: 28px;
     margin-top: 0;
     border-top: 1px solid #e8b784;
   }
   .footer-label.label-teal {
     background: #fdebd0;
     color: #7d4c24;
-    border-right: 2px solid #e8b784;
+    border-right: 1px solid #e8b784;
   }
   .footer-row.row-teal .footer-col {
     color: #7d4c24;
@@ -1263,15 +1288,15 @@
   }
   .footer-row.row-green {
     background: #f5e9c8;
-    min-height: 36px;
-    margin-top: 8px;
-    border-top: 2px solid var(--gold);
+    min-height: 28px;
+    margin-top: 0;
+    border-top: 1px solid var(--gold);
     border-bottom: none;
   }
   .footer-label.label-green {
     background: #f5e9c8;
     color: var(--navy);
-    border-right: 2px solid var(--gold);
+    border-right: 1px solid var(--gold);
   }
   .footer-row.row-green .footer-col {
     color: #1a1a1a;
@@ -1281,41 +1306,43 @@
   }
   .footer-row.row-billing {
     background: #e8f5e9;
-    min-height: 36px;
+    min-height: 28px;
     margin-top: 0;
     border-top: 1px solid #a5d6a7;
   }
   .footer-label.label-billing {
     background: #e8f5e9;
     color: #2e7d32;
-    border-right: 2px solid #a5d6a7;
+    border-right: 1px solid #a5d6a7;
   }
   .footer-row.row-billing .footer-col {
     color: #2e7d32;
   }
   .footer-col.footer-billing-cell {
-    padding: 0 2px;
+    padding: 0;
   }
   .footer-billing-input {
     width: 100%;
-    height: 28px;
-    border: 1px solid rgba(46, 125, 50, 0.28);
-    border-radius: 4px;
-    background: #fff;
+    height: 100%;
+    min-height: 26px;
+    border: none;
+    border-radius: 0;
+    background: transparent;
     color: #2e7d32;
     font: inherit;
     font-size: 12px;
     font-weight: 700;
     text-align: center;
     padding: 0 2px;
+    box-sizing: border-box;
   }
   .footer-billing-input:hover {
-    border-color: rgba(46, 125, 50, 0.45);
+    background: rgba(255, 255, 255, 0.55);
   }
   .footer-billing-input:focus {
     outline: none;
-    border-color: #2e7d32;
     background: #fff;
+    box-shadow: inset 0 0 0 1px #2e7d32;
   }
   .footer-billing-input::placeholder {
     color: rgba(46, 125, 50, 0.4);
@@ -1324,7 +1351,7 @@
   .footer-month-row {
     display: flex;
     background: var(--navy);
-    border-top: 2px solid var(--gold);
+    border-top: 1px solid var(--gold);
   }
   .footer-month-label {
     width: var(--label-w);
@@ -1332,15 +1359,15 @@
     flex-shrink: 0;
     background: var(--navy);
     color: #fff;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     display: flex;
     align-items: center;
-    padding: 0 12px;
+    padding: 0 8px;
     position: sticky;
     left: 0;
     z-index: 2;
-    border-right: 2px solid var(--gold);
+    border-right: 1px solid var(--gold);
   }
   .footer-month-col {
     width: var(--col-w);
@@ -1350,13 +1377,14 @@
     font-size: 9.5px;
     font-weight: 500;
     text-align: center;
-    padding: 6px 2px;
-    border-right: 1px solid rgba(255,255,255,0.12);
-    line-height: 1.25;
+    padding: 3px 2px;
+    border-right: none;
+    line-height: 1.2;
     white-space: nowrap;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
   }
   /* ---- Print layout: chunks the timeline into landscape pages you tape side by side ---- */
   .print-only { display: none; }
@@ -1450,6 +1478,14 @@
     }
     .p-job-row .p-row-label { background: var(--job-row-bg); color: #1a1a1a; font-weight: 700; font-size: 9.5px; }
     .p-task-row .p-row-label { padding-left: 18px; }
+    .p-body-row.p-special-task-row { background: var(--job-row-bg); }
+    .p-special-task-row .p-row-label {
+      background: var(--job-row-bg);
+      color: #1a1a1a;
+      font-weight: 700;
+      font-size: 9.5px;
+      padding-left: 8px;
+    }
     .p-row-grid { position: relative; flex: 1; }
     .p-grid-cols { display: flex; height: 100%; }
     .p-grid-col {
@@ -1464,46 +1500,46 @@
     .p-segment.first { border-top-left-radius: 3px; border-bottom-left-radius: 3px; }
     .p-segment.last { border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-right: none; }
     .p-footer-row {
-      display: flex; background: #f5e9c8; border-top: 2px solid var(--gold);
-      height: 23px; font-weight: 700;
+      display: flex; background: #f5e9c8; border-top: 1px solid var(--gold);
+      height: 20px; font-weight: 700; margin-top: 0;
     }
     .p-footer-label {
       width: var(--label-w-p); min-width: var(--label-w-p); flex-shrink: 0;
-      display: flex; align-items: center; padding: 0 8px; font-size: 11px; color: var(--navy);
-      border-right: 2px solid var(--gold);
+      display: flex; align-items: center; padding: 0 6px; font-size: 10px; color: var(--navy);
+      border-right: 1px solid var(--gold);
     }
     .p-footer-col {
       width: var(--col-w-p); min-width: var(--col-w-p); flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 10px; color: #1a1a1a;
-      border-right: 1px solid rgba(0,0,0,0.08);
+      display: flex; align-items: center; justify-content: center; font-size: 9px; color: #1a1a1a;
+      border-right: 1px solid rgba(0,0,0,0.08); padding: 0 1px; box-sizing: border-box;
     }
     .p-billing-row {
       display: flex; background: #e8f5e9; border-top: 1px solid #a5d6a7;
-      height: 20px; font-weight: 700; margin-top: 3px;
+      height: 18px; font-weight: 700; margin-top: 0;
     }
     .p-billing-label {
       width: var(--label-w-p); min-width: var(--label-w-p); flex-shrink: 0;
-      display: flex; align-items: center; padding: 0 8px; font-size: 9.5px; color: #2e7d32;
-      border-right: 2px solid #a5d6a7;
+      display: flex; align-items: center; padding: 0 6px; font-size: 9px; color: #2e7d32;
+      border-right: 1px solid #a5d6a7;
     }
     .p-billing-col {
       width: var(--col-w-p); min-width: var(--col-w-p); flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 9px; color: #2e7d32;
-      border-right: 1px solid rgba(0,0,0,0.06);
+      display: flex; align-items: center; justify-content: center; font-size: 8.5px; color: #2e7d32;
+      border-right: 1px solid rgba(0,0,0,0.06); padding: 0 1px; box-sizing: border-box;
     }
     .p-actual-row {
       display: flex; background: #fdebd0; border-top: 1px solid #e8b784;
-      height: 20px; font-weight: 700; margin-top: 3px;
+      height: 18px; font-weight: 700; margin-top: 0;
     }
     .p-actual-label {
       width: var(--label-w-p); min-width: var(--label-w-p); flex-shrink: 0;
-      display: flex; align-items: center; padding: 0 8px; font-size: 9.5px; color: #7d4c24;
-      border-right: 2px solid #e8b784;
+      display: flex; align-items: center; padding: 0 6px; font-size: 9px; color: #7d4c24;
+      border-right: 1px solid #e8b784;
     }
     .p-actual-col {
       width: var(--col-w-p); min-width: var(--col-w-p); flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 9px; color: #7d4c24;
-      border-right: 1px solid rgba(0,0,0,0.06);
+      display: flex; align-items: center; justify-content: center; font-size: 8.5px; color: #7d4c24;
+      border-right: 1px solid rgba(0,0,0,0.06); padding: 0 1px; box-sizing: border-box;
     }
   }
 
@@ -1647,6 +1683,7 @@ const KNOWN_COLOR_IDS = [
 
 let appConfig = null;
 let appJobs = [];
+let appSpecialTasks = [];
 let appColors = [];
 let rangeDrag = null;
 let barMove = null;
@@ -2143,6 +2180,33 @@ async function persistJob(job) {
     });
     if (!res.ok) throw new Error("Save failed (" + res.status + ")");
     if (status) status.textContent = "Saved · " + appJobs.length + " jobs";
+  } catch (err) {
+    if (status) status.textContent = "Save failed";
+    openTaskDialog({
+      mode: "warn",
+      title: "Could not save",
+      message: String(err.message || err)
+    });
+  }
+}
+
+async function persistSpecialTask(task) {
+  const status = document.getElementById("api-status");
+  task.name = "Change Order";
+  const i = appSpecialTasks.findIndex((t) => Number(t.id) === Number(task.id));
+  if (i >= 0) appSpecialTasks[i] = task;
+  renderChart(appConfig, appJobs, appColors);
+  try {
+    const res = await fetch(API + "/specialTasks/" + task.id, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(task)
+    });
+    if (!res.ok) throw new Error("Save failed (" + res.status + ")");
+    if (status) {
+      status.textContent =
+        "Saved · " + appJobs.length + " jobs · " + appSpecialTasks.length + " change orders";
+    }
   } catch (err) {
     if (status) status.textContent = "Save failed";
     openTaskDialog({
@@ -3040,7 +3104,7 @@ function renderChart(config, JOBS, colors) {
     return false;
   }
 
-  async function finishAssign(job, task, idxList, from, to) {
+  async function finishAssign(task, idxList, from, to, persist) {
     const occupied = new Set(idxList);
     if (rangeWouldOverlap(occupied, from, to)) {
       await openTaskDialog({
@@ -3054,10 +3118,11 @@ function renderChart(config, JOBS, colors) {
     const hi = Math.max(from, to);
     const n = hi - lo + 1;
     const unit = periodMode === "monthly" ? "month" : "week";
+    const label = task.name || "Task";
     const amount = await openTaskDialog({
       mode: "amount",
       title: "Assign timing",
-      message: task.name + " · " + n + " " + unit + (n === 1 ? "" : "s") + ". Enter the full task amount to split evenly.",
+      message: label + " · " + n + " " + unit + (n === 1 ? "" : "s") + ". Enter the full task amount to split evenly.",
       value: task.value != null && task.value !== "" ? String(task.value) : "",
       periods: n
     });
@@ -3065,39 +3130,40 @@ function renderChart(config, JOBS, colors) {
     task.start = toIsoDate(columns[lo]);
     task.end = toIsoDate(hi + 1 < columns.length ? columns[hi + 1] : end);
     task.value = amount;
-    await persistJob(job);
+    await persist();
   }
 
-  async function updateAmount(job, task, periods) {
+  async function updateAmount(task, periods, persist) {
     const unit = periodMode === "monthly" ? "month" : "week";
+    const label = task.name || "Task";
     const amount = await openTaskDialog({
       mode: "amount",
       title: "Update amount",
-      message: task.name + " · " + periods + " " + unit + (periods === 1 ? "" : "s") + ". Enter the full task amount.",
+      message: label + " · " + periods + " " + unit + (periods === 1 ? "" : "s") + ". Enter the full task amount.",
       value: task.value != null ? String(task.value) : "",
       periods: periods || 1
     });
     if (amount == null) return;
     task.value = amount;
-    await persistJob(job);
+    await persist();
   }
 
-  async function finishMove(job, task, idxList, delta) {
+  async function finishMove(task, idxList, delta, persist) {
     if (!delta || !idxList.length) return;
     const lo = idxList[0] + delta;
     const hi = idxList[idxList.length - 1] + delta;
     task.start = toIsoDate(columns[lo]);
     task.end = toIsoDate(hi + 1 < columns.length ? columns[hi + 1] : end);
-    await persistJob(job);
+    await persist();
   }
 
-  async function finishResize(job, task, newLo, newHi) {
+  async function finishResize(task, newLo, newHi, persist) {
     task.start = toIsoDate(columns[newLo]);
     task.end = toIsoDate(newHi + 1 < columns.length ? columns[newHi + 1] : end);
-    await persistJob(job);
+    await persist();
   }
 
-  function bindTaskGrid(grid, job, task, idxList) {
+  function bindTaskGrid(grid, task, idxList, persist) {
     const occupied = new Set(idxList);
     grid.addEventListener("pointerdown", (e) => {
       if (chartLocked) return;
@@ -3114,7 +3180,7 @@ function renderChart(config, JOBS, colors) {
         occupied,
         startCol: col,
         endCol: col,
-        onFinish: (from, to) => finishAssign(job, task, idxList, from, to)
+        onFinish: (from, to) => finishAssign(task, idxList, from, to, persist)
       };
       document.body.classList.add("is-range-selecting");
       paintRangeHighlight(grid, col, col, occupied);
@@ -3152,7 +3218,7 @@ function renderChart(config, JOBS, colors) {
           seg.classList.contains("last")
         );
         const segments = Array.from(grid.querySelectorAll(".segment"));
-        const onClick = () => updateAmount(job, task, idxList.length);
+        const onClick = () => updateAmount(task, idxList.length, persist);
         if (edge) {
           barResize = {
             edge,
@@ -3170,7 +3236,7 @@ function renderChart(config, JOBS, colors) {
             y: e.clientY,
             segments,
             onClick,
-            onFinish: (newLo, newHi) => finishResize(job, task, newLo, newHi)
+            onFinish: (newLo, newHi) => finishResize(task, newLo, newHi, persist)
           };
           return;
         }
@@ -3187,17 +3253,64 @@ function renderChart(config, JOBS, colors) {
           y: e.clientY,
           segments,
           onClick,
-          onFinish: (delta) => finishMove(job, task, idxList, delta)
+          onFinish: (delta) => finishMove(task, idxList, delta, persist)
         };
       });
       seg.addEventListener("keydown", (e) => {
         if (chartLocked) return;
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          updateAmount(job, task, idxList.length);
+          updateAmount(task, idxList.length, persist);
         }
       });
     });
+  }
+
+  function appendTaskRow(parent, task, displayName, persist, opts) {
+    const jobStyle = opts && opts.jobStyle;
+    const row = document.createElement("div");
+    row.className = "body-row task-row" + (jobStyle ? " special-task-row" : "");
+    if (task.color) row.dataset.color = task.color;
+    const label = document.createElement("div");
+    label.className = "row-label";
+    const labelText = document.createElement("span");
+    labelText.className = "task-label-text";
+    labelText.textContent = displayName;
+    const labelTotal = document.createElement("span");
+    labelTotal.className = "task-label-total";
+    labelTotal.textContent = fmtMoney(task.value || 0);
+    label.appendChild(labelText);
+    label.appendChild(labelTotal);
+    row.appendChild(label);
+
+    const grid = document.createElement("div");
+    grid.className = "row-grid";
+    addGridCols(grid);
+
+    const idxList = taskColumnIndices(task);
+    const perPeriod = idxList.length ? (task.value || 0) / idxList.length : 0;
+    const includeInTotals = isCategoryOn(task.color);
+
+    idxList.forEach((colIdx, pos) => {
+      const seg = document.createElement("div");
+      seg.className = "segment";
+      seg.setAttribute("role", "button");
+      seg.setAttribute("tabindex", chartLocked ? "-1" : "0");
+      paint(seg, task.color);
+      if (pos === 0) seg.classList.add("first");
+      if (pos === idxList.length - 1) seg.classList.add("last");
+      seg.style.left = (colIdx * 62) + "px";
+      seg.style.width = "62px";
+      seg.textContent = fmtDisplay(perPeriod, false);
+      seg.title = displayName + " — " + formatColumnHeader(columns[colIdx], periodMode) + ": " + fmtTitle(perPeriod);
+      grid.appendChild(seg);
+
+      if (includeInTotals) periodTotals[colIdx] += perPeriod;
+    });
+
+    row.appendChild(grid);
+    bindTaskGrid(grid, task, idxList, persist);
+    parent.appendChild(row);
   }
 
   orderedJobs.forEach(job => {
@@ -3232,49 +3345,18 @@ function renderChart(config, JOBS, colors) {
     jobRow.appendChild(jobGrid);
     block.appendChild(jobRow);
 
-    job.tasks.forEach(task => {
-      const row = document.createElement("div");
-      row.className = "body-row task-row";
-      if (task.color) row.dataset.color = task.color;
-      const label = document.createElement("div");
-      label.className = "row-label";
-      const labelText = document.createElement("span");
-      labelText.className = "task-label-text";
-      labelText.textContent = task.name + " - " + fmtMoney(task.value || 0);
-      label.appendChild(labelText);
-      row.appendChild(label);
-
-      const grid = document.createElement("div");
-      grid.className = "row-grid";
-      addGridCols(grid);
-
-      const idxList = taskColumnIndices(task);
-      const perPeriod = idxList.length ? (task.value || 0) / idxList.length : 0;
-      const includeInTotals = isCategoryOn(task.color);
-
-      idxList.forEach((colIdx, pos) => {
-        const seg = document.createElement("div");
-        seg.className = "segment";
-        seg.setAttribute("role", "button");
-        seg.setAttribute("tabindex", chartLocked ? "-1" : "0");
-        paint(seg, task.color);
-        if (pos === 0) seg.classList.add("first");
-        if (pos === idxList.length - 1) seg.classList.add("last");
-        seg.style.left = (colIdx * 62) + "px";
-        seg.style.width = "62px";
-        seg.textContent = fmtDisplay(perPeriod, false);
-        seg.title = task.name + " — " + formatColumnHeader(columns[colIdx], periodMode) + ": " + fmtTitle(perPeriod);
-        grid.appendChild(seg);
-
-        if (includeInTotals) periodTotals[colIdx] += perPeriod;
-      });
-
-      row.appendChild(grid);
-      bindTaskGrid(grid, job, task, idxList);
-      block.appendChild(row);
+    job.tasks.forEach((task) => {
+      appendTaskRow(block, task, task.name, () => persistJob(job));
     });
 
     chart.appendChild(block);
+  });
+
+  (appSpecialTasks || []).forEach((task) => {
+    task.name = "Change Order";
+    appendTaskRow(chart, task, "Change Order", () => persistSpecialTask(task), {
+      jobStyle: true
+    });
   });
 
   // Precompute which column indices start a new month (used to "square off" the bottom rows by month)
@@ -3439,10 +3521,21 @@ function renderChart(config, JOBS, colors) {
 
     // Precompute each job's row-block height, then pack jobs into row-groups (never splitting a job)
     const printJobs = orderedJobs.map((job) => ({
+      kind: "job",
       job,
       tasks: job.tasks.filter((task) => isCategoryOn(task.color))
     })).filter((entry) => entry.tasks.length);
-    const jobHeights = printJobs.map((entry) => JOB_ROW_H + entry.tasks.length * TASK_ROW_H);
+    const printSpecialTasks = (appSpecialTasks || []).filter((task) =>
+      isCategoryOn(task.color)
+    );
+    if (printSpecialTasks.length) {
+      printJobs.push({ kind: "special", tasks: printSpecialTasks });
+    }
+    const jobHeights = printJobs.map((entry) =>
+      entry.kind === "special"
+        ? entry.tasks.length * TASK_ROW_H
+        : JOB_ROW_H + entry.tasks.length * TASK_ROW_H
+    );
     const rowGroups = [];
     let current = [];
     let currentHeight = 0;
@@ -3472,20 +3565,25 @@ function renderChart(config, JOBS, colors) {
 
     // Period totals are computed across ALL jobs (not just one row-group) so the same
     // footer values repeat identically under every row-group for a given date range.
+    function addTaskToPeriodTotals(totals, pageColIdx, task) {
+      if (!isCategoryOn(task.color)) return;
+      const fullIdxList = taskColumnIndices(task);
+      if (!fullIdxList.length) return;
+      const perPeriod = (task.value || 0) / fullIdxList.length;
+      fullIdxList.forEach((colIdx) => {
+        const posInPage = pageColIdx.indexOf(colIdx);
+        if (posInPage !== -1) totals[posInPage] += perPeriod;
+      });
+    }
+
     function computePeriodTotals(pageColIdx) {
       const totals = new Array(pageColIdx.length).fill(0);
-      JOBS.forEach(job => {
-        job.tasks.forEach(task => {
-          if (!isCategoryOn(task.color)) return;
-          const fullIdxList = taskColumnIndices(task);
-          if (!fullIdxList.length) return;
-          const perPeriod = (task.value || 0) / fullIdxList.length;
-          fullIdxList.forEach(colIdx => {
-            const posInPage = pageColIdx.indexOf(colIdx);
-            if (posInPage !== -1) totals[posInPage] += perPeriod;
-          });
-        });
+      JOBS.forEach((job) => {
+        job.tasks.forEach((task) => addTaskToPeriodTotals(totals, pageColIdx, task));
       });
+      (appSpecialTasks || []).forEach((task) =>
+        addTaskToPeriodTotals(totals, pageColIdx, task)
+      );
       return totals;
     }
 
@@ -3536,36 +3634,44 @@ function renderChart(config, JOBS, colors) {
         });
         page.appendChild(pHeader);
 
-        groupJobs.forEach(({ job, tasks }) => {
+        groupJobs.forEach((entry) => {
+          const { job, tasks, kind } = entry;
           const block = document.createElement("div");
           block.className = "p-job-block";
 
-          const jobRow = document.createElement("div");
-          jobRow.className = "p-body-row p-job-row";
-          if (p === 0) {
-            const jobLabel = document.createElement("div");
-            jobLabel.className = "p-row-label";
-            jobLabel.textContent = job.name;
-            jobRow.appendChild(jobLabel);
+          if (kind !== "special") {
+            const jobRow = document.createElement("div");
+            jobRow.className = "p-body-row p-job-row";
+            if (p === 0) {
+              const jobLabel = document.createElement("div");
+              jobLabel.className = "p-row-label";
+              jobLabel.textContent = job.name;
+              jobRow.appendChild(jobLabel);
+            }
+            const jobGrid = document.createElement("div");
+            jobGrid.className = "p-row-grid";
+            pAddGridCols(jobGrid, pageColIdx);
+            jobRow.appendChild(jobGrid);
+            block.appendChild(jobRow);
           }
-          const jobGrid = document.createElement("div");
-          jobGrid.className = "p-row-grid";
-          pAddGridCols(jobGrid, pageColIdx);
-          jobRow.appendChild(jobGrid);
-          block.appendChild(jobRow);
 
-          tasks.forEach(task => {
+          tasks.forEach((task) => {
             const fullIdxList = taskColumnIndices(task);
-            const pageIdxList = fullIdxList.filter(i => pageColIdx.includes(i));
+            const pageIdxList = fullIdxList.filter((i) => pageColIdx.includes(i));
             const perPeriod = fullIdxList.length ? (task.value || 0) / fullIdxList.length : 0;
+            const displayName = kind === "special" ? "Change Order" : task.name;
 
             const row = document.createElement("div");
-            row.className = "p-body-row p-task-row";
+            row.className =
+              "p-body-row p-task-row" + (kind === "special" ? " p-special-task-row" : "");
             if (task.color) row.dataset.color = task.color;
             if (p === 0) {
               const label = document.createElement("div");
               label.className = "p-row-label";
-              label.textContent = task.name;
+              label.textContent =
+                kind === "special"
+                  ? displayName + "  " + fmtMoney(task.value || 0)
+                  : displayName;
               row.appendChild(label);
             }
 
@@ -3667,10 +3773,11 @@ function renderChart(config, JOBS, colors) {
 
 async function loadForecast() {
   try {
-    const [configRes, jobsRes, colorsRes] = await Promise.all([
+    const [configRes, jobsRes, colorsRes, specialRes] = await Promise.all([
       fetch(API + "/config"),
       fetch(API + "/jobs"),
-      fetch(API + "/colors")
+      fetch(API + "/colors"),
+      fetch(API + "/specialTasks")
     ]);
     if (!configRes.ok || !jobsRes.ok || !colorsRes.ok) {
       throw new Error("API " + configRes.status + "/" + jobsRes.status + "/" + colorsRes.status);
@@ -3678,6 +3785,8 @@ async function loadForecast() {
     appConfig = await configRes.json();
     appJobs = await jobsRes.json();
     appColors = await colorsRes.json();
+    appSpecialTasks = specialRes.ok ? await specialRes.json() : [];
+    if (!Array.isArray(appSpecialTasks)) appSpecialTasks = [];
     renderChart(appConfig, appJobs, appColors);
   } catch (err) {
     document.getElementById("chart").innerHTML =

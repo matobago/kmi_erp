@@ -21,10 +21,16 @@ const mutating = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 server.use(middlewares);
 server.use(jsonServer.bodyParser);
 
+function ensureStateShape(state) {
+  if (!state || typeof state !== "object") return state;
+  if (!Array.isArray(state.specialTasks)) state.specialTasks = [];
+  return state;
+}
+
 if (useRedis) {
   server.use(async (req, res, next) => {
     try {
-      const state = await loadState();
+      const state = ensureStateShape(await loadState());
       router.db.setState(state);
     } catch (err) {
       return res.status(503).json({
@@ -74,6 +80,13 @@ server.get("/api", (_req, res) => {
       "PATCH /jobs/:id": "Partial-update one job",
       "DELETE /jobs/:id": "Delete one job",
       "PUT /jobs": "Replace the entire jobs array (AI bulk update)",
+      "GET /specialTasks": "Orphan Change Order tasks (no job parent)",
+      "GET /specialTasks/:id": "One special task",
+      "POST /specialTasks": "Create a Change Order { color, value, start?, end? }",
+      "PUT /specialTasks/:id": "Replace one special task",
+      "PATCH /specialTasks/:id": "Partial-update one special task",
+      "DELETE /specialTasks/:id": "Delete one special task",
+      "PUT /specialTasks": "Replace the entire specialTasks array",
       "GET /colors": "Legend: id, display name, hex",
       "GET /colors/:id": "One color (id is navy, steel, coral, gold, purple, gray, plaster, shower, ballistic, mineral, sheathing, rainscreen, samples)",
       "POST /colors": "Add a color { id, name, hex, textHex }",
@@ -100,6 +113,13 @@ server.get("/api", (_req, res) => {
         },
       ],
     },
+    specialTask: {
+      name: "always Change Order",
+      start: "YYYY-MM-DD (optional until timing assigned)",
+      end: "YYYY-MM-DD (optional until timing assigned)",
+      color: "id from /colors",
+      value: "number (contract dollars)",
+    },
   });
 });
 
@@ -122,6 +142,27 @@ function normalizeTask(task, j) {
   if (task.start) normalized.start = task.start;
   if (task.end) normalized.end = task.end;
   return normalized;
+}
+
+function nextSpecialTaskId(tasks) {
+  let max = 0;
+  tasks.forEach((task) => {
+    const id = Number(task.id);
+    if (id > max) max = id;
+  });
+  return max + 1;
+}
+
+function normalizeSpecialTask(task, j) {
+  const normalized = normalizeTask(task, j);
+  normalized.name = "Change Order";
+  return normalized;
+}
+
+function normalizeSpecialTasks(body) {
+  const tasks = Array.isArray(body) ? body : body && body.specialTasks;
+  if (!Array.isArray(tasks)) return null;
+  return tasks.map((task, j) => normalizeSpecialTask(task, j));
 }
 
 function normalizeJobs(body) {
@@ -216,6 +257,50 @@ server.post("/jobs/:id/tasks", (req, res) => {
   res.status(201).json(updated);
 });
 
+server.put("/specialTasks", (req, res) => {
+  const tasks = normalizeSpecialTasks(req.body);
+  if (!tasks) {
+    return res.status(400).json({
+      error: "Send a JSON array of special tasks, or { specialTasks: [...] }",
+    });
+  }
+  router.db.set("specialTasks", tasks).write();
+  res.json(router.db.get("specialTasks").value());
+});
+
+server.post("/specialTasks", (req, res) => {
+  const body = req.body || {};
+  const tasks = router.db.get("specialTasks").value() || [];
+  const task = normalizeSpecialTask(
+    { ...body, id: nextSpecialTaskId(tasks) },
+    0
+  );
+  router.db.get("specialTasks").push(task).write();
+  res.status(201).json(task);
+});
+
+server.put("/specialTasks/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const existing = router.db.get("specialTasks").find({ id }).value();
+  if (!existing) {
+    return res.status(404).json({ error: "Special task not found" });
+  }
+  const task = normalizeSpecialTask({ ...req.body, id }, 0);
+  router.db.get("specialTasks").find({ id }).assign(task).write();
+  res.json(task);
+});
+
+server.patch("/specialTasks/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const existing = router.db.get("specialTasks").find({ id }).value();
+  if (!existing) {
+    return res.status(404).json({ error: "Special task not found" });
+  }
+  const task = normalizeSpecialTask({ ...existing, ...req.body, id }, 0);
+  router.db.get("specialTasks").find({ id }).assign(task).write();
+  res.json(task);
+});
+
 server.use(router);
 
 module.exports = server;
@@ -228,6 +313,7 @@ if (require.main === module) {
     console.log("  chart  http://localhost:" + port + "/");
     console.log("  api    http://localhost:" + port + "/api");
     console.log("  jobs   http://localhost:" + port + "/jobs");
+    console.log("  specialTasks http://localhost:" + port + "/specialTasks");
     console.log("  colors http://localhost:" + port + "/colors");
     console.log("  config http://localhost:" + port + "/config");
   });
