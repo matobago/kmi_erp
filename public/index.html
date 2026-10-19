@@ -18,6 +18,9 @@
     --shower: #5a9e9a;
     --ballistic: #4a5568;
     --mineral: #8a9a5b;
+    --sheathing: #8b9bab;
+    --rainscreen: #2d7a6a;
+    --samples: #b87333;
     --job-row-bg: #e4e4e1;
     --gold: #c9a44c;
     --gold-seg: #d4b565;
@@ -27,7 +30,7 @@
     --text-muted: #6b6b6b;
     --row-h: 40px;
     --col-w: 62px;
-    --label-w: 240px;
+    --label-w: 320px;
     --col-w-p: 76px;
     --label-w-p: 165px;
   }
@@ -43,7 +46,7 @@
     flex-direction: column;
     overflow: hidden;
   }
-  h1, .subtitle, .legend, .print-btn, .api-status, .title-bar {
+  h1, .subtitle, .legend, .title-bar {
     flex-shrink: 0;
   }
   .title-bar {
@@ -117,11 +120,21 @@
     color: var(--text-muted);
     margin: 0 0 16px;
   }
+  .subtitle a.crew-formula-edit {
+    color: var(--navy);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+  }
+  .subtitle a.crew-formula-edit:hover {
+    color: var(--navy-seg);
+  }
   .legend {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     margin-bottom: 12px;
-    font-size: 11px;
+    font-size: 13px;
     color: var(--text-muted);
     flex-wrap: wrap;
   }
@@ -129,17 +142,17 @@
     appearance: none;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 7px;
     margin: 0;
-    padding: 3px 8px 3px 6px;
+    padding: 7px 12px 7px 10px;
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 8px;
     background: #fff;
     color: var(--text-muted);
     font: inherit;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.25;
     cursor: pointer;
     transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
   }
@@ -152,14 +165,14 @@
     background: transparent !important;
   }
   .legend-btn-all {
-    padding-left: 8px;
+    padding-left: 12px;
   }
   .legend-btn-all[hidden] {
     display: none;
   }
   .swatch {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     border-radius: 2px;
     display: inline-block;
     flex-shrink: 0;
@@ -181,7 +194,10 @@
   body:not(.cat-plaster) .task-row[data-color="plaster"],
   body:not(.cat-shower) .task-row[data-color="shower"],
   body:not(.cat-ballistic) .task-row[data-color="ballistic"],
-  body:not(.cat-mineral) .task-row[data-color="mineral"] {
+  body:not(.cat-mineral) .task-row[data-color="mineral"],
+  body:not(.cat-sheathing) .task-row[data-color="sheathing"],
+  body:not(.cat-rainscreen) .task-row[data-color="rainscreen"],
+  body:not(.cat-samples) .task-row[data-color="samples"] {
     height: 0;
     min-height: 0;
     opacity: 0;
@@ -205,7 +221,10 @@
   body.cat-plaster .job-block:has(.task-row[data-color="plaster"]) > .job-row,
   body.cat-shower .job-block:has(.task-row[data-color="shower"]) > .job-row,
   body.cat-ballistic .job-block:has(.task-row[data-color="ballistic"]) > .job-row,
-  body.cat-mineral .job-block:has(.task-row[data-color="mineral"]) > .job-row {
+  body.cat-mineral .job-block:has(.task-row[data-color="mineral"]) > .job-row,
+  body.cat-sheathing .job-block:has(.task-row[data-color="sheathing"]) > .job-row,
+  body.cat-rainscreen .job-block:has(.task-row[data-color="rainscreen"]) > .job-row,
+  body.cat-samples .job-block:has(.task-row[data-color="samples"]) > .job-row {
     height: 30px;
     min-height: 30px;
     opacity: 1;
@@ -339,8 +358,7 @@
     gap: 8px;
     flex-shrink: 0;
   }
-  .job-add-task-btn,
-  .job-remove-btn {
+  .job-edit-btn {
     flex-shrink: 0;
     padding: 0;
     border: none;
@@ -352,21 +370,30 @@
     line-height: 1.2;
     letter-spacing: 0.02em;
     cursor: pointer;
-    text-decoration: none;
+    text-decoration: underline;
+    text-underline-offset: 2px;
     white-space: nowrap;
   }
-  .job-add-task-btn:hover,
-  .job-remove-btn:hover {
+  .job-edit-btn:hover {
     color: #000;
   }
-  .job-add-task-btn:focus-visible,
-  .job-remove-btn:focus-visible {
+  .job-edit-btn:focus-visible {
     outline: 2px solid var(--navy-seg);
     outline-offset: 2px;
   }
   .task-row .row-label {
     color: var(--text);
-    padding-left: 26px;
+    padding-left: 12px;
+    padding-right: 10px;
+    justify-content: flex-end;
+    gap: 14px;
+  }
+  .task-label-text {
+    min-width: 0;
+    flex: 1;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .row-grid {
     position: relative;
@@ -526,7 +553,7 @@
     border: none;
     border-radius: 8px;
     padding: 0;
-    width: min(420px, calc(100vw - 32px));
+    width: min(460px, calc(100vw - 32px));
     color: var(--text);
     font-family: inherit;
     box-shadow: 0 16px 48px rgba(27, 42, 74, 0.28);
@@ -580,8 +607,8 @@
   #job-dialog .task-check-list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    max-height: 240px;
+    gap: 2px;
+    max-height: 320px;
     overflow-y: auto;
     margin: 0 0 8px;
     padding: 0;
@@ -591,10 +618,10 @@
   #job-dialog .task-check-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     margin: 0;
-    padding: 8px 10px;
-    font-size: 13px;
+    padding: 12px 14px;
+    font-size: 15px;
     font-weight: 500;
     color: var(--text);
     cursor: pointer;
@@ -603,13 +630,15 @@
     background: #f5f5f3;
   }
   #job-dialog .task-check-item .swatch {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 2px;
     flex-shrink: 0;
   }
   #job-dialog .task-check-item input {
     margin: 0;
+    width: 16px;
+    height: 16px;
     flex-shrink: 0;
   }
   #job-dialog .dialog-error {
@@ -645,7 +674,7 @@
     border: none;
     border-radius: 8px;
     padding: 0;
-    width: min(420px, calc(100vw - 32px));
+    width: min(460px, calc(100vw - 32px));
     color: var(--text);
     font-family: inherit;
     box-shadow: 0 16px 48px rgba(27, 42, 74, 0.28);
@@ -703,8 +732,8 @@
   #add-task-dialog .task-check-list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    max-height: 200px;
+    gap: 2px;
+    max-height: 280px;
     overflow-y: auto;
     margin: 0 0 8px;
     padding: 0;
@@ -714,10 +743,10 @@
   #add-task-dialog .task-check-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     margin: 0;
-    padding: 8px 10px;
-    font-size: 13px;
+    padding: 12px 14px;
+    font-size: 15px;
     font-weight: 500;
     color: var(--text);
     cursor: pointer;
@@ -726,13 +755,15 @@
     background: #f5f5f3;
   }
   #add-task-dialog .task-check-item .swatch {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 2px;
     flex-shrink: 0;
   }
   #add-task-dialog .task-check-item input {
     margin: 0;
+    width: 16px;
+    height: 16px;
     flex-shrink: 0;
   }
   #add-task-dialog .dialog-error {
@@ -744,6 +775,7 @@
   #add-task-dialog menu {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     gap: 8px;
     margin: 12px 0 0;
     padding: 0;
@@ -755,6 +787,16 @@
     font-weight: 600;
     cursor: pointer;
     border: none;
+  }
+  #add-task-dialog .btn-remove {
+    margin-right: auto;
+    background: transparent;
+    color: #a33;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  #add-task-dialog .btn-remove:hover {
+    color: #7a2424;
   }
   #add-task-dialog .btn-cancel {
     background: #eee;
@@ -812,6 +854,84 @@
   }
   #remove-job-dialog .btn-confirm {
     background: #a33;
+    color: #fff;
+  }
+  #crew-formula-dialog {
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    width: min(400px, calc(100vw - 32px));
+    color: var(--text);
+    font-family: inherit;
+    box-shadow: 0 16px 48px rgba(27, 42, 74, 0.28);
+  }
+  #crew-formula-dialog::backdrop {
+    background: rgba(27, 42, 74, 0.4);
+  }
+  #crew-formula-dialog .dialog-inner {
+    padding: 20px 22px 16px;
+  }
+  #crew-formula-dialog h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 8px;
+  }
+  #crew-formula-dialog .dialog-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+    line-height: 1.4;
+  }
+  #crew-formula-dialog label.dialog-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 14px;
+  }
+  #crew-formula-dialog input {
+    font: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+  }
+  #crew-formula-dialog input:focus {
+    outline: 2px solid var(--navy-seg);
+    border-color: var(--navy-seg);
+  }
+  #crew-formula-dialog .dialog-error {
+    min-height: 1.2em;
+    margin: 0 0 4px;
+    font-size: 12px;
+    color: #a33;
+  }
+  #crew-formula-dialog menu {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 12px 0 0;
+    padding: 0;
+  }
+  #crew-formula-dialog menu button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+  }
+  #crew-formula-dialog .btn-cancel {
+    background: #eee;
+    color: var(--text);
+  }
+  #crew-formula-dialog .btn-confirm {
+    background: var(--navy);
     color: #fff;
   }
   .segment.gold {
@@ -912,47 +1032,53 @@
     background: #c9b684;
   }
   .footer-row.row-teal {
-    background: var(--steel);
+    background: #fdebd0;
     min-height: 36px;
-    margin-top: 8px;
+    margin-top: 0;
+    border-top: 1px solid #e8b784;
   }
   .footer-label.label-teal {
-    background: var(--steel);
-    color: #fff;
-    border-right: 2px solid var(--gold);
+    background: #fdebd0;
+    color: #7d4c24;
+    border-right: 2px solid #e8b784;
   }
   .footer-row.row-teal .footer-col {
-    color: #fff;
+    color: #7d4c24;
   }
   .footer-col.col-teal-alt {
-    background: #9db8af;
+    background: #f5d9b8;
   }
   .footer-row.row-green {
-    background: #009fe9;
+    background: #f5e9c8;
     min-height: 36px;
     margin-top: 8px;
-    border-bottom: 2px solid var(--gold);
+    border-top: 2px solid var(--gold);
+    border-bottom: none;
   }
   .footer-label.label-green {
-    background: #009fe9;
-    color: #fff;
+    background: #f5e9c8;
+    color: var(--navy);
     border-right: 2px solid var(--gold);
   }
   .footer-row.row-green .footer-col {
-    color: #fff;
+    color: #1a1a1a;
   }
   .footer-col.col-green-alt {
-    background: #76aed8;
+    background: #ebe0b8;
   }
   .footer-row.row-billing {
-    background: #e0cb93;
+    background: #e8f5e9;
     min-height: 36px;
-    margin-top: 8px;
+    margin-top: 0;
+    border-top: 1px solid #a5d6a7;
   }
   .footer-label.label-billing {
-    background: #e0cb93;
-    color: #1e2939;
-    border-right: 2px solid var(--gold);
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-right: 2px solid #a5d6a7;
+  }
+  .footer-row.row-billing .footer-col {
+    color: #2e7d32;
   }
   .footer-col.footer-billing-cell {
     padding: 0 2px;
@@ -960,10 +1086,10 @@
   .footer-billing-input {
     width: 100%;
     height: 28px;
-    border: 1px solid transparent;
+    border: 1px solid rgba(46, 125, 50, 0.28);
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.55);
-    color: #1e2939;
+    background: #fff;
+    color: #2e7d32;
     font: inherit;
     font-size: 12px;
     font-weight: 700;
@@ -971,15 +1097,15 @@
     padding: 0 2px;
   }
   .footer-billing-input:hover {
-    border-color: rgba(30, 41, 57, 0.25);
+    border-color: rgba(46, 125, 50, 0.45);
   }
   .footer-billing-input:focus {
     outline: none;
-    border-color: var(--navy);
+    border-color: #2e7d32;
     background: #fff;
   }
   .footer-billing-input::placeholder {
-    color: rgba(30, 41, 57, 0.35);
+    color: rgba(46, 125, 50, 0.4);
     font-weight: 600;
   }
   .footer-month-row {
@@ -1021,19 +1147,6 @@
   }
   /* ---- Print layout: chunks the timeline into landscape pages you tape side by side ---- */
   .print-only { display: none; }
-  .print-btn {
-    display: inline-block;
-    margin: 4px 0 16px;
-    padding: 5px 10px;
-    background: var(--navy);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .print-btn:hover { background: var(--navy-light); }
   @media print {
     @page { size: landscape; margin: 6mm; }
     html, body { height: auto; }
@@ -1084,7 +1197,10 @@
     body:not(.cat-plaster) .p-task-row[data-color="plaster"],
     body:not(.cat-shower) .p-task-row[data-color="shower"],
     body:not(.cat-ballistic) .p-task-row[data-color="ballistic"],
-    body:not(.cat-mineral) .p-task-row[data-color="mineral"] {
+    body:not(.cat-mineral) .p-task-row[data-color="mineral"],
+    body:not(.cat-sheathing) .p-task-row[data-color="sheathing"],
+    body:not(.cat-rainscreen) .p-task-row[data-color="rainscreen"],
+    body:not(.cat-samples) .p-task-row[data-color="samples"] {
       height: 0 !important;
       min-height: 0;
       opacity: 0;
@@ -1106,7 +1222,10 @@
     body.cat-plaster .p-job-block:has(.p-task-row[data-color="plaster"]) > .p-job-row,
     body.cat-shower .p-job-block:has(.p-task-row[data-color="shower"]) > .p-job-row,
     body.cat-ballistic .p-job-block:has(.p-task-row[data-color="ballistic"]) > .p-job-row,
-    body.cat-mineral .p-job-block:has(.p-task-row[data-color="mineral"]) > .p-job-row {
+    body.cat-mineral .p-job-block:has(.p-task-row[data-color="mineral"]) > .p-job-row,
+    body.cat-sheathing .p-job-block:has(.p-task-row[data-color="sheathing"]) > .p-job-row,
+    body.cat-rainscreen .p-job-block:has(.p-task-row[data-color="rainscreen"]) > .p-job-row,
+    body.cat-samples .p-job-block:has(.p-task-row[data-color="samples"]) > .p-job-row {
       height: 17px !important;
       opacity: 1;
       border-bottom-width: 1px;
@@ -1132,7 +1251,7 @@
     .p-segment.first { border-top-left-radius: 3px; border-bottom-left-radius: 3px; }
     .p-segment.last { border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-right: none; }
     .p-footer-row {
-      display: flex; background: var(--gold-light); border-top: 2px solid var(--gold);
+      display: flex; background: #f5e9c8; border-top: 2px solid var(--gold);
       height: 23px; font-weight: 700;
     }
     .p-footer-label {
@@ -1142,44 +1261,39 @@
     }
     .p-footer-col {
       width: var(--col-w-p); min-width: var(--col-w-p); flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 10px; color: #2c1f05;
+      display: flex; align-items: center; justify-content: center; font-size: 10px; color: #1a1a1a;
       border-right: 1px solid rgba(0,0,0,0.08);
     }
-    .p-actual-row {
-      display: flex; background: #fbe3c8; border-top: 1px solid #e8b784;
-      height: 20px; font-weight: 700; margin-top: 3px;
-    }
-    .p-actual-label {
-      width: var(--label-w-p); min-width: var(--label-w-p); flex-shrink: 0;
-      display: flex; align-items: center; padding: 0 8px; font-size: 9.5px; color: #8a4b12;
-      border-right: 2px solid #e8b784;
-    }
-    .p-actual-col {
-      width: var(--col-w-p); min-width: var(--col-w-p); flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 9px; color: #8a4b12;
-      border-right: 1px solid rgba(0,0,0,0.06);
-    }
     .p-billing-row {
-      display: flex; background: #e0cb93; border-top: 1px solid var(--gold);
+      display: flex; background: #e8f5e9; border-top: 1px solid #a5d6a7;
       height: 20px; font-weight: 700; margin-top: 3px;
     }
     .p-billing-label {
       width: var(--label-w-p); min-width: var(--label-w-p); flex-shrink: 0;
-      display: flex; align-items: center; padding: 0 8px; font-size: 9.5px; color: #1e2939;
-      border-right: 2px solid var(--gold);
+      display: flex; align-items: center; padding: 0 8px; font-size: 9.5px; color: #2e7d32;
+      border-right: 2px solid #a5d6a7;
     }
     .p-billing-col {
       width: var(--col-w-p); min-width: var(--col-w-p); flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 9px; color: #1e2939;
+      display: flex; align-items: center; justify-content: center; font-size: 9px; color: #2e7d32;
+      border-right: 1px solid rgba(0,0,0,0.06);
+    }
+    .p-actual-row {
+      display: flex; background: #fdebd0; border-top: 1px solid #e8b784;
+      height: 20px; font-weight: 700; margin-top: 3px;
+    }
+    .p-actual-label {
+      width: var(--label-w-p); min-width: var(--label-w-p); flex-shrink: 0;
+      display: flex; align-items: center; padding: 0 8px; font-size: 9.5px; color: #7d4c24;
+      border-right: 2px solid #e8b784;
+    }
+    .p-actual-col {
+      width: var(--col-w-p); min-width: var(--col-w-p); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 9px; color: #7d4c24;
       border-right: 1px solid rgba(0,0,0,0.06);
     }
   }
 
-  .api-status {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin: 0 0 12px;
-  }
   .chart-message {
     padding: 28px 16px;
     font-size: 14px;
@@ -1195,17 +1309,13 @@
   <div class="period-controls">
     <div class="period-toggle" role="group" aria-label="Period view">
       <button type="button" id="period-monthly" class="is-active" data-period="monthly">Monthly</button>
-      <button type="button" id="period-biweekly" data-period="biweekly">Biweekly</button>
+      <button type="button" id="period-weekly" data-period="weekly">Weekly</button>
     </div>
     <button type="button" id="crew-toggle" class="crew-toggle" aria-pressed="false">Crew</button>
   </div>
 </div>
-<p class="subtitle screen-only" id="period-subtitle">Two-week increments · <span id="range-label">…</span> · billing shown per two-week period, split evenly across each task's active periods</p>
-<p class="api-status screen-only" id="api-status">Loading from API…</p>
+<p class="subtitle screen-only" id="period-subtitle">Weekly increments · <span id="range-label">…</span> · billing shown per week, split evenly across each task's active weeks</p>
 <div class="legend screen-only" id="legend"></div>
-
-<button class="print-btn screen-only" onclick="window.print()">Print for tiling across pages</button>
-<p class="subtitle screen-only" id="print-hint" style="margin-top:-8px;">Each printed sheet covers about 6 months of timeline — lay them out left to right and tape edges together.</p>
 
 <div class="chart-wrap screen-only">
   <div class="chart" id="chart"><p class="chart-message">Loading forecast…</p></div>
@@ -1249,8 +1359,8 @@
 
 <dialog id="add-task-dialog" class="screen-only">
   <form method="dialog" id="add-task-dialog-form" class="dialog-inner">
-    <h2>Add task</h2>
-    <p class="dialog-hint">Choose task types to add. Assign timing and amount by dragging on the chart.</p>
+    <h2>Edit job</h2>
+    <p class="dialog-hint">Check or uncheck task types, then Save. Assign timing and amount by dragging on the chart.</p>
     <label class="dialog-field">
       Job
       <input id="add-task-dialog-job" type="text" readonly tabindex="-1">
@@ -1259,8 +1369,9 @@
     <div class="task-check-list" id="add-task-dialog-tasks" role="group" aria-label="Task types"></div>
     <p class="dialog-error" id="add-task-dialog-error" aria-live="polite"></p>
     <menu>
+      <button type="button" class="btn-remove" id="add-task-dialog-remove">Remove job</button>
       <button type="button" class="btn-cancel" id="add-task-dialog-cancel">Cancel</button>
-      <button type="submit" class="btn-confirm" id="add-task-dialog-confirm" value="confirm">Add</button>
+      <button type="submit" class="btn-confirm" id="add-task-dialog-confirm" value="confirm">Save</button>
     </menu>
   </form>
 </dialog>
@@ -1276,6 +1387,26 @@
   </form>
 </dialog>
 
+<dialog id="crew-formula-dialog" class="screen-only">
+  <form method="dialog" id="crew-formula-dialog-form" class="dialog-inner">
+    <h2>Crew formula</h2>
+    <p class="dialog-hint">ceil(billing ÷ avg labor cost per man ÷ days per period)</p>
+    <label class="dialog-field">
+      Avg labor cost per man
+      <input id="crew-formula-labor" type="text" inputmode="decimal" autocomplete="off" required>
+    </label>
+    <label class="dialog-field">
+      Days per period
+      <input id="crew-formula-days" type="text" inputmode="decimal" autocomplete="off" required>
+    </label>
+    <p class="dialog-error" id="crew-formula-dialog-error" aria-live="polite"></p>
+    <menu>
+      <button type="button" class="btn-cancel" id="crew-formula-dialog-cancel">Cancel</button>
+      <button type="submit" class="btn-confirm" id="crew-formula-dialog-confirm" value="confirm">Save</button>
+    </menu>
+  </form>
+</dialog>
+
 <script>
 const API = "";
 const COL_W = 62;
@@ -1284,7 +1415,8 @@ const PERIOD_MODE_KEY = "kmi-period-mode";
 const CATEGORY_OFF_KEY = "kmi-category-off";
 const KNOWN_COLOR_IDS = [
   "navy", "steel", "coral", "gold", "purple", "gray",
-  "plaster", "shower", "ballistic", "mineral"
+  "plaster", "shower", "ballistic", "mineral",
+  "sheathing", "rainscreen", "samples"
 ];
 
 let appConfig = null;
@@ -1293,7 +1425,9 @@ let appColors = [];
 let rangeDrag = null;
 let barMove = null;
 let barResize = null;
-let periodMode = localStorage.getItem(PERIOD_MODE_KEY) === "biweekly" ? "biweekly" : "monthly";
+const storedPeriod = localStorage.getItem(PERIOD_MODE_KEY);
+let periodMode = storedPeriod === "weekly" || storedPeriod === "biweekly" ? "weekly" : "monthly";
+if (storedPeriod === "biweekly") localStorage.setItem(PERIOD_MODE_KEY, "weekly");
 let crewMode = false;
 let categoryOff = loadCategoryOff();
 let filterRefreshTimer = null;
@@ -1376,8 +1510,22 @@ function toggleCategory(colorId) {
   }, 280);
 }
 
+function crewLaborCost() {
+  const n = appConfig && appConfig.crewLaborCost != null ? Number(appConfig.crewLaborCost) : 1075;
+  return Number.isFinite(n) && n > 0 ? n : 1075;
+}
+
+function crewDaysPerPeriod() {
+  const n = appConfig && appConfig.crewDaysPerPeriod != null ? Number(appConfig.crewDaysPerPeriod) : 10;
+  return Number.isFinite(n) && n > 0 ? n : 10;
+}
+
 function crewCount(d) {
-  return Math.ceil(d / 1200 / 10);
+  return Math.ceil(d / crewLaborCost() / crewDaysPerPeriod());
+}
+
+function formatCrewFormulaText() {
+  return "ceil of billing ÷ " + crewLaborCost() + " ÷ " + crewDaysPerPeriod();
 }
 
 function syncPeriodToggle() {
@@ -1390,7 +1538,7 @@ function syncPeriodToggle() {
 function syncCrewToggle() {
   const btn = document.getElementById("crew-toggle");
   if (!btn) return;
-  const show = periodMode === "biweekly";
+  const show = periodMode === "weekly";
   btn.hidden = !show;
   if (!show) crewMode = false;
   btn.classList.toggle("is-active", crewMode);
@@ -1398,7 +1546,7 @@ function syncCrewToggle() {
 }
 
 function setCrewMode(on) {
-  if (periodMode !== "biweekly") return;
+  if (periodMode !== "weekly") return;
   clearTimeout(filterRefreshTimer);
   crewMode = !!on;
   syncCrewToggle();
@@ -1406,7 +1554,7 @@ function setCrewMode(on) {
 }
 
 function setPeriodMode(mode) {
-  if (mode !== "biweekly" && mode !== "monthly") return;
+  if (mode !== "weekly" && mode !== "monthly") return;
   if (mode === periodMode) return;
   clearTimeout(filterRefreshTimer);
   if (barMove) endBarMove(true);
@@ -1417,7 +1565,7 @@ function setPeriodMode(mode) {
     document.body.classList.remove("is-range-selecting");
   }
   periodMode = mode;
-  if (mode === "monthly" || mode === "biweekly") crewMode = false;
+  if (mode === "monthly" || mode === "weekly") crewMode = false;
   localStorage.setItem(PERIOD_MODE_KEY, periodMode);
   syncPeriodToggle();
   if (appConfig) renderChart(appConfig, appJobs, appColors);
@@ -1448,7 +1596,7 @@ function buildPeriodColumns(start, end, mode) {
   let cursor = addDays(start, 0);
   while (cursor < end) {
     columns.push(new Date(cursor));
-    cursor = addDays(cursor, 14);
+    cursor = addDays(cursor, 7);
   }
   return columns;
 }
@@ -1463,7 +1611,6 @@ function formatColumnHeader(colDate, mode) {
 function updatePeriodCopy(start, end) {
   const rangeLabel = document.getElementById("range-label");
   const subtitle = document.getElementById("period-subtitle");
-  const printHint = document.getElementById("print-hint");
   const rangeText =
     start.toLocaleDateString("en-US", { month: "short", year: "numeric" }) + " – " +
     end.toLocaleDateString("en-US", { month: "short", year: "numeric" });
@@ -1473,27 +1620,17 @@ function updatePeriodCopy(start, end) {
       subtitle.innerHTML =
         "Monthly increments · <span id=\"range-label\">" + rangeText + "</span> · billing shown per month, split evenly across each task's active months";
     }
-    if (printHint) {
-      printHint.textContent =
-        "Each printed sheet covers about 18 months of timeline — lay them out left to right and tape edges together.";
-    }
   } else if (crewMode) {
     if (subtitle) {
       subtitle.innerHTML =
-        "Two-week increments · <span id=\"range-label\">" + rangeText + "</span> · crew headcount per period (ceil of billing ÷ 1200 ÷ 10)";
-    }
-    if (printHint) {
-      printHint.textContent =
-        "Each printed sheet covers about 6 months of timeline — lay them out left to right and tape edges together.";
+        "Weekly increments · <span id=\"range-label\">" + rangeText + "</span> · crew headcount per week (" +
+        formatCrewFormulaText() +
+        ") <a href=\"#\" class=\"crew-formula-edit\" id=\"crew-formula-edit\">edit</a>";
     }
   } else {
     if (subtitle) {
       subtitle.innerHTML =
-        "Two-week increments · <span id=\"range-label\">" + rangeText + "</span> · billing shown per two-week period, split evenly across each task's active periods";
-    }
-    if (printHint) {
-      printHint.textContent =
-        "Each printed sheet covers about 6 months of timeline — lay them out left to right and tape edges together.";
+        "Weekly increments · <span id=\"range-label\">" + rangeText + "</span> · billing shown per week, split evenly across each task's active weeks";
     }
   }
 }
@@ -1503,6 +1640,12 @@ document.querySelectorAll(".period-toggle button").forEach((btn) => {
 });
 document.getElementById("crew-toggle").addEventListener("click", () => {
   setCrewMode(!crewMode);
+});
+document.getElementById("period-subtitle").addEventListener("click", (e) => {
+  const link = e.target.closest("#crew-formula-edit");
+  if (!link) return;
+  e.preventDefault();
+  openCrewFormulaDialog();
 });
 syncPeriodToggle();
 syncCategoryClasses(appColors);
@@ -1666,7 +1809,7 @@ function openTaskDialog(opts) {
   function updateSplit() {
     const n = opts.periods || 1;
     const amount = parseAmount(input.value);
-    const unit = periodMode === "monthly" ? "month" : "period";
+    const unit = periodMode === "monthly" ? "month" : "week";
     if (amount == null) {
       split.textContent = n + " " + unit + (n === 1 ? "" : "s");
       return;
@@ -1780,6 +1923,82 @@ async function persistActualBilling(monthKey, amount) {
       message: String(err.message || err)
     });
   }
+}
+
+async function persistCrewFormula(laborCost, daysPerPeriod) {
+  const status = document.getElementById("api-status");
+  appConfig.crewLaborCost = laborCost;
+  appConfig.crewDaysPerPeriod = daysPerPeriod;
+  if (appConfig) renderChart(appConfig, appJobs, appColors);
+  try {
+    const res = await fetch(API + "/config", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        crewLaborCost: laborCost,
+        crewDaysPerPeriod: daysPerPeriod
+      })
+    });
+    if (!res.ok) throw new Error("Save failed (" + res.status + ")");
+    if (status) status.textContent = "Saved · Crew formula";
+  } catch (err) {
+    if (status) status.textContent = "Save failed";
+    openTaskDialog({
+      mode: "warn",
+      title: "Could not save crew formula",
+      message: String(err.message || err)
+    });
+  }
+}
+
+function openCrewFormulaDialog() {
+  const dialog = document.getElementById("crew-formula-dialog");
+  const form = document.getElementById("crew-formula-dialog-form");
+  const laborInput = document.getElementById("crew-formula-labor");
+  const daysInput = document.getElementById("crew-formula-days");
+  const errorEl = document.getElementById("crew-formula-dialog-error");
+  const cancelBtn = document.getElementById("crew-formula-dialog-cancel");
+
+  laborInput.value = String(crewLaborCost());
+  daysInput.value = String(crewDaysPerPeriod());
+  errorEl.textContent = "";
+
+  return new Promise((resolve) => {
+    let saved = false;
+    function onCancelClick() {
+      dialog.close("cancel");
+    }
+    function onSubmit(e) {
+      const labor = Number(String(laborInput.value).replace(/[$,\s]/g, ""));
+      const days = Number(String(daysInput.value).replace(/[,\s]/g, ""));
+      if (!Number.isFinite(labor) || labor <= 0) {
+        e.preventDefault();
+        errorEl.textContent = "Enter a positive avg labor cost per man.";
+        laborInput.focus();
+        return;
+      }
+      if (!Number.isFinite(days) || days <= 0) {
+        e.preventDefault();
+        errorEl.textContent = "Enter a positive days per period.";
+        daysInput.focus();
+        return;
+      }
+      saved = true;
+      persistCrewFormula(labor, days);
+    }
+    function onClose() {
+      cancelBtn.removeEventListener("click", onCancelClick);
+      form.removeEventListener("submit", onSubmit);
+      dialog.removeEventListener("close", onClose);
+      resolve(saved);
+    }
+    cancelBtn.addEventListener("click", onCancelClick);
+    form.addEventListener("submit", onSubmit);
+    dialog.addEventListener("close", onClose);
+    dialog.showModal();
+    laborInput.focus();
+    laborInput.select();
+  });
 }
 
 function openJobDialog() {
@@ -1900,6 +2119,7 @@ function openAddTaskDialog(job) {
   const list = document.getElementById("add-task-dialog-tasks");
   const errorEl = document.getElementById("add-task-dialog-error");
   const cancelBtn = document.getElementById("add-task-dialog-cancel");
+  const removeBtn = document.getElementById("add-task-dialog-remove");
   const confirmBtn = document.getElementById("add-task-dialog-confirm");
   const existingColors = new Set(
     (job.tasks || []).map((t) => t.color).filter(Boolean)
@@ -1933,15 +2153,16 @@ function openAddTaskDialog(job) {
     function onCancelClick() {
       dialog.close("cancel");
     }
+    function onRemoveClick() {
+      result = { removeJob: true };
+      dialog.close("remove-job");
+    }
     function onSubmit(e) {
       const colorIds = Array.from(list.querySelectorAll('input[type="checkbox"]:checked'))
-        .map((el) => el.value)
-        .filter((id) => !existingColors.has(id));
+        .map((el) => el.value);
       if (!colorIds.length) {
         e.preventDefault();
-        errorEl.textContent = existingColors.size
-          ? "Select a new task type to add."
-          : "Select at least one task.";
+        errorEl.textContent = "Select at least one task, or remove the job.";
         return;
       }
       result = { colorIds };
@@ -1951,9 +2172,15 @@ function openAddTaskDialog(job) {
       form.removeEventListener("submit", onSubmit);
       dialog.removeEventListener("close", onClose);
       cancelBtn.removeEventListener("click", onCancelClick);
-      resolve(dialog.returnValue === "confirm" ? result : null);
+      removeBtn.removeEventListener("click", onRemoveClick);
+      if (dialog.returnValue === "confirm" || dialog.returnValue === "remove-job") {
+        resolve(result);
+      } else {
+        resolve(null);
+      }
     }
     cancelBtn.addEventListener("click", onCancelClick);
+    removeBtn.addEventListener("click", onRemoveClick);
     form.addEventListener("submit", onSubmit);
     dialog.addEventListener("close", onClose);
     dialog.showModal();
@@ -1961,52 +2188,47 @@ function openAddTaskDialog(job) {
   });
 }
 
-async function addTasksToJob(job, { colorIds }) {
+async function syncJobTasks(job, colorIds) {
   const placeholder = appConfig && appConfig.placeholderValue != null
     ? Number(appConfig.placeholderValue)
     : 0;
   const colorById = new Map((appColors || []).map((c) => [c.id, c]));
-  const tasks = colorIds
-    .map((id) => colorById.get(id))
-    .filter(Boolean)
-    .map((c) => ({
+  const existingByColor = new Map(
+    (job.tasks || []).filter((t) => t.color).map((t) => [t.color, t])
+  );
+  let nextId = 0;
+  (job.tasks || []).forEach((t) => {
+    const tid = Number(t.id);
+    if (tid > nextId) nextId = tid;
+  });
+  const tasks = [];
+  colorIds.forEach((id) => {
+    const existing = existingByColor.get(id);
+    if (existing) {
+      tasks.push(existing);
+      return;
+    }
+    const c = colorById.get(id);
+    if (!c) return;
+    nextId += 1;
+    tasks.push({
+      id: nextId,
       name: c.name,
       color: c.id,
       value: placeholder
-    }));
-  if (!tasks.length) return;
-  try {
-    const res = await fetch(API + "/jobs/" + job.id + "/tasks", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tasks })
     });
-    if (!res.ok) {
-      const errBody = await res.json().catch(() => null);
-      throw new Error((errBody && errBody.error) || "Add task failed (" + res.status + ")");
-    }
-    const updated = await res.json();
-    const i = appJobs.findIndex((j) => Number(j.id) === Number(updated.id));
-    if (i >= 0) appJobs[i] = updated;
-    else appJobs.push(updated);
-    renderChart(appConfig, appJobs, appColors);
-    const status = document.getElementById("api-status");
-    if (status) status.textContent = "Saved · " + appJobs.length + " jobs";
-  } catch (err) {
-    const status = document.getElementById("api-status");
-    if (status) status.textContent = "Add task failed";
-    openTaskDialog({
-      mode: "warn",
-      title: "Could not add task",
-      message: String(err.message || err)
-    });
-  }
+  });
+  await persistJob({ ...job, tasks });
 }
 
-async function onAddTaskClick(job) {
+async function onEditJobClick(job) {
   const result = await openAddTaskDialog(job);
   if (!result) return;
-  await addTasksToJob(job, result);
+  if (result.removeJob) {
+    await onRemoveJobClick(job);
+    return;
+  }
+  await syncJobTasks(job, result.colorIds);
 }
 
 function openRemoveJobDialog(job) {
@@ -2253,6 +2475,24 @@ function renderChart(config, JOBS, colors) {
     return fmtMoney(n);
   }
 
+  function jobEarliestStart(job) {
+    let earliest = Infinity;
+    (job.tasks || []).forEach((task) => {
+      if (!task.start) return;
+      const t = new Date(task.start + "T00:00:00").getTime();
+      if (!isNaN(t) && t < earliest) earliest = t;
+    });
+    return earliest;
+  }
+  const orderedJobs = JOBS.slice().sort((a, b) => {
+    const aStart = jobEarliestStart(a);
+    const bStart = jobEarliestStart(b);
+    if (aStart === bStart) return 0;
+    if (aStart === Infinity) return 1;
+    if (bStart === Infinity) return -1;
+    return aStart - bStart;
+  });
+
   const chart = document.getElementById("chart");
   chart.innerHTML = "";
 
@@ -2338,7 +2578,7 @@ function renderChart(config, JOBS, colors) {
     const lo = Math.min(from, to);
     const hi = Math.max(from, to);
     const n = hi - lo + 1;
-    const unit = periodMode === "monthly" ? "month" : "period";
+    const unit = periodMode === "monthly" ? "month" : "week";
     const amount = await openTaskDialog({
       mode: "amount",
       title: "Assign timing",
@@ -2354,7 +2594,7 @@ function renderChart(config, JOBS, colors) {
   }
 
   async function updateAmount(job, task, periods) {
-    const unit = periodMode === "monthly" ? "month" : "period";
+    const unit = periodMode === "monthly" ? "month" : "week";
     const amount = await openTaskDialog({
       mode: "amount",
       title: "Update amount",
@@ -2482,7 +2722,7 @@ function renderChart(config, JOBS, colors) {
     });
   }
 
-  JOBS.forEach(job => {
+  orderedJobs.forEach(job => {
     const block = document.createElement("div");
     block.className = "job-block";
 
@@ -2495,28 +2735,17 @@ function renderChart(config, JOBS, colors) {
     jobLabel.appendChild(jobName);
     const jobActions = document.createElement("div");
     jobActions.className = "job-row-actions";
-    const addTaskBtn = document.createElement("button");
-    addTaskBtn.type = "button";
-    addTaskBtn.className = "job-add-task-btn";
-    addTaskBtn.setAttribute("aria-label", "Add task to " + job.name);
-    addTaskBtn.title = "Add task";
-    addTaskBtn.textContent = "+";
-    addTaskBtn.addEventListener("click", (e) => {
+    const editJobBtn = document.createElement("button");
+    editJobBtn.type = "button";
+    editJobBtn.className = "job-edit-btn";
+    editJobBtn.setAttribute("aria-label", "Edit " + job.name);
+    editJobBtn.title = "Edit job";
+    editJobBtn.textContent = "Edit";
+    editJobBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      onAddTaskClick(job);
+      onEditJobClick(job);
     });
-    const removeJobBtn = document.createElement("button");
-    removeJobBtn.type = "button";
-    removeJobBtn.className = "job-remove-btn";
-    removeJobBtn.setAttribute("aria-label", "Remove " + job.name);
-    removeJobBtn.title = "Remove job";
-    removeJobBtn.textContent = "−";
-    removeJobBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      onRemoveJobClick(job);
-    });
-    jobActions.appendChild(removeJobBtn);
-    jobActions.appendChild(addTaskBtn);
+    jobActions.appendChild(editJobBtn);
     jobLabel.appendChild(jobActions);
     jobRow.appendChild(jobLabel);
     const jobGrid = document.createElement("div");
@@ -2531,7 +2760,10 @@ function renderChart(config, JOBS, colors) {
       if (task.color) row.dataset.color = task.color;
       const label = document.createElement("div");
       label.className = "row-label";
-      label.textContent = task.name;
+      const labelText = document.createElement("span");
+      labelText.className = "task-label-text";
+      labelText.textContent = task.name + " - " + fmtMoney(task.value || 0);
+      label.appendChild(labelText);
       row.appendChild(label);
 
       const grid = document.createElement("div");
@@ -2629,23 +2861,7 @@ function renderChart(config, JOBS, colors) {
     const actualBillingMap = (config.actualBilling && typeof config.actualBilling === "object")
       ? config.actualBilling
       : {};
-
-    const actualCostRow = document.createElement("div");
-    actualCostRow.className = "footer-row row-teal";
-    const actualCostLabel = document.createElement("div");
-    actualCostLabel.className = "footer-label label-teal";
-    actualCostLabel.textContent = "Actual cost";
-    actualCostRow.appendChild(actualCostLabel);
-    monthGroups.forEach((group) => {
-      const cell = document.createElement("div");
-      cell.className = "footer-col month-box";
-      cell.style.width = (group.count * COL_W_PX) + "px";
-      cell.style.minWidth = (group.count * COL_W_PX) + "px";
-      cell.style.flexShrink = "0";
-      cell.textContent = group.sum > 0 ? fmtDisplay(group.sum * actualCostRate, true) : "";
-      actualCostRow.appendChild(cell);
-    });
-    footerBar.appendChild(actualCostRow);
+    const costPct = Math.round(actualCostRate * 100);
 
     const actualBillingRow = document.createElement("div");
     actualBillingRow.className = "footer-row row-billing";
@@ -2709,6 +2925,23 @@ function renderChart(config, JOBS, colors) {
       actualBillingRow.appendChild(cell);
     });
     footerBar.appendChild(actualBillingRow);
+
+    const actualCostRow = document.createElement("div");
+    actualCostRow.className = "footer-row row-teal";
+    const actualCostLabel = document.createElement("div");
+    actualCostLabel.className = "footer-label label-teal";
+    actualCostLabel.textContent = "KMI Actual Cost - " + costPct + "%";
+    actualCostRow.appendChild(actualCostLabel);
+    monthGroups.forEach((group) => {
+      const cell = document.createElement("div");
+      cell.className = "footer-col month-box";
+      cell.style.width = (group.count * COL_W_PX) + "px";
+      cell.style.minWidth = (group.count * COL_W_PX) + "px";
+      cell.style.flexShrink = "0";
+      cell.textContent = group.sum > 0 ? fmtDisplay(group.sum * actualCostRate, true) : "";
+      actualCostRow.appendChild(cell);
+    });
+    footerBar.appendChild(actualCostRow);
   }
 
   chart.appendChild(footerBar);
@@ -2727,7 +2960,7 @@ function renderChart(config, JOBS, colors) {
     const ROWS_HEIGHT_BUDGET = 905; // usable row space per sheet at this font/row size
 
     // Precompute each job's row-block height, then pack jobs into row-groups (never splitting a job)
-    const printJobs = JOBS.map((job) => ({
+    const printJobs = orderedJobs.map((job) => ({
       job,
       tasks: job.tasks.filter((task) => isCategoryOn(task.color))
     })).filter((entry) => entry.tasks.length);
@@ -2905,22 +3138,7 @@ function renderChart(config, JOBS, colors) {
           const actualBillingMap = (config.actualBilling && typeof config.actualBilling === "object")
             ? config.actualBilling
             : {};
-
-          const pActual = document.createElement("div");
-          pActual.className = "p-actual-row";
-          if (p === 0) {
-            const pActualLabel = document.createElement("div");
-            pActualLabel.className = "p-actual-label";
-            pActualLabel.textContent = "Actual cost";
-            pActual.appendChild(pActualLabel);
-          }
-          pageTotals.forEach(v => {
-            const cell = document.createElement("div");
-            cell.className = "p-actual-col";
-            cell.textContent = v > 0 ? fmtDisplay(v * actualCostRate, false) : "";
-            pActual.appendChild(cell);
-          });
-          page.appendChild(pActual);
+          const costPct = Math.round(actualCostRate * 100);
 
           const pBilling = document.createElement("div");
           pBilling.className = "p-billing-row";
@@ -2939,6 +3157,22 @@ function renderChart(config, JOBS, colors) {
             pBilling.appendChild(cell);
           });
           page.appendChild(pBilling);
+
+          const pActual = document.createElement("div");
+          pActual.className = "p-actual-row";
+          if (p === 0) {
+            const pActualLabel = document.createElement("div");
+            pActualLabel.className = "p-actual-label";
+            pActualLabel.textContent = "KMI Actual Cost - " + costPct + "%";
+            pActual.appendChild(pActualLabel);
+          }
+          pageTotals.forEach(v => {
+            const cell = document.createElement("div");
+            cell.className = "p-actual-col";
+            cell.textContent = v > 0 ? fmtDisplay(v * actualCostRate, false) : "";
+            pActual.appendChild(cell);
+          });
+          page.appendChild(pActual);
         }
 
         printRoot.appendChild(page);
@@ -2954,7 +3188,6 @@ function renderChart(config, JOBS, colors) {
 }
 
 async function loadForecast() {
-  const status = document.getElementById("api-status");
   try {
     const [configRes, jobsRes, colorsRes] = await Promise.all([
       fetch(API + "/config"),
@@ -2968,11 +3201,9 @@ async function loadForecast() {
     appJobs = await jobsRes.json();
     appColors = await colorsRes.json();
     renderChart(appConfig, appJobs, appColors);
-    status.textContent = "Live from API · " + appJobs.length + " jobs";
   } catch (err) {
     document.getElementById("chart").innerHTML =
       '<p class="chart-message error">Could not load forecast data. Start the API with npm start.</p>';
-    status.textContent = "API offline";
   }
 }
 

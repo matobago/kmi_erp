@@ -2,7 +2,8 @@
   "name": "kmi-billing-forecast",
   "private": true,
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "pull-db": "node scripts/pull-production.js"
   },
   "dependencies": {
     "@upstash/redis": "^1.35.0",

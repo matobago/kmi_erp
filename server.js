@@ -65,7 +65,7 @@ server.get("/api", (_req, res) => {
     resources: {
       "GET /config": "Timeline window and cost rates",
       "PUT /config": "Replace config",
-      "PATCH /config": "Update fields: timelineStart, timelineEnd, actualCostRate, kmiCostRate, actualBilling",
+      "PATCH /config": "Update fields: timelineStart, timelineEnd, actualCostRate, kmiCostRate, crewLaborCost, crewDaysPerPeriod, actualBilling",
       "GET /jobs": "All jobs with nested tasks",
       "GET /jobs/:id": "One job",
       "POST /jobs": "Create a job { name, tasks[] }; assigns job and nested task ids",
@@ -75,7 +75,7 @@ server.get("/api", (_req, res) => {
       "DELETE /jobs/:id": "Delete one job",
       "PUT /jobs": "Replace the entire jobs array (AI bulk update)",
       "GET /colors": "Legend: id, display name, hex",
-      "GET /colors/:id": "One color (id is navy, steel, coral, gold, purple, gray, plaster, shower, ballistic, mineral)",
+      "GET /colors/:id": "One color (id is navy, steel, coral, gold, purple, gray, plaster, shower, ballistic, mineral, sheathing, rainscreen, samples)",
       "POST /colors": "Add a color { id, name, hex, textHex }",
       "PUT /colors/:id": "Replace one color",
       "PATCH /colors/:id": "Partial-update one color",
@@ -83,7 +83,7 @@ server.get("/api", (_req, res) => {
       "PUT /colors": "Replace the entire colors array",
     },
     color: {
-      id: "navy | steel | coral | gold | purple | gray | plaster | shower | ballistic | mineral",
+      id: "navy | steel | coral | gold | purple | gray | plaster | shower | ballistic | mineral | sheathing | rainscreen | samples",
       name: "legend label, e.g. Drywall - Hang",
       hex: "#35507f",
       textHex: "#ffffff",
