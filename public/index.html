@@ -1403,7 +1403,7 @@
       font-size: 15px;
       font-weight: 700;
       color: var(--navy);
-      margin: 0 0 4px;
+      margin: 16px 0 8px;
     }
     .print-page-sub {
       font-size: 10.5px;
@@ -1549,6 +1549,7 @@
     }
     .p-year-card {
       border: 1px solid #ccc;
+      border-top: 2px solid #8b6914;
       border-radius: 4px;
       padding: 6px 8px 5px;
     }
@@ -1556,6 +1557,8 @@
     .p-year-card-amount { font-size: 14px; font-weight: 700; line-height: 1.2; }
     .p-year-card-cost,
     .p-year-card-meta { font-size: 8px; color: #555; }
+    .p-year-card-cost-amount { color: #b42318; font-weight: 600; }
+    .p-year-kmi .p-year-cell { color: #b42318; }
     .p-year-card-bar {
       margin-top: 5px;
       height: 4px;
@@ -1650,6 +1653,7 @@
   }
   body.year-mode .year-cards {
     display: grid;
+    margin-bottom: 16px;
   }
   body.year-mode .legend,
   body.year-mode .chart-lock-btn {
@@ -1689,6 +1693,7 @@
   .year-card {
     background: #fff;
     border: 1px solid var(--border);
+    border-top: 3px solid #8b6914;
     border-radius: 8px;
     padding: 12px 14px 10px;
     display: flex;
@@ -1719,6 +1724,17 @@
   .year-card-cost {
     font-size: 11px;
     color: var(--text-muted);
+  }
+  .year-card-cost-amount {
+    color: #b42318;
+    font-weight: 600;
+  }
+  body.year-mode .title-bar {
+    margin: 12px 0 10px;
+  }
+  body.year-mode .footer-row.row-teal .footer-col,
+  body.year-mode .footer-row.row-teal .footer-total-cell {
+    color: #b42318;
   }
   .year-card-meta {
     font-size: 11px;
@@ -3431,7 +3447,11 @@ function renderYearCards(years, billingByYear, backlogByYear, billedByYearMap, a
     amountEl.textContent = fmtYearMoney(headline);
     const costEl = document.createElement("div");
     costEl.className = "year-card-cost";
-    costEl.textContent = "KMI actual cost " + costPct + "%: " + fmtYearMoney(billing * kmiCostRate);
+    costEl.appendChild(document.createTextNode("KMI actual cost " + costPct + "%: "));
+    const costAmt = document.createElement("span");
+    costAmt.className = "year-card-cost-amount";
+    costAmt.textContent = fmtYearMoney(billing * kmiCostRate);
+    costEl.appendChild(costAmt);
     const metaEl = document.createElement("div");
     metaEl.className = "year-card-meta";
     const jobs = activeCounts[y] || 0;
@@ -3721,7 +3741,7 @@ function buildYearPrintPages(data) {
       "<div class=\"p-year-card-year\">" + y + "</div>" +
       "<div class=\"p-year-card-amount\">" + fmtYearMoney(headline) + "</div>" +
       "<div class=\"p-year-card-cost\">KMI actual cost " + data.costPct + "%: " +
-      fmtYearMoney(billing * data.rate) + "</div>" +
+      "<span class=\"p-year-card-cost-amount\">" + fmtYearMoney(billing * data.rate) + "</span></div>" +
       "<div class=\"p-year-card-meta\">" + active + " active job" + (active === 1 ? "" : "s") +
       " — " + share + "% of forecast</div>" +
       "<div class=\"p-year-card-bar\"><span style=\"width:" + share + "%\"></span></div>";
