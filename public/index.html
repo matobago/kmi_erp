@@ -1541,6 +1541,77 @@
       display: flex; align-items: center; justify-content: center; font-size: 8.5px; color: #7d4c24;
       border-right: 1px solid rgba(0,0,0,0.06); padding: 0 1px; box-sizing: border-box;
     }
+    .p-year-cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0 0 10px;
+    }
+    .p-year-card {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 6px 8px 5px;
+    }
+    .p-year-card-year { font-size: 9px; font-weight: 700; color: var(--navy); }
+    .p-year-card-amount { font-size: 14px; font-weight: 700; line-height: 1.2; }
+    .p-year-card-cost,
+    .p-year-card-meta { font-size: 8px; color: #555; }
+    .p-year-card-bar {
+      margin-top: 5px;
+      height: 4px;
+      background: #e8e8e6;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .p-year-card-bar > span {
+      display: block;
+      height: 100%;
+      background: #3d5a80;
+    }
+    .p-year-header .p-year-col,
+    .p-year-header .p-year-total {
+      width: 90px;
+      min-width: 90px;
+      justify-content: flex-end;
+      padding-right: 6px;
+      text-align: right;
+    }
+    .p-year-row { height: 16px; }
+    .p-year-cell {
+      width: 90px;
+      min-width: 90px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 6px;
+      font-size: 8.5px;
+      border-right: 1px solid #eee;
+      box-sizing: border-box;
+    }
+    .p-year-total-cell {
+      font-weight: 700;
+      border-left: 1px solid var(--gold);
+    }
+    .p-year-footer {
+      display: flex;
+      height: 16px;
+      font-weight: 700;
+      border-top: 1px solid #ddd;
+    }
+    .p-year-footer-label {
+      width: var(--label-w-p);
+      min-width: var(--label-w-p);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      padding: 0 6px;
+      font-size: 8.5px;
+    }
+    .p-year-billing { background: #ebe0b8; }
+    .p-year-billed { background: #f5f5f3; color: #666; }
+    .p-year-backlog { background: #fff3b0; }
+    .p-year-kmi { background: #fdebd0; color: #7d4c24; }
   }
 
   .chart-message {
@@ -1549,6 +1620,263 @@
     color: var(--text-muted);
   }
   .chart-message.error { color: #9b2c2c; }
+
+  body.year-mode .footer-row .footer-col.year-amount-cell {
+    width: var(--col-w);
+    min-width: var(--col-w);
+    justify-content: flex-end;
+    padding: 0 10px;
+    text-align: right;
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+  }
+  body.year-mode .footer-row {
+    min-height: 28px;
+  }
+  body.year-mode .body-row.job-row {
+    height: 34px;
+    min-height: 34px;
+    opacity: 1;
+    border-bottom-width: 1px;
+    pointer-events: auto;
+  }
+
+  .year-cards {
+    display: none;
+    grid-template-columns: repeat(4, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 0 0 12px;
+    flex-shrink: 0;
+    transition: opacity 0.28s ease, transform 0.28s ease;
+  }
+  body.year-mode .year-cards {
+    display: grid;
+  }
+  body.year-mode .legend,
+  body.year-mode .chart-lock-btn {
+    display: none;
+  }
+  body.year-mode {
+    --col-w: 128px;
+    --year-total-w: 112px;
+  }
+  body.year-mode .chart-wrap {
+    overflow-x: hidden;
+  }
+  body.year-mode .chart {
+    width: 100%;
+    min-width: 100%;
+  }
+  body.year-mode .header-row,
+  body.year-mode .body-row,
+  body.year-mode .footer-row,
+  body.year-mode .footer-bar {
+    width: 100%;
+  }
+  body.year-mode .header-col,
+  body.year-mode .year-amount-cell,
+  body.year-mode .footer-row .footer-col.year-amount-cell {
+    width: auto;
+    min-width: 0;
+    flex: 1 1 0;
+  }
+  body.year-mode .header-total,
+  body.year-mode .year-total-cell,
+  body.year-mode .footer-total-cell {
+    flex: 0 0 var(--year-total-w);
+    width: var(--year-total-w);
+    min-width: var(--year-total-w);
+  }
+  .year-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.28s ease, transform 0.28s ease;
+  }
+  body.year-mode .year-card {
+    opacity: 1;
+    transform: none;
+  }
+  .year-card-year {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: 0.02em;
+  }
+  .year-card-amount {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+  }
+  .year-card-cost {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .year-card-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .year-card-bar {
+    margin-top: 8px;
+    height: 6px;
+    border-radius: 3px;
+    background: #e8e8e6;
+    overflow: hidden;
+  }
+  .year-card-bar > span {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    background: #3d5a80;
+    width: 0;
+    transition: width 0.35s ease;
+  }
+  body.year-collapsing .task-row,
+  body.year-expanding .task-row {
+    height: 0;
+    min-height: 0;
+    opacity: 0;
+    border-bottom-width: 0;
+    pointer-events: none;
+  }
+  body.year-collapsing .job-row-actions,
+  body.year-collapsing .header-add-btn,
+  body.year-expanding .job-row-actions,
+  body.year-expanding .header-add-btn {
+    opacity: 0;
+    pointer-events: none;
+  }
+  body.year-exiting .year-card {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  body.year-exiting #chart .body-row,
+  body.year-exiting #chart .footer-bar,
+  body.year-exiting #chart .header-row {
+    opacity: 0;
+    transition: opacity 0.22s ease;
+  }
+  body.year-exiting .year-cards {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  .year-amount-cell {
+    width: var(--col-w);
+    min-width: var(--col-w);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 10px;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    border-right: 1px solid var(--border);
+    color: var(--text);
+  }
+  .year-amount-cell.is-empty {
+    color: var(--text-muted);
+  }
+  .year-total-cell {
+    width: var(--year-total-w);
+    min-width: var(--year-total-w);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    position: sticky;
+    right: 0;
+    background: #fff;
+    border-left: 2px solid var(--gold);
+  }
+  .job-row .year-total-cell {
+    background: var(--job-row-bg);
+  }
+  .header-total {
+    width: var(--year-total-w);
+    min-width: var(--year-total-w);
+    flex-shrink: 0;
+    color: #f0e2bd;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: right;
+    padding: 6px 12px;
+    position: sticky;
+    right: 0;
+    background: var(--navy);
+    border-left: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .footer-total-cell {
+    width: var(--year-total-w);
+    min-width: var(--year-total-w);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    position: sticky;
+    right: 0;
+    border-left: 2px solid var(--gold);
+  }
+  .footer-row.row-backlog {
+    background: #fff3b0;
+  }
+  .footer-label.label-backlog {
+    background: #fff3b0;
+    color: #5c4b00;
+    border-right: 1px solid #e6d36a;
+  }
+  .footer-row.row-backlog .footer-col,
+  .footer-row.row-backlog .footer-total-cell {
+    background: #fff3b0;
+    color: #5c4b00;
+  }
+  .footer-row.row-billed {
+    background: #f5f5f3;
+  }
+  .footer-label.label-billed {
+    background: #f5f5f3;
+    color: var(--text-muted);
+    border-right: 1px solid var(--border);
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: normal;
+  }
+  .footer-row.row-billed .footer-col,
+  .footer-row.row-billed .footer-total-cell {
+    background: #f5f5f3;
+    color: var(--text-muted);
+  }
+  body.year-mode .footer-row.row-green .footer-total-cell {
+    background: #ebe0b8;
+  }
+  body.year-mode .footer-row.row-teal .footer-total-cell {
+    background: #fdebd0;
+    color: #7d4c24;
+  }
+  @media (max-width: 720px) {
+    .year-cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
 </style>
 </head>
 <body>
@@ -1560,11 +1888,13 @@
 <p class="subtitle screen-only" id="period-subtitle">Weekly increments · <span id="range-label">…</span> · billing shown per week, split evenly across each task's active weeks</p>
 <div class="period-controls screen-only">
   <div class="period-toggle" role="group" aria-label="Period view">
+    <button type="button" id="period-year" data-period="year">Year</button>
     <button type="button" id="period-monthly" class="is-active" data-period="monthly">Monthly</button>
     <button type="button" id="period-weekly" data-period="weekly">Weekly</button>
   </div>
   <button type="button" id="crew-toggle" class="crew-toggle" aria-pressed="false">Crew</button>
 </div>
+<div class="year-cards screen-only" id="year-cards" aria-label="Year summary"></div>
 <div class="legend screen-only" id="legend"></div>
 
 <div class="chart-wrap screen-only">
@@ -1689,7 +2019,12 @@ let rangeDrag = null;
 let barMove = null;
 let barResize = null;
 const storedPeriod = localStorage.getItem(PERIOD_MODE_KEY);
-let periodMode = storedPeriod === "weekly" || storedPeriod === "biweekly" ? "weekly" : "monthly";
+let periodMode =
+  storedPeriod === "weekly" || storedPeriod === "biweekly"
+    ? "weekly"
+    : storedPeriod === "year"
+      ? "year"
+      : "monthly";
 if (storedPeriod === "biweekly") localStorage.setItem(PERIOD_MODE_KEY, "weekly");
 let crewMode = false;
 let chartLocked = true;
@@ -1830,6 +2165,7 @@ function syncPeriodToggle() {
     btn.classList.toggle("is-active", btn.dataset.period === periodMode);
   });
   syncCrewToggle();
+  syncYearModeChrome();
 }
 
 function syncCrewToggle() {
@@ -1842,6 +2178,20 @@ function syncCrewToggle() {
   btn.setAttribute("aria-pressed", crewMode ? "true" : "false");
 }
 
+function syncYearModeChrome() {
+  if (document.body.classList.contains("year-exiting")) return;
+  document.body.classList.toggle("year-mode", periodMode === "year");
+  const cards = document.getElementById("year-cards");
+  if (cards && periodMode !== "year") cards.innerHTML = "";
+}
+
+function syncPeriodButtonsOnly() {
+  document.querySelectorAll(".period-toggle button").forEach((btn) => {
+    btn.classList.toggle("is-active", btn.dataset.period === periodMode);
+  });
+  syncCrewToggle();
+}
+
 function setCrewMode(on) {
   if (periodMode !== "weekly") return;
   clearTimeout(filterRefreshTimer);
@@ -1851,7 +2201,7 @@ function setCrewMode(on) {
 }
 
 function setPeriodMode(mode) {
-  if (mode !== "weekly" && mode !== "monthly") return;
+  if (mode !== "weekly" && mode !== "monthly" && mode !== "year") return;
   if (mode === periodMode) return;
   clearTimeout(filterRefreshTimer);
   if (barMove) endBarMove(true);
@@ -1861,11 +2211,44 @@ function setPeriodMode(mode) {
     rangeDrag = null;
     document.body.classList.remove("is-range-selecting");
   }
+  const enteringYear = periodMode !== "year" && mode === "year";
+  const leavingYear = periodMode === "year" && mode !== "year";
   periodMode = mode;
-  if (mode === "monthly" || mode === "weekly") crewMode = false;
+  if (mode !== "weekly") crewMode = false;
   localStorage.setItem(PERIOD_MODE_KEY, periodMode);
+  if (!appConfig) {
+    syncPeriodToggle();
+    return;
+  }
+  if (enteringYear) {
+    syncPeriodToggle();
+    document.body.classList.remove("year-exiting", "year-expanding");
+    document.body.classList.add("year-collapsing");
+    filterRefreshTimer = setTimeout(() => {
+      document.body.classList.remove("year-collapsing");
+      renderChart(appConfig, appJobs, appColors);
+    }, 280);
+    return;
+  }
+  if (leavingYear) {
+    syncPeriodButtonsOnly();
+    document.body.classList.remove("year-collapsing", "year-expanding");
+    document.body.classList.add("year-exiting");
+    filterRefreshTimer = setTimeout(() => {
+      document.body.classList.remove("year-exiting");
+      renderChart(appConfig, appJobs, appColors);
+      document.body.classList.add("year-expanding");
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          document.body.classList.remove("year-expanding");
+        });
+      });
+    }, 280);
+    return;
+  }
+  document.body.classList.remove("year-collapsing", "year-exiting", "year-expanding");
   syncPeriodToggle();
-  if (appConfig) renderChart(appConfig, appJobs, appColors);
+  renderChart(appConfig, appJobs, appColors);
 }
 
 function startOfMonth(d) {
@@ -1882,6 +2265,15 @@ function addDays(d, n) {
 
 function buildPeriodColumns(start, end, mode) {
   const columns = [];
+  if (mode === "year") {
+    let y = start.getFullYear();
+    const endY = end.getFullYear();
+    while (y <= endY) {
+      columns.push(new Date(y, 0, 1));
+      y += 1;
+    }
+    return columns;
+  }
   if (mode === "monthly") {
     let cursor = startOfMonth(start);
     while (cursor < end) {
@@ -1899,6 +2291,7 @@ function buildPeriodColumns(start, end, mode) {
 }
 
 function formatColumnHeader(colDate, mode) {
+  if (mode === "year") return String(colDate.getFullYear());
   if (mode === "monthly") {
     return colDate.toLocaleDateString("en-US", { month: "short", year: "numeric" });
   }
@@ -1912,7 +2305,12 @@ function updatePeriodCopy(start, end) {
     start.toLocaleDateString("en-US", { month: "short", year: "numeric" }) + " – " +
     end.toLocaleDateString("en-US", { month: "short", year: "numeric" });
   if (rangeLabel) rangeLabel.textContent = rangeText;
-  if (periodMode === "monthly") {
+  if (periodMode === "year") {
+    if (subtitle) {
+      subtitle.innerHTML =
+        "At a glance by year · <span id=\"range-label\">" + rangeText + "</span> · job totals roll up from monthly billing; Jul–Sep already invoiced is broken out below";
+    }
+  } else if (periodMode === "monthly") {
     if (subtitle) {
       subtitle.innerHTML =
         "Monthly increments · <span id=\"range-label\">" + rangeText + "</span> · billing shown per month, split evenly across each task's active months";
@@ -2923,6 +3321,504 @@ document.addEventListener("keydown", (e) => {
   clearRangeHighlight(grid);
 });
 
+function overlappingMonthIndices(task, monthCols, timelineEnd) {
+  if (!task.start || !task.end) return [];
+  const tStart = new Date(task.start + "T00:00:00");
+  const tEnd = new Date(task.end + "T00:00:00");
+  if (isNaN(tStart.getTime()) || isNaN(tEnd.getTime())) return [];
+  const indices = [];
+  monthCols.forEach((colDate, i) => {
+    const periodEnd = i + 1 < monthCols.length ? monthCols[i + 1] : timelineEnd;
+    if (tStart < periodEnd && tEnd > colDate) indices.push(i);
+  });
+  return indices;
+}
+
+function taskAmountsByYear(task, monthCols, timelineEnd, years) {
+  const amounts = {};
+  years.forEach((y) => { amounts[y] = 0; });
+  if (!isCategoryOn(task.color)) return amounts;
+  const idxList = overlappingMonthIndices(task, monthCols, timelineEnd);
+  if (!idxList.length) return amounts;
+  const perPeriod = (task.value || 0) / idxList.length;
+  idxList.forEach((i) => {
+    const y = monthCols[i].getFullYear();
+    if (amounts[y] != null) amounts[y] += perPeriod;
+  });
+  return amounts;
+}
+
+function sumYearMaps(maps, years) {
+  const out = {};
+  years.forEach((y) => { out[y] = 0; });
+  maps.forEach((map) => {
+    years.forEach((y) => { out[y] += map[y] || 0; });
+  });
+  return out;
+}
+
+function yearMapTotal(map, years) {
+  return years.reduce((sum, y) => sum + (map[y] || 0), 0);
+}
+
+function billedByYear(actualBilling, years) {
+  const out = {};
+  const keysByYear = {};
+  years.forEach((y) => {
+    out[y] = 0;
+    keysByYear[y] = [];
+  });
+  if (!actualBilling || typeof actualBilling !== "object") return { amounts: out, keysByYear };
+  Object.keys(actualBilling).forEach((key) => {
+    const m = /^(\d{4})-(\d{2})$/.exec(key);
+    if (!m) return;
+    const y = Number(m[1]);
+    if (out[y] == null) return;
+    const n = Number(actualBilling[key]);
+    if (!Number.isFinite(n) || n <= 0) return;
+    out[y] += n;
+    keysByYear[y].push({ key, month: Number(m[2]), amount: n });
+  });
+  years.forEach((y) => {
+    keysByYear[y].sort((a, b) => a.month - b.month);
+  });
+  return { amounts: out, keysByYear };
+}
+
+function formatBilledLabel(keysByYear, years) {
+  const parts = [];
+  years.forEach((y) => {
+    const list = keysByYear[y] || [];
+    if (!list.length) return;
+    const first = list[0];
+    const last = list[list.length - 1];
+    const startName = new Date(y, first.month - 1, 1).toLocaleDateString("en-US", { month: "short" });
+    const endName = new Date(y, last.month - 1, 1).toLocaleDateString("en-US", { month: "short" });
+    const range = first.month === last.month ? startName + " " + y : startName + "–" + endName + " " + y;
+    parts.push(range);
+  });
+  if (!parts.length) return "Less: billed to date";
+  return "Less: billed to date (" + parts.join(", ") + ")";
+}
+
+function fmtYearMoney(n) {
+  return "$" + Math.round(n).toLocaleString();
+}
+
+function fmtYearCell(n) {
+  if (!n) return "—";
+  return fmtYearMoney(n);
+}
+
+function renderYearCards(years, billingByYear, backlogByYear, billedByYearMap, activeCounts, kmiCostRate, grandBilling) {
+  const root = document.getElementById("year-cards");
+  if (!root) return;
+  root.innerHTML = "";
+  const costPct = Math.round(kmiCostRate * 100);
+  years.forEach((y) => {
+    const billing = billingByYear[y] || 0;
+    const billed = billedByYearMap[y] || 0;
+    const backlog = backlogByYear[y] || 0;
+    const headline = billed > 0 ? backlog : billing;
+    const share = grandBilling > 0 ? (billing / grandBilling) * 100 : 0;
+    const card = document.createElement("div");
+    card.className = "year-card";
+    const yearEl = document.createElement("div");
+    yearEl.className = "year-card-year";
+    yearEl.textContent = String(y);
+    const amountEl = document.createElement("div");
+    amountEl.className = "year-card-amount";
+    amountEl.textContent = fmtYearMoney(headline);
+    const costEl = document.createElement("div");
+    costEl.className = "year-card-cost";
+    costEl.textContent = "KMI actual cost " + costPct + "%: " + fmtYearMoney(billing * kmiCostRate);
+    const metaEl = document.createElement("div");
+    metaEl.className = "year-card-meta";
+    const jobs = activeCounts[y] || 0;
+    metaEl.textContent =
+      jobs + " active job" + (jobs === 1 ? "" : "s") + " — " + Math.round(share) + "% of forecast";
+    const bar = document.createElement("div");
+    bar.className = "year-card-bar";
+    const fill = document.createElement("span");
+    bar.appendChild(fill);
+    card.appendChild(yearEl);
+    card.appendChild(amountEl);
+    card.appendChild(costEl);
+    card.appendChild(metaEl);
+    card.appendChild(bar);
+    root.appendChild(card);
+    requestAnimationFrame(() => {
+      fill.style.width = Math.min(100, Math.max(0, share)) + "%";
+    });
+  });
+}
+
+function renderYearGlance(config, JOBS, colors) {
+  const wrap = document.querySelector(".chart-wrap");
+  const scrollLeft = wrap ? wrap.scrollLeft : 0;
+  const scrollTop = wrap ? wrap.scrollTop : 0;
+  const pageY = window.scrollY;
+  const start = new Date(config.timelineStart + "T00:00:00");
+  const end = new Date(config.timelineEnd + "T00:00:00");
+  const kmiCostRate = config.kmiCostRate != null ? Number(config.kmiCostRate) : 0.7;
+  const rate = Number.isFinite(kmiCostRate) ? kmiCostRate : 0.7;
+  const costPct = Math.round(rate * 100);
+
+  syncYearModeChrome();
+  updatePeriodCopy(start, end);
+
+  const legend = document.getElementById("legend");
+  if (legend) legend.innerHTML = "";
+  syncCategoryClasses(colors);
+
+  const yearCols = buildPeriodColumns(start, end, "year");
+  const years = yearCols.map((d) => d.getFullYear());
+  const monthCols = buildPeriodColumns(start, end, "monthly");
+  const orderedJobs = orderJobsForDisplay(JOBS, config);
+
+  const jobYearMaps = orderedJobs.map((job) => {
+    const maps = (job.tasks || []).map((task) =>
+      taskAmountsByYear(task, monthCols, end, years)
+    );
+    return { job, amounts: sumYearMaps(maps, years) };
+  });
+  const specialRows = (appSpecialTasks || []).map((task) => ({
+    task,
+    amounts: taskAmountsByYear(task, monthCols, end, years)
+  }));
+
+  const billingByYear = sumYearMaps(
+    jobYearMaps.map((r) => r.amounts).concat(specialRows.map((r) => r.amounts)),
+    years
+  );
+  const grandBilling = yearMapTotal(billingByYear, years);
+  const billedInfo = billedByYear(config.actualBilling, years);
+  const backlogByYear = {};
+  years.forEach((y) => {
+    backlogByYear[y] = Math.max(0, (billingByYear[y] || 0) - (billedInfo.amounts[y] || 0));
+  });
+  const activeCounts = {};
+  years.forEach((y) => {
+    let n = 0;
+    jobYearMaps.forEach((r) => {
+      if ((r.amounts[y] || 0) > 0) n += 1;
+    });
+    specialRows.forEach((r) => {
+      if ((r.amounts[y] || 0) > 0) n += 1;
+    });
+    activeCounts[y] = n;
+  });
+
+  renderYearCards(years, billingByYear, backlogByYear, billedInfo.amounts, activeCounts, rate, grandBilling);
+
+  const chart = document.getElementById("chart");
+  chart.innerHTML = "";
+  document.getElementById("print-root").innerHTML = "";
+
+  const headerRow = document.createElement("div");
+  headerRow.className = "header-row";
+  const headerLabel = document.createElement("div");
+  headerLabel.className = "header-label";
+  const titleGroup = document.createElement("span");
+  titleGroup.className = "header-title-group";
+  const headerTitle = document.createElement("span");
+  headerTitle.textContent = "Job";
+  titleGroup.appendChild(headerTitle);
+  const sortBtn = document.createElement("button");
+  sortBtn.type = "button";
+  sortBtn.className = "header-sort-btn";
+  sortBtn.setAttribute("aria-label", "Sort jobs");
+  sortBtn.title = "Sort jobs";
+  sortBtn.innerHTML = SORT_ICON_HEADER;
+  sortBtn.addEventListener("click", onSortJobsClick);
+  titleGroup.appendChild(sortBtn);
+  headerLabel.appendChild(titleGroup);
+  headerRow.appendChild(headerLabel);
+  yearCols.forEach((colDate) => {
+    const col = document.createElement("div");
+    col.className = "header-col";
+    col.textContent = formatColumnHeader(colDate, "year");
+    headerRow.appendChild(col);
+  });
+  const headerTotal = document.createElement("div");
+  headerTotal.className = "header-total";
+  headerTotal.textContent = "Total";
+  headerRow.appendChild(headerTotal);
+  chart.appendChild(headerRow);
+
+  function appendYearAmountRow(name, amounts, opts) {
+    const jobStyle = opts && opts.jobStyle;
+    const row = document.createElement("div");
+    row.className = "body-row" + (jobStyle ? " job-row" : " job-row");
+    const label = document.createElement("div");
+    label.className = "row-label";
+    const nameEl = document.createElement("span");
+    nameEl.textContent = name;
+    label.appendChild(nameEl);
+    row.appendChild(label);
+    years.forEach((y) => {
+      const cell = document.createElement("div");
+      const v = amounts[y] || 0;
+      cell.className = "year-amount-cell" + (v ? "" : " is-empty");
+      cell.textContent = fmtYearCell(v);
+      row.appendChild(cell);
+    });
+    const totalCell = document.createElement("div");
+    totalCell.className = "year-total-cell";
+    totalCell.textContent = fmtYearMoney(yearMapTotal(amounts, years));
+    row.appendChild(totalCell);
+    chart.appendChild(row);
+  }
+
+  jobYearMaps.forEach((r) => appendYearAmountRow(r.job.name, r.amounts, { jobStyle: true }));
+  specialRows.forEach((r) => {
+    appendYearAmountRow(r.task.name || "Change Order", r.amounts, { jobStyle: true });
+  });
+
+  function appendFooterRow(labelText, values, totalValue, rowClass, labelClass, formatNeg) {
+    const row = document.createElement("div");
+    row.className = "footer-row " + rowClass;
+    const label = document.createElement("div");
+    label.className = "footer-label " + labelClass;
+    label.textContent = labelText;
+    row.appendChild(label);
+    years.forEach((y) => {
+      const cell = document.createElement("div");
+      cell.className = "footer-col year-amount-cell";
+      const v = values[y] || 0;
+      if (!v) {
+        cell.textContent = formatNeg ? "" : "—";
+        cell.classList.add("is-empty");
+      } else if (formatNeg) {
+        cell.textContent = "($" + Math.round(v).toLocaleString() + ")";
+      } else {
+        cell.textContent = fmtYearMoney(v);
+      }
+      row.appendChild(cell);
+    });
+    const totalCell = document.createElement("div");
+    totalCell.className = "footer-total-cell";
+    if (!totalValue) {
+      totalCell.textContent = formatNeg ? "" : "—";
+    } else if (formatNeg) {
+      totalCell.textContent = "($" + Math.round(totalValue).toLocaleString() + ")";
+    } else {
+      totalCell.textContent = fmtYearMoney(totalValue);
+    }
+    row.appendChild(totalCell);
+    return row;
+  }
+
+  const footerBar = document.createElement("div");
+  footerBar.className = "footer-bar";
+  footerBar.appendChild(
+    appendFooterRow(
+      "Billing total",
+      billingByYear,
+      grandBilling,
+      "row-green",
+      "label-green",
+      false
+    )
+  );
+  const billedTotal = yearMapTotal(billedInfo.amounts, years);
+  footerBar.appendChild(
+    appendFooterRow(
+      formatBilledLabel(billedInfo.keysByYear, years),
+      billedInfo.amounts,
+      billedTotal,
+      "row-billed",
+      "label-billed",
+      true
+    )
+  );
+  const backlogTotal = yearMapTotal(backlogByYear, years);
+  footerBar.appendChild(
+    appendFooterRow(
+      "Remaining backlog",
+      backlogByYear,
+      backlogTotal,
+      "row-backlog",
+      "label-backlog",
+      false
+    )
+  );
+  const kmiByYear = {};
+  years.forEach((y) => {
+    kmiByYear[y] = (billingByYear[y] || 0) * rate;
+  });
+  footerBar.appendChild(
+    appendFooterRow(
+      "KMI Actual Cost - " + costPct + "%",
+      kmiByYear,
+      grandBilling * rate,
+      "row-teal",
+      "label-teal",
+      false
+    )
+  );
+  chart.appendChild(footerBar);
+
+  buildYearPrintPages({
+    years,
+    yearCols,
+    jobYearMaps,
+    specialRows,
+    billingByYear,
+    billedInfo,
+    backlogByYear,
+    kmiByYear,
+    grandBilling,
+    billedTotal,
+    backlogTotal,
+    rate,
+    costPct,
+    start,
+    end
+  });
+
+  if (wrap) {
+    wrap.scrollLeft = scrollLeft;
+    wrap.scrollTop = scrollTop;
+  }
+  window.scrollTo(window.scrollX, pageY);
+}
+
+function buildYearPrintPages(data) {
+  const printRoot = document.getElementById("print-root");
+  printRoot.innerHTML = "";
+  const page = document.createElement("div");
+  page.className = "print-page";
+
+  const title = document.createElement("div");
+  title.className = "print-page-title";
+  title.textContent = "KMI Billing Forecast — At a Glance by Year";
+  const sub = document.createElement("div");
+  sub.className = "print-page-sub";
+  sub.textContent =
+    data.start.toLocaleDateString("en-US", { month: "short", year: "numeric" }) +
+    " – " +
+    data.end.toLocaleDateString("en-US", { month: "short", year: "numeric" }) +
+    "  ·  job totals roll up from monthly billing; billed-to-date is broken out below";
+  page.appendChild(title);
+  page.appendChild(sub);
+
+  const cards = document.createElement("div");
+  cards.className = "p-year-cards";
+  const grand = data.grandBilling;
+  data.years.forEach((y) => {
+    const billing = data.billingByYear[y] || 0;
+    const billed = data.billedInfo.amounts[y] || 0;
+    const backlog = data.backlogByYear[y] || 0;
+    const headline = billed > 0 ? backlog : billing;
+    const share = grand > 0 ? Math.round((billing / grand) * 100) : 0;
+    let active = 0;
+    data.jobYearMaps.forEach((r) => { if ((r.amounts[y] || 0) > 0) active += 1; });
+    data.specialRows.forEach((r) => { if ((r.amounts[y] || 0) > 0) active += 1; });
+    const card = document.createElement("div");
+    card.className = "p-year-card";
+    card.innerHTML =
+      "<div class=\"p-year-card-year\">" + y + "</div>" +
+      "<div class=\"p-year-card-amount\">" + fmtYearMoney(headline) + "</div>" +
+      "<div class=\"p-year-card-cost\">KMI actual cost " + data.costPct + "%: " +
+      fmtYearMoney(billing * data.rate) + "</div>" +
+      "<div class=\"p-year-card-meta\">" + active + " active job" + (active === 1 ? "" : "s") +
+      " — " + share + "% of forecast</div>" +
+      "<div class=\"p-year-card-bar\"><span style=\"width:" + share + "%\"></span></div>";
+    cards.appendChild(card);
+  });
+  page.appendChild(cards);
+
+  const pHeader = document.createElement("div");
+  pHeader.className = "p-header-row p-year-header";
+  const pHeaderLabel = document.createElement("div");
+  pHeaderLabel.className = "p-header-label";
+  pHeaderLabel.textContent = "Job";
+  pHeader.appendChild(pHeaderLabel);
+  data.years.forEach((y) => {
+    const c = document.createElement("div");
+    c.className = "p-header-col p-year-col";
+    c.textContent = String(y);
+    pHeader.appendChild(c);
+  });
+  const pHeaderTotal = document.createElement("div");
+  pHeaderTotal.className = "p-header-col p-year-total";
+  pHeaderTotal.textContent = "Total";
+  pHeader.appendChild(pHeaderTotal);
+  page.appendChild(pHeader);
+
+  function addPrintRow(name, amounts) {
+    const row = document.createElement("div");
+    row.className = "p-body-row p-job-row p-year-row";
+    const label = document.createElement("div");
+    label.className = "p-row-label";
+    label.textContent = name;
+    row.appendChild(label);
+    data.years.forEach((y) => {
+      const cell = document.createElement("div");
+      cell.className = "p-year-cell";
+      cell.textContent = fmtYearCell(amounts[y] || 0);
+      row.appendChild(cell);
+    });
+    const total = document.createElement("div");
+    total.className = "p-year-cell p-year-total-cell";
+    total.textContent = fmtYearMoney(yearMapTotal(amounts, data.years));
+    row.appendChild(total);
+    page.appendChild(row);
+  }
+
+  data.jobYearMaps.forEach((r) => addPrintRow(r.job.name, r.amounts));
+  data.specialRows.forEach((r) => addPrintRow(r.task.name || "Change Order", r.amounts));
+
+  function addPrintFooter(labelText, values, totalValue, cls, formatNeg) {
+    const row = document.createElement("div");
+    row.className = "p-year-footer " + cls;
+    const label = document.createElement("div");
+    label.className = "p-year-footer-label";
+    label.textContent = labelText;
+    row.appendChild(label);
+    data.years.forEach((y) => {
+      const cell = document.createElement("div");
+      cell.className = "p-year-cell";
+      const v = values[y] || 0;
+      cell.textContent = !v
+        ? (formatNeg ? "" : "—")
+        : formatNeg
+          ? "($" + Math.round(v).toLocaleString() + ")"
+          : fmtYearMoney(v);
+      row.appendChild(cell);
+    });
+    const total = document.createElement("div");
+    total.className = "p-year-cell p-year-total-cell";
+    total.textContent = !totalValue
+      ? "—"
+      : formatNeg
+        ? "($" + Math.round(totalValue).toLocaleString() + ")"
+        : fmtYearMoney(totalValue);
+    row.appendChild(total);
+    page.appendChild(row);
+  }
+
+  addPrintFooter("Billing total", data.billingByYear, data.grandBilling, "p-year-billing", false);
+  addPrintFooter(
+    formatBilledLabel(data.billedInfo.keysByYear, data.years),
+    data.billedInfo.amounts,
+    data.billedTotal,
+    "p-year-billed",
+    true
+  );
+  addPrintFooter("Remaining backlog", data.backlogByYear, data.backlogTotal, "p-year-backlog", false);
+  addPrintFooter(
+    "KMI Actual Cost - " + data.costPct + "%",
+    data.kmiByYear,
+    data.grandBilling * data.rate,
+    "p-year-kmi",
+    false
+  );
+
+  printRoot.appendChild(page);
+}
+
 function renderChart(config, JOBS, colors) {
   const wrap = document.querySelector(".chart-wrap");
   const scrollLeft = wrap ? wrap.scrollLeft : 0;
@@ -2933,6 +3829,12 @@ function renderChart(config, JOBS, colors) {
   const actualCostRate = config.actualCostRate != null ? config.actualCostRate : 0.7;
   const colorMap = {};
   (colors || []).forEach(c => { colorMap[c.id] = c; });
+
+  syncYearModeChrome();
+  if (periodMode === "year") {
+    renderYearGlance(config, JOBS, colors);
+    return;
+  }
 
   function paint(el, colorId) {
     const c = colorMap[colorId] || { hex: "#35507f", textHex: "#ffffff" };
